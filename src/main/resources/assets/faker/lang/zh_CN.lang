@@ -1,0 +1,12 @@
+modules.type.combat.name=战斗
+modules.type.movement.name=移动
+modules.type.render.name=渲染
+modules.module.KillArea.name=杀戮光环
+modules.module.KillArea.allowPlayer.name=攻击玩家
+modules.module.KillArea.allowMob.name=攻击生物
+modules.module.KillArea.range.name=范围
+modules.module.KillArea.attackDelay.name=攻击延迟
+modules.module.KillArea.updateTargetDelay.name=目标更新延迟
+modules.module.Speed.name=速度
+modules.module.HUD.name=HUD
+modules.module.ClickGui.name=点击界面

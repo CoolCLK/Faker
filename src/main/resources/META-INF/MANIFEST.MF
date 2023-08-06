@@ -1,0 +1,7 @@
+FMLCorePlugin: coolclk.launch.MixinLoader
+FMLCorePluginContainsFMLMod: true
+ForceLoadAsMod: true
+MixinConfigs: mixins.faker.json
+ModSide: CLIENT
+TweakClass: org.spongepowered.asm.launch.MixinTweaker
+TweakOrder: 0

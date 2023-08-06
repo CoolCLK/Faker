@@ -1,0 +1,16 @@
+[
+  {
+    "modid": "faker",
+    "name": "Faker",
+    "description": "An mixin-injection mod for Minecraft with Forge.",
+    "version": "${version}",
+    "mcversion": "1.8.9",
+    "url": "",
+    "updateUrl": "",
+    "authorList": [ "CoolCLK" ],
+    "credits": "",
+    "logoFile": "",
+    "screenshots": [],
+    "dependencies": []
+  }
+]

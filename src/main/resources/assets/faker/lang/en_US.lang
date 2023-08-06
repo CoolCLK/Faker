@@ -1,0 +1,12 @@
+modules.type.combat.name=Combat
+modules.type.movement.name=Movement
+modules.type.render.name=Render
+modules.module.KillArea.name=Kill Area
+modules.module.KillArea.allowPlayer.name=Attack Player
+modules.module.KillArea.allowMob.name=Attack Mob
+modules.module.KillArea.range.name=Range
+modules.module.KillArea.attackDelay.name=Attack Delay
+modules.module.KillArea.updateTargetDelay.name=Update Target Delay
+modules.module.Speed.name=Speed
+modules.module.HUD.name=HUD
+modules.module.ClickGui.name=Click Gui
