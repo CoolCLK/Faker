@@ -1,4 +1,4 @@
-FMLCorePlugin: coolclk.launch.MixinLoader
+FMLCorePlugin: coolclk.faker.injection.MixinLoader
 FMLCorePluginContainsFMLMod: true
 ForceLoadAsMod: true
 MixinConfigs: mixins.faker.json
