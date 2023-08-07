@@ -26,7 +26,6 @@ public class ClickGuiButton extends GuiButton {
     private final boolean isGroup;
     private final Module module;
     private final ModuleType moduleType;
-    private ClickGuiButton groupModule;
     private final List<ClickGuiButton> groupSubmodules;
 
     private boolean dragging = false;
@@ -113,7 +112,6 @@ public class ClickGuiButton extends GuiButton {
                 this.currentWidth += ((targetWidth - this.currentWidth) * GuiHandler.easeOutQuad(0.75));
                 this.width = (int) Math.round(this.currentWidth);
                 for (ClickGuiButton submodule : this.groupSubmodules) {
-                    submodule.groupModule = this;
                     submodule.width = this.width;
                     submodule.xPosition = this.xPosition;
                     submodule.yPosition = yPosition;

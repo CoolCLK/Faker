@@ -7,9 +7,6 @@ import coolclk.faker.modules.root.movement.ForceSprinting;
 import coolclk.faker.modules.root.movement.KeepRotating;
 import coolclk.faker.modules.root.render.ClickGui;
 import coolclk.faker.modules.root.render.HUD;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 
 import java.util.Arrays;

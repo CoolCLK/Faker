@@ -1,9 +1,6 @@
 package coolclk.faker.modules;
 
 import coolclk.faker.launch.FakerForgeMod;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.KeyBinding;
 import org.lwjgl.input.Keyboard;
@@ -73,10 +70,6 @@ public class Module {
 
         public float getNumberValueF() {
             return Float.parseFloat(Double.toString(this.numberValue));
-        }
-
-        public Integer getNumberValueI() {
-            return Integer.parseInt(this.getNumberValueL().toString());
         }
 
         public Long getNumberValueL() {

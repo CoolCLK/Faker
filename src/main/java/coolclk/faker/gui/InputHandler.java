@@ -1,6 +1,5 @@
 package coolclk.faker.gui;
 
-import coolclk.faker.launch.FakerForgeMod;
 import org.lwjgl.input.Mouse;
 
 import java.util.ArrayList;
