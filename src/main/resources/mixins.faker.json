@@ -4,6 +4,15 @@
   "package": "coolclk.faker.injection.mixins",
   "refmap": "mixins.faker.refmap.json",
   "client": [
-    "MixinMinecraft"
+    "MixinEntityRenderer",
+    "MixinGuiIngameForge",
+    "MixinMinecraft",
+    "MixinPlayerControllerMP"
+  ],
+  "mixins": [
+    "MixinEntity",
+    "MixinFoodStats",
+    "MixinItemFood",
+    "MixinNetworkManager"
   ]
 }

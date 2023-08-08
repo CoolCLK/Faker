@@ -1,7 +1,7 @@
 package coolclk.faker.modules.root.movement;
 
 import coolclk.faker.modules.Module;
-import coolclk.faker.modules.ModuleUtil;
+import coolclk.faker.util.ModuleUtil;
 
 public class ForceSprinting extends Module {
     public static ForceSprinting INSTANCE = new ForceSprinting();
@@ -12,7 +12,7 @@ public class ForceSprinting extends Module {
 
     @Override
     public void onEnabling() {
-        if (!ModuleUtil.gEP().isSprinting() && Math.abs(ModuleUtil.gEP().movementInput.moveForward) + Math.abs(ModuleUtil.gEP().movementInput.moveStrafe) > 0) {
+        if (!ModuleUtil.gEP().isSprinting() && ModuleUtil.gEP().movementInput.moveForward > 0) {
             ModuleUtil.gEP().setSprinting(true);
         }
     }

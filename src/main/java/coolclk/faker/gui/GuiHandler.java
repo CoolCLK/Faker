@@ -1,6 +1,6 @@
 package coolclk.faker.gui;
 
-import coolclk.faker.gui.clickgui.ClickGuiContainer;
+import coolclk.faker.gui.clickgui.ClickGuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
@@ -8,8 +8,6 @@ import net.minecraftforge.fml.common.network.IGuiHandler;
 import java.awt.*;
 
 public class GuiHandler implements IGuiHandler {
-    private final ClickGuiContainer clickGui = new ClickGuiContainer();
-
     @Override
     public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
         return null;
@@ -17,14 +15,14 @@ public class GuiHandler implements IGuiHandler {
 
     @Override
     public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
-        if (ID == ClickGuiContainer.ID) {
-            return clickGui;
+        if (ID == ClickGuiScreen.ID) {
+            return ClickGuiScreen.INSTANCE;
         }
         return null;
     }
 
     public static int getRainbowColor(double speed) {
-        return Color.getHSBColor((float) ((System.currentTimeMillis() * speed) % 255), 255, 255).getRGB();
+        return Color.getHSBColor((float) Math.abs(Math.sin(System.currentTimeMillis() * speed) * 255), 255, 255).getRGB();
     }
 
     public static double easeOutQuad(double speed) {

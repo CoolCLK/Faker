@@ -13,8 +13,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClickGuiContainer extends GuiScreen {
+public class ClickGuiScreen extends GuiScreen {
     public final static int ID = 1;
+    public static ClickGuiScreen INSTANCE = new ClickGuiScreen();
 
     private double alpha = 0;
     private final List<ClickGuiButton> clickGuiButtonList = new ArrayList<ClickGuiButton>();
@@ -29,17 +30,17 @@ public class ClickGuiContainer extends GuiScreen {
     private boolean menuOpen = true;
     public static boolean dragging = false;
 
-    public ClickGuiContainer() {
+    public ClickGuiScreen() {
         super();
         for (ModuleType group : ModuleHandler.getAllModules()) {
             List<ClickGuiButton> submodules = new ArrayList<ClickGuiButton>();
             int yPosition = group.getClickGuiPositionY();
             for (Module module : group.getModules()) {
                 yPosition += buttonHeight;
-                submodules.add(new ClickGuiButton(group.getClickGuiPositionX(), yPosition, buttonWidth, buttonHeight, module.getDisplayName(), new int[] { childrenButtonDisableColor, childrenButtonEnableColor, childrenButtonMenuColor }, 0xFFFFFF, module, group));
+                submodules.add(new ClickGuiButton(group.getClickGuiPositionX(), yPosition, buttonWidth, buttonHeight, module.getI18nKey(), new int[] { childrenButtonDisableColor, childrenButtonEnableColor, childrenButtonMenuColor }, 0xFFFFFF, module, group));
             }
             this.clickGuiButtonList.addAll(submodules);
-            this.clickGuiButtonList.add(new ClickGuiButton(group.getClickGuiPositionX(), group.getClickGuiPositionY(), buttonWidth, buttonHeight, group.getDisplayName(), groupButtonColor, 0xFFFFFFFF, group, submodules));
+            this.clickGuiButtonList.add(new ClickGuiButton(group.getClickGuiPositionX(), group.getClickGuiPositionY(), buttonWidth, buttonHeight, group.getI18nKey(), groupButtonColor, 0xFFFFFFFF, group, submodules));
         }
     }
 
@@ -60,6 +61,7 @@ public class ClickGuiContainer extends GuiScreen {
         drawRect(0, 0, this.width, this.height, backgroundColor.getRGB());
         for (ClickGuiButton button : this.clickGuiButtonList) {
             button.setAlpha((int) this.alpha);
+            button.module.onClickGuiUpdate();
             button.drawButton(this.mc, mouseX, mouseY);
         }
 

@@ -1,25 +1,34 @@
-package coolclk.faker.modules;
+package coolclk.faker.util;
 
 import com.google.common.base.Predicate;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
+import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.BlockPos;
 
 import javax.annotation.Nullable;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ModuleUtil {
+    public static Minecraft getMinecraft() {
+        return Minecraft.getMinecraft();
+    }
+
     public static EntityPlayerSP getEntityPlayer() {
-        return Minecraft.getMinecraft().thePlayer;
+        return getMinecraft().thePlayer;
     }
 
     public static PlayerControllerMP getPlayerController() {
-        return Minecraft.getMinecraft().playerController;
+        return getMinecraft().playerController;
+    }
+
+    public static WorldClient getWorld() {
+        return getMinecraft().theWorld;
     }
 
     public static List<EntityLivingBase> findEntitiesWithDistance(EntityPlayer player, double range) {
@@ -72,11 +81,47 @@ public class ModuleUtil {
         return Math.sqrt(Math.pow(positionToPositionDistance2d(x1, y1, x2, y2), 2) + Math.pow(z1 - z2, 2));
     }
 
-    public static double blockPosToBlockPosDistance(BlockPos a, BlockPos b) {
-        return positionToPositionDistance(a.getX(), a.getY(), a.getZ(), b.getX(), b.getY(), b.getZ());
+    public static Object getInaccessibleVariable(Class<?> anyClass, String variableName) throws NoSuchFieldException, IllegalAccessException {
+        Field field = anyClass.getDeclaredField(variableName);
+        field.setAccessible(true);
+        return field.get(anyClass);
+    }
+
+    public static Object getInaccessibleVariable(Object object, String variableName) throws NoSuchFieldException, IllegalAccessException {
+        Field field = object.getClass().getDeclaredField(variableName);
+        field.setAccessible(true);
+        return field.get(object);
+    }
+
+    public static float getInaccessibleVariableF(Class<?> anyClass, String variableName) throws NoSuchFieldException, IllegalAccessException {
+        Field field = anyClass.getDeclaredField(variableName);
+        field.setAccessible(true);
+        return field.getFloat(anyClass);
+    }
+
+    public static float getInaccessibleVariableF(Object object, String variableName) throws NoSuchFieldException, IllegalAccessException {
+        Field field = object.getClass().getDeclaredField(variableName);
+        field.setAccessible(true);
+        return field.getFloat(object);
+    }
+
+    public static void setInaccessibleVariable(Class<?> anyClass, String variableName, Object variableNewValue) throws NoSuchFieldException, IllegalAccessException {
+        Field field = anyClass.getDeclaredField(variableName);
+        field.setAccessible(true);
+        field.set(anyClass, variableNewValue);
+    }
+
+    public static void setInaccessibleVariable(Object object, String variableName, Object variableNewValue) throws NoSuchFieldException, IllegalAccessException {
+        Field field = object.getClass().getDeclaredField(variableName);
+        field.setAccessible(true);
+        field.set(object, variableNewValue);
     }
 
     // Simplified Function
+
+    public static Minecraft gM() {
+        return getMinecraft();
+    }
 
     public static EntityPlayerSP gEP() {
         return getEntityPlayer();
@@ -86,15 +131,11 @@ public class ModuleUtil {
         return getPlayerController();
     }
 
+    public static WorldClient gW() {
+        return getWorld();
+    }
+
     public static double eTED(Entity a, Entity b) {
         return entityToEntityDistance(a, b);
-    }
-
-    public static double pTPD2d(double x1, double y1, double x2, double y2) {
-        return positionToPositionDistance2d(x1, y1, x2, y2);
-    }
-
-    public static double bPTBPD(BlockPos a, BlockPos b) {
-        return blockPosToBlockPosDistance(a, b);
     }
 }

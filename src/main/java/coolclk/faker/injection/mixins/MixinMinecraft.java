@@ -1,8 +1,5 @@
 package coolclk.faker.injection.mixins;
 
-import coolclk.faker.gui.GuiHandler;
-import coolclk.faker.modules.ModuleHandler;
-import coolclk.faker.modules.root.render.HUD;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Util;
 import org.apache.commons.io.IOUtils;
@@ -21,7 +18,7 @@ import java.nio.ByteBuffer;
 public abstract class MixinMinecraft {
     @Inject(at = @At(value = "RETURN"), method = "createDisplay")
     private void setWindowTitle(CallbackInfo ci) {
-        Display.setTitle(Display.getTitle() + " | Faker");
+        Display.setTitle(Display.getTitle() + " | " + "Faker made by CoolCLK");
     }
 
     @Inject(at = @At(value = "RETURN"), method = "setWindowIcon")
@@ -47,13 +44,6 @@ public abstract class MixinMinecraft {
                 IOUtils.closeQuietly(icon64x);
                 IOUtils.closeQuietly(icon128x);
             }
-        }
-    }
-
-    @Inject(at = @At(value = "HEAD"), method = "runTick")
-    private void runTick(CallbackInfo ci) {
-        if (HUD.INSTANCE.getEnable()) {
-            Minecraft.getMinecraft().fontRendererObj.drawStringWithShadow("Faker", 15, 15, GuiHandler.getRainbowColor(1));
         }
     }
 

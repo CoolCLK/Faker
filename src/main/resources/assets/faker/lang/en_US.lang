@@ -1,6 +1,15 @@
+modules.message.ModuleThrowsError=Module %s throws an exception:
+
 modules.type.combat.name=Combat
 modules.type.movement.name=Movement
 modules.type.render.name=Render
+
+modules.module.AimAssist.name=Aim Assist
+modules.module.AimAssist.range.name=Range
+modules.module.AimAssist.assistSpeed.name=Assist Speed
+modules.module.Criticals.name=Criticals
+modules.module.Criticals.onlyPacket.name=Only Packet
+modules.module.Criticals.jumpHeight.name=Jump Height
 modules.module.KillArea.name=Kill Area
 modules.module.KillArea.single.name=Only Attack Singly
 modules.module.KillArea.allowPlayer.name=Attack Player
@@ -8,10 +17,16 @@ modules.module.KillArea.allowMob.name=Attack Mob
 modules.module.KillArea.range.name=Range
 modules.module.KillArea.attackDelay.name=Attack Delay
 modules.module.ForceSprinting.name=Force Sprinting
-modules.module.KeepRotating.name=Keep Rotating
-modules.module.KeepRotating.horizontalSpeed.name=Horizontal Speed
-modules.module.KeepRotating.verticalSpeed.name=Vertical Speed
+modules.module.Derp.name=Derp
+modules.module.Derp.random.name=Randomly
+modules.module.Derp.horizontalSpeed.name=Horizontal Speed
+modules.module.Derp.verticalSpeed.name=Vertical Speed
 modules.module.BHop.name=BHop
 modules.module.BHop.step.name=Jump Interval
-modules.module.HUD.name=HUD
+modules.module.ESP.name=Extrasensory Perception
+modules.module.FreeCam.name=Free Camera
+modules.module.FullBright.name=Full Bright
+modules.module.HurtCam.name=Hurt Camera
+modules.module.HurtCam.per.name=Hurt Shake Range
+modules.module.NoInvisible.name=No Invisible
 modules.module.ClickGui.name=Click Gui

@@ -12,7 +12,8 @@ public class Module {
     public static class ModuleArgument {
         public enum ArgumentType {
             SWITCH,
-            NUMBER
+            NUMBER,
+            PERCENT
         }
 
         private final String name;
@@ -21,6 +22,8 @@ public class Module {
         private final double numberMinValue;
         private final double numberMaxValue;
         private final ArgumentType valueType;
+
+        private boolean visible = true;
 
         public ModuleArgument(String name, boolean value) {
             this.name = name;
@@ -36,6 +39,14 @@ public class Module {
             this.numberValue = value;
             this.numberMinValue = minValue;
             this.numberMaxValue = maxValue;
+            this.valueType = ArgumentType.NUMBER;
+        }
+
+        public ModuleArgument(String name, double value) {
+            this.name = name;
+            this.numberValue = value;
+            this.numberMinValue = 0;
+            this.numberMaxValue = 1;
             this.valueType = ArgumentType.NUMBER;
         }
 
@@ -76,6 +87,10 @@ public class Module {
             return Math.round(this.getNumberValueD());
         }
 
+        public Integer getNumberValueI() {
+            return this.getNumberValueL().intValue();
+        }
+
         public double getNumberMinValue() {
             return this.numberMinValue;
         }
@@ -92,6 +107,14 @@ public class Module {
                 value = this.getNumberMaxValue();
             }
             this.numberValue = value;
+        }
+
+        public boolean getVisible() {
+            return this.visible;
+        }
+
+        public void setVisible(boolean visible) {
+            this.visible = visible;
         }
     }
 
@@ -120,6 +143,11 @@ public class Module {
         } else {
             this.onDisable();
         }
+        ModuleHandler.saveConfigs();
+    }
+
+    public void toggleModule() {
+        this.setEnable(!this.getEnable());
     }
 
     public boolean getEnable() {
@@ -127,7 +155,7 @@ public class Module {
     }
 
     public String getDisplayName() {
-        return I18n.format("modules.module." + this.getName() + ".name");
+        return I18n.format(this.getI18nKey());
     }
 
     public KeyBinding getKeyBinding() {
@@ -136,6 +164,10 @@ public class Module {
 
     public String getName() {
         return this.name;
+    }
+
+    public String getI18nKey() {
+        return "modules.module." + this.getName() + ".name";
     }
 
     public List<ModuleArgument> getArguments() {
@@ -151,7 +183,11 @@ public class Module {
         return null;
     }
 
-    // 以下方法需要被覆写
+    // 以下方法才需要去覆写
+
+    public void onClickGuiUpdate() {
+
+    }
 
     public void onEnable() {
 

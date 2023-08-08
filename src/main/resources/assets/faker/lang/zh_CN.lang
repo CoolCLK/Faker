@@ -1,6 +1,16 @@
+modules.message.ModuleThrowsError=模块 %s 抛出了一个错误:
+
 modules.type.combat.name=战斗
+modules.type.player.name=玩家
 modules.type.movement.name=移动
 modules.type.render.name=渲染
+
+modules.module.AimAssist.name=自动瞄准
+modules.module.AimAssist.range.name=范围
+modules.module.AimAssist.assistSpeed.name=瞄准速度
+modules.module.Criticals.name=刀刀暴击
+modules.module.Criticals.onlyPacket.name=仅发包
+modules.module.Criticals.jumpHeight.name=跳跃高度
 modules.module.KillArea.name=杀戮光环
 modules.module.KillArea.single.name=仅攻击单个目标
 modules.module.KillArea.allowPlayer.name=攻击玩家
@@ -8,10 +18,17 @@ modules.module.KillArea.allowMob.name=攻击生物
 modules.module.KillArea.range.name=范围
 modules.module.KillArea.attackDelay.name=攻击延迟
 modules.module.ForceSprinting.name=强制疾跑
-modules.module.KeepRotating.name=保持旋转
-modules.module.KeepRotating.horizontalSpeed.name=水平速度
-modules.module.KeepRotating.verticalSpeed.name=垂直速度
+modules.module.Derp.name=发癫
+modules.module.Derp.random.name=纯随机
+modules.module.Derp.horizontalSpeed.name=水平速度
+modules.module.Derp.verticalSpeed.name=垂直速度
 modules.module.BHop.name=兔子跳
 modules.module.BHop.step.name=跳跃间隔
+modules.module.ESP.name=透视
+modules.module.FreeCam.name=自由视角
+modules.module.FullBright.name=最大光照
+modules.module.HurtCam.name=伤害抖动
+modules.module.HurtCam.per.name=伤害抖动幅度
+modules.module.NoInvisible.name=反隐身
 modules.module.HUD.name=HUD
 modules.module.ClickGui.name=点击界面

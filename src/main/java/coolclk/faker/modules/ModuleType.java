@@ -35,12 +35,12 @@ public class ModuleType {
         return this.fold;
     }
 
-    public String getDisplayName() {
-        return I18n.format("modules.type." + name + ".name");
+    public String getName() {
+        return this.name;
     }
 
-    public String getName() {
-        return name;
+    public String getI18nKey() {
+        return "modules.type." + this.getName() + ".name";
     }
 
     public int getClickGuiPositionX() {

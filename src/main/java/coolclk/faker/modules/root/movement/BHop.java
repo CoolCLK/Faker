@@ -1,9 +1,10 @@
 package coolclk.faker.modules.root.movement;
 
 import coolclk.faker.modules.Module;
-import coolclk.faker.modules.ModuleUtil;
+import coolclk.faker.util.ModuleUtil;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 public class BHop extends Module {
     public static BHop INSTANCE = new BHop();
@@ -11,7 +12,7 @@ public class BHop extends Module {
     private float movedStep = 0;
 
     public BHop() {
-        super("BHop", Arrays.asList(new ModuleArgument("step", 0.5, 0, 4)));
+        super("BHop", Collections.singletonList(new ModuleArgument("step", 0.5, 0, 4)));
     }
 
     @Override
@@ -23,7 +24,7 @@ public class BHop extends Module {
             movedStep = 0;
         }
 
-        if (movedStep > this.getArgument("step").getNumberValueD() && (ModuleUtil.gEP().onGround && !ModuleUtil.gEP().isInWater() && !ModuleUtil.gEP().isInLava())) {
+        if (movedStep > this.getArgument("step").getNumberValueD() && !ModuleUtil.gEP().isSneaking() && (ModuleUtil.gEP().onGround && !ModuleUtil.gEP().isInWater() && !ModuleUtil.gEP().isInLava())) {
             ModuleUtil.gEP().jump();
             movedStep = 0;
         }

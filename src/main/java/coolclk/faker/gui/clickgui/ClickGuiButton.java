@@ -3,6 +3,7 @@ package coolclk.faker.gui.clickgui;
 import coolclk.faker.gui.GuiHandler;
 import coolclk.faker.gui.InputHandler;
 import coolclk.faker.modules.Module;
+import coolclk.faker.modules.ModuleHandler;
 import coolclk.faker.modules.ModuleType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -14,7 +15,7 @@ import java.util.List;
 
 public class ClickGuiButton extends GuiButton {
     private int alpha = 255;
-    private final int defaultWidth;
+    public int defaultWidth;
 
     public int backgroundColor;
     private final int[] backgroundColors;
@@ -24,7 +25,7 @@ public class ClickGuiButton extends GuiButton {
     private boolean fold = true; // For module
 
     private final boolean isGroup;
-    private final Module module;
+    public final Module module;
     private final ModuleType moduleType;
     private final List<ClickGuiButton> groupSubmodules;
 
@@ -67,31 +68,31 @@ public class ClickGuiButton extends GuiButton {
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
         this.visible = this.isGroup || !this.moduleType.getFold();
-        if (this.isMouseOver()) {
-            if (this.isGroup) {
-                if (InputHandler.isMousePressed(InputHandler.BUTTON_RIGHT)) {
-                    moduleType.setFold(!moduleType.getFold());
-                }
-            } else {
-                assert this.module != null;
-                if (InputHandler.isMousePressed(InputHandler.BUTTON_LEFT)) {
-                    module.setEnable(!module.getEnable());
-                } else if (InputHandler.isMousePressed(InputHandler.BUTTON_RIGHT)) {
-                    this.fold = !this.fold;
+        if (this.visible) {
+            if (this.isMouseOver()) {
+                if (this.isGroup) {
+                    if (InputHandler.isMousePressed(InputHandler.BUTTON_RIGHT)) {
+                        moduleType.setFold(!moduleType.getFold());
+                    }
+                } else {
+                    assert this.module != null;
+                    if (InputHandler.isMousePressed(InputHandler.BUTTON_LEFT)) {
+                        module.toggleModule();
+                    } else if (InputHandler.isMousePressed(InputHandler.BUTTON_RIGHT)) {
+                        this.fold = !this.fold;
+                    }
                 }
             }
-        }
-        if (this.visible) {
             FontRenderer fontrenderer = mc.fontRendererObj;
             this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
-            if (!this.dragging && !ClickGuiContainer.dragging && this.isMouseOver() && InputHandler.isMousePressing(InputHandler.BUTTON_LEFT)) {
+            if (!this.dragging && !ClickGuiScreen.dragging && this.isMouseOver() && InputHandler.isMousePressing(InputHandler.BUTTON_LEFT)) {
                 this.dragOriginX = this.xPosition - mouseX;
                 this.dragOriginY = this.yPosition - mouseY;
                 this.dragging = true;
-                ClickGuiContainer.dragging = true;
-            } else if (this.dragging && ClickGuiContainer.dragging && !InputHandler.isMousePressing(InputHandler.BUTTON_LEFT)) {
+                ClickGuiScreen.dragging = true;
+            } else if (ClickGuiScreen.dragging && !InputHandler.isMousePressing(InputHandler.BUTTON_LEFT)) {
                 this.dragging = false;
-                ClickGuiContainer.dragging = false;
+                ClickGuiScreen.dragging = false;
             }
             if (this.dragging) {
                 if (this.canDrag) {
@@ -102,6 +103,10 @@ public class ClickGuiButton extends GuiButton {
                 }
             }
 
+            int buttonSideMargin = 10;
+            if (this.defaultWidth - buttonSideMargin < fontrenderer.getStringWidth(I18n.format(this.displayString))) {
+                this.defaultWidth = fontrenderer.getStringWidth(I18n.format(this.displayString)) + buttonSideMargin;
+            }
             if (isGroup) {
                 int yPosition = this.yPosition + this.height, targetWidth = this.defaultWidth;
                 for (ClickGuiButton submodule : this.groupSubmodules) {
@@ -124,40 +129,47 @@ public class ClickGuiButton extends GuiButton {
                     List<Module.ModuleArgument> arguments = module.getArguments();
                     int newWidth = this.defaultWidth;
                     for (Module.ModuleArgument argument : arguments) {
-                        int argumentCurrentHeight = argumentsHeight * (argument.getValueType() == Module.ModuleArgument.ArgumentType.NUMBER ? 2 : 1);
-                        boolean hovering = mouseX >= this.xPosition && mouseX <= this.xPosition + this.width && mouseY >= this.yPosition + this.currentHeight + argumentCurrentHeight - argumentsHeight && mouseY <= this.yPosition + this.currentHeight + argumentCurrentHeight;
-                        drawRect(this.xPosition, this.yPosition + this.currentHeight, this.xPosition + this.width, this.yPosition + this.currentHeight + argumentCurrentHeight, ((this.alpha & 0xFF) << 24) | backgroundColors[2]);
-                        String argumentName = I18n.format("modules.module." + module.getName() + "." + argument.getName() + ".name");
-                        if (mc.fontRendererObj.getStringWidth(argumentName) > newWidth - (argumentsMargin * 2)) {
-                            newWidth = mc.fontRendererObj.getStringWidth(argumentName) + (argumentsMargin * 2);
-                        }
-                        switch (argument.getValueType()) {
-                            case SWITCH: {
-                                if (hovering && InputHandler.isMousePressed(InputHandler.BUTTON_LEFT)) {
-                                    argument.toggleBooleanValue();
-                                }
-                                this.drawString(mc.fontRendererObj, I18n.format("modules.module." + module.getName() + "." + argument.getName() + ".name"), this.xPosition + argumentsMargin, this.yPosition + this.currentHeight + argumentsMargin, argument.getBooleanValue() ? 0xFFFFFFFF : 0xFF333333);
-                                break;
+                        if (argument.getVisible()) {
+                            int argumentCurrentHeight = argumentsHeight * (argument.getValueType() == Module.ModuleArgument.ArgumentType.NUMBER ? 2 : 1);
+                            boolean hovering = mouseX >= this.xPosition && mouseX <= this.xPosition + this.width && mouseY >= this.yPosition + this.currentHeight + argumentCurrentHeight - argumentsHeight && mouseY <= this.yPosition + this.currentHeight + argumentCurrentHeight;
+                            drawRect(this.xPosition, this.yPosition + this.currentHeight, this.xPosition + this.width, this.yPosition + this.currentHeight + argumentCurrentHeight, ((this.alpha & 0xFF) << 24) | backgroundColors[2]);
+                            String argumentName = I18n.format("modules.module." + module.getName() + "." + argument.getName() + ".name");
+                            if (fontrenderer.getStringWidth(argumentName) > newWidth - (argumentsMargin * 2)) {
+                                newWidth = fontrenderer.getStringWidth(argumentName) + (argumentsMargin * 2);
                             }
-                            case NUMBER: {
-                                if (hovering && InputHandler.isMousePressing(InputHandler.BUTTON_LEFT)) {
-                                    double unformattedValue = argument.getNumberMinValue() + ((argument.getNumberMaxValue() - argument.getNumberMinValue()) * ((double) (mouseX - this.xPosition - argumentsMargin) / (this.width - (argumentsMargin * 2))));
-                                    argument.setNumberValue(Math.floor(unformattedValue * 10) / 10);
+                            switch (argument.getValueType()) {
+                                case SWITCH: {
+                                    if (hovering && InputHandler.isMousePressed(InputHandler.BUTTON_LEFT)) {
+                                        argument.toggleBooleanValue();
+                                    }
+                                    this.drawString(fontrenderer, I18n.format("modules.module." + module.getName() + "." + argument.getName() + ".name"), this.xPosition + argumentsMargin, this.yPosition + this.currentHeight + argumentsMargin, argument.getBooleanValue() ? 0xFFFFFFFF : 0xFF333333);
+                                    break;
                                 }
-                                this.drawString(mc.fontRendererObj, argumentName, this.xPosition + argumentsMargin, this.yPosition + this.currentHeight + argumentsMargin, 0xFFFFFFFF);
-                                String argumentValue = Double.toString(argument.getNumberValueD());
-                                if (mc.fontRendererObj.getStringWidth(argumentName + " " + argumentValue) > newWidth - (argumentsMargin * 2)) {
-                                    newWidth += mc.fontRendererObj.getStringWidth(argumentValue);
+                                case PERCENT:
+                                case NUMBER: {
+                                    if (hovering && InputHandler.isMousePressing(InputHandler.BUTTON_LEFT)) {
+                                        double unformattedValue = argument.getNumberMinValue() + ((argument.getNumberMaxValue() - argument.getNumberMinValue()) * ((double) (mouseX - this.xPosition - argumentsMargin) / (this.width - (argumentsMargin * 2))));
+                                        argument.setNumberValue(Math.floor(unformattedValue * 100) / 100);
+                                        ModuleHandler.saveConfigs();
+                                    }
+                                    this.drawString(fontrenderer, argumentName, this.xPosition + argumentsMargin, this.yPosition + this.currentHeight + argumentsMargin, 0xFFFFFFFF);
+                                    String argumentValue = Double.toString(argument.getNumberValueD());
+                                    if (argument.getValueType() == Module.ModuleArgument.ArgumentType.PERCENT) {
+                                        argumentValue = (argument.getNumberValueD() * 100) + "%";
+                                    }
+                                    if (fontrenderer.getStringWidth(argumentName + "  " + argumentValue) > newWidth - (argumentsMargin * 2)) {
+                                        newWidth += fontrenderer.getStringWidth("  " + argumentValue);
+                                    }
+                                    this.drawString(fontrenderer, argumentValue, this.xPosition + this.width - argumentsMargin - fontrenderer.getStringWidth(argumentValue), this.yPosition + this.currentHeight + argumentsMargin, 0xFFFFFFFF);
+                                    this.currentHeight += argumentsHeight;
+                                    this.drawHorizontalSlideBar(this.xPosition + argumentsMargin, this.xPosition + this.width - argumentsMargin, this.yPosition + this.currentHeight + (this.height / 2), (argument.getNumberValueD() - argument.getNumberMinValue()) / (argument.getNumberMaxValue() - argument.getNumberMinValue()), ((this.alpha & 0xFF) << 24) | backgroundColors[1]);
+                                    break;
                                 }
-                                this.drawString(mc.fontRendererObj, argumentValue, this.xPosition + this.width - argumentsMargin - mc.fontRendererObj.getStringWidth(argumentValue), this.yPosition + this.currentHeight + argumentsMargin, 0xFFFFFFFF);
-                                this.currentHeight += argumentsHeight;
-                                this.drawHorizontalSlideBar(this.xPosition + argumentsMargin, this.xPosition + this.width - argumentsMargin, this.yPosition + this.currentHeight + (this.height / 2), (argument.getNumberValueD() - argument.getNumberMinValue()) / (argument.getNumberMaxValue() - argument.getNumberMinValue()), ((this.alpha & 0xFF) << 24) | backgroundColors[1]);
-                                break;
                             }
+                            this.currentHeight += argumentsHeight;
                         }
-                        this.currentHeight += argumentsHeight;
                     }
-                    if (newWidth > this.width) {
+                    if (newWidth > this.defaultWidth && newWidth != this.moduleWidth) {
                         this.moduleWidth = newWidth;
                     }
                 } else {
@@ -166,7 +178,7 @@ public class ClickGuiButton extends GuiButton {
             }
             backgroundColor = GuiHandler.easeColorRGBA(this.backgroundColor, ((this.alpha & 0xFF) << 24) | backgroundColors[isGroup ? 0 : (module.getEnable() ? 1 : 0)], GuiHandler.easeOutQuad(1));
             drawRect(this.xPosition, this.yPosition, this.xPosition + this.width, this.yPosition + this.height, ((this.alpha & 0xFF) << 24) | this.backgroundColor);
-            this.drawCenteredString(fontrenderer, this.displayString, this.xPosition + this.width / 2, this.yPosition + (this.height - 8) / 2, ((this.alpha & 0xFF) << 24) | this.textColor);
+            this.drawCenteredString(fontrenderer, I18n.format(this.displayString), this.xPosition + this.width / 2, this.yPosition + (this.height - 8) / 2, ((this.alpha & 0xFF) << 24) | this.textColor);
         }
     }
 
