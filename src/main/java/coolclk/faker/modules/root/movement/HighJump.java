@@ -5,7 +5,6 @@ import coolclk.faker.util.ModuleUtil;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-import java.util.Arrays;
 import java.util.Collections;
 
 public class HighJump extends Module {
@@ -18,8 +17,8 @@ public class HighJump extends Module {
     @SubscribeEvent
     public void onLivingJump(LivingEvent.LivingJumpEvent event) {
         if (this.getEnable()) {
-            if (event.entityLiving == ModuleUtil.gEP()) {
-                event.entityLiving.motionY = this.getArgument("height").getNumberValueD();
+            if (event.getEntityLiving() == ModuleUtil.gEP()) {
+                event.getEntityLiving().motionY = this.getArgument("height").getNumberValueD();
             }
         }
     }

@@ -22,7 +22,7 @@ public class Velocity extends Module {
 
     @SubscribeEvent
     public void onLivingHurt(LivingHurtEvent event) {
-        if (event.entityLiving instanceof EntityPlayer && ((EntityPlayer) event.entityLiving).isUser()) {
+        if (event.getEntityLiving() instanceof EntityPlayer && ((EntityPlayer) event.getEntityLiving()).isUser()) {
             if (this.getArgument("full").getBooleanValue()) {
                 ModuleUtil.gEP().setVelocity(0, 0, 0);
             } else {

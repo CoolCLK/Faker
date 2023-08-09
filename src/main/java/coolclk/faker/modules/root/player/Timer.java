@@ -15,15 +15,21 @@ public class Timer extends Module {
         super("Timer", Collections.singletonList(new ModuleArgument("speed", 1.08, 0.1, 2)));
     }
 
+    @Override
     public void onEnabling() {
         setTimerSpeed(this.getArgument("speed").getNumberValueF(), this.getDisplayName());
+    }
+
+    @Override
+    public void onDisable() {
+        setTimerSpeed(1, this.getDisplayName());
     }
 
     public static void setTimerSpeed(float speed, String errorModuleDisplayName) {
         try {
             net.minecraft.util.Timer timer = (net.minecraft.util.Timer) ModuleUtil.getInaccessibleVariable(ModuleUtil.gM(), "timer");
-            if (timer.timerSpeed != speed) {
-                timer.timerSpeed = speed;
+            if (ModuleUtil.getInaccessibleVariableF(timer, "tickLength") != speed) {
+                ModuleUtil.setInaccessibleVariable(timer, "tickLength", 50 * speed);
             }
         } catch (Exception e) {
             LOGGER.error(I18n.format("modules.message.ModuleThrowsError", errorModuleDisplayName));

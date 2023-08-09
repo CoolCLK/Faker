@@ -11,9 +11,10 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@Mod(modid = FakerForgeMod.MODID, clientSideOnly = true)
+@Mod(modid = FakerForgeMod.MODID, name = FakerForgeMod.NAME, clientSideOnly = true)
 public class FakerForgeMod {
     public final static String MODID = "faker";
+    public final static String NAME = "Faker";
 
     @Mod.Instance(FakerForgeMod.MODID) public static FakerForgeMod INSTANCE;
 

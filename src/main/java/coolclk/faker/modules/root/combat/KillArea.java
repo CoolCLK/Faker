@@ -4,6 +4,7 @@ import coolclk.faker.modules.Module;
 import coolclk.faker.util.ModuleUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.EnumHand;
 import org.lwjgl.input.Keyboard;
 
 import java.util.ArrayList;
@@ -68,7 +69,7 @@ public class KillArea extends Module {
             if (ModuleUtil.gPC() != null) {
                 for (Entity target : targets) {
                     if (target != null && (!this.getArgument("aim").getBooleanValue() || (ModuleUtil.gM().objectMouseOver != null && ModuleUtil.gM().objectMouseOver.entityHit == target))) {
-                        ModuleUtil.gEP().swingItem();
+                        ModuleUtil.gEP().swingArm(EnumHand.MAIN_HAND);
                         ModuleUtil.gPC().attackEntity(ModuleUtil.gEP(), target);
                     }
                 }

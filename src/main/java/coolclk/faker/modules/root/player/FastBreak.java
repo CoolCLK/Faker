@@ -16,8 +16,8 @@ public class FastBreak extends Module {
 
     @SubscribeEvent
     public void onBreak(PlayerEvent.BreakSpeed event) {
-        if (event.entityPlayer == ModuleUtil.gEP()) {
-            event.newSpeed += event.originalSpeed + this.getArgument("damage").getNumberValueF();
+        if (event.getEntityPlayer() == ModuleUtil.gEP()) {
+            event.setNewSpeed(event.getOriginalSpeed() + this.getArgument("damage").getNumberValueF());
         }
     }
 }
