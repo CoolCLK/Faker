@@ -74,7 +74,7 @@ jar {
             "ForceLoadAsMod": "true",
             "MixinConfigs": "mixins.faker.json",
             "ModSide": "CLIENT",
-            "TweakClass": "coolclk.faker.injection.MixinTweaker",
+            "TweakClass": "org.spongepowered.asm.launch.MixinTweaker",
             "TweakOrder": "0"
     ])
 }
