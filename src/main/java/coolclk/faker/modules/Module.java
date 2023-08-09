@@ -47,7 +47,7 @@ public class Module {
             this.numberValue = value;
             this.numberMinValue = 0;
             this.numberMaxValue = 1;
-            this.valueType = ArgumentType.NUMBER;
+            this.valueType = ArgumentType.PERCENT;
         }
 
         public String getName() {

@@ -19,6 +19,8 @@ public abstract class MixinEntityRenderer {
     private void hurtCameraEffect(float partialTicks) {
         Minecraft mc = Minecraft.getMinecraft();
         if (mc.getRenderViewEntity() instanceof EntityLivingBase) {
+            float percent = HurtCam.INSTANCE.getEnable() ? HurtCam.INSTANCE.getArgument("per").getNumberValueF() : 1;
+
             EntityLivingBase entitylivingbase = (EntityLivingBase) mc.getRenderViewEntity();
             float f = (float) entitylivingbase.hurtTime - partialTicks;
 
@@ -31,9 +33,12 @@ public abstract class MixinEntityRenderer {
                 return;
             }
 
+
             f = f / (float) entitylivingbase.maxHurtTime;
             f = MathHelper.sin(f * f * f * f * (float)Math.PI);
-            float f2 = entitylivingbase.attackedAtYaw * (HurtCam.INSTANCE.getEnable() ? HurtCam.INSTANCE.getArgument("per").getNumberValueF() : 1);
+            f *= percent;
+            float f2 = entitylivingbase.attackedAtYaw;
+            f2 *= percent;
             GlStateManager.rotate(-f2, 0.0F, 1.0F, 0.0F);
             GlStateManager.rotate(-f * 14.0F, 0.0F, 0.0F, 1.0F);
             GlStateManager.rotate(f2, 0.0F, 1.0F, 0.0F);

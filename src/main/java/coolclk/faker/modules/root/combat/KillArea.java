@@ -44,7 +44,7 @@ public class KillArea extends Module {
                         boolean targeting = false;
                         if (entity instanceof EntityPlayer) {
                             if (allowPlayer) {
-                                if (AntiBot.INSTANCE.isBot(entity)) {
+                                if (!AntiBot.INSTANCE.isBot(entity)) {
                                     targeting = true;
                                 }
                             }

@@ -17,7 +17,7 @@ modules.module.KillArea.range.name=Range
 modules.module.KillArea.attackDelay.name=Attack Delay
 modules.module.Velocity.name=Velocity
 modules.module.Velocity.full.name=Full
-modules.module.Velocity.counteractPer.full.name=Counteract Percent
+modules.module.Velocity.counteractPer.name=Counteract Percent
 
 modules.type.movement.name=Movement
 modules.module.BHop.name=Bunny Hop

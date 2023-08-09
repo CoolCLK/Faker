@@ -17,7 +17,7 @@ modules.module.KillArea.range.name=范围
 modules.module.KillArea.attackDelay.name=攻击间隔
 modules.module.Velocity.name=动力
 modules.module.Velocity.full.name=完全抵消
-modules.module.Velocity.counteractPer.full.name=抵消百分比
+modules.module.Velocity.counteractPer.name=抵消百分比
 
 modules.type.movement.name=移动
 modules.module.BHop.name=兔子跳
