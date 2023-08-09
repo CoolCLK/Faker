@@ -68,6 +68,15 @@ processResources {
 
 jar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    manifest.attributes([
+            "FMLCorePlugin": "coolclk.faker.injection.MixinLoader",
+            "FMLCorePluginContainsFMLMod": "true",
+            "ForceLoadAsMod": "true",
+            "MixinConfigs": "mixins.faker.json",
+            "ModSide": "CLIENT",
+            "TweakClass": "coolclk.faker.injection.MixinTweaker",
+            "TweakOrder": "0"
+    ])
 }
 
 sourceSets {
