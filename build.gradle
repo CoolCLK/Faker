@@ -68,6 +68,10 @@ processResources {
 
 jar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from configurations.include.asFileTree.files.collect {
+        zipTree(it)
+    }
+
     manifest.attributes([
             "FMLCorePlugin": "coolclk.faker.injection.MixinLoader",
             "FMLCorePluginContainsFMLMod": "true",
