@@ -1,27 +1,13 @@
 package coolclk.faker.event;
 
-import coolclk.faker.gui.GuiHandler;
-import coolclk.faker.launch.FakerForgeMod;
 import coolclk.faker.modules.Module;
 import coolclk.faker.modules.ModuleHandler;
 import coolclk.faker.modules.ModuleType;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-
-import java.io.IOException;
 
 public class EventHandler {
-    public void onFMLInitialization() throws IOException {
-        NetworkRegistry.INSTANCE.registerGuiHandler(FakerForgeMod.INSTANCE, new GuiHandler());
-        ModuleHandler.loadConfigs();
-        ModuleHandler.registerKey();
-    }
-
-    @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent event) {
         for (ModuleType group : ModuleHandler.getAllModules()) {

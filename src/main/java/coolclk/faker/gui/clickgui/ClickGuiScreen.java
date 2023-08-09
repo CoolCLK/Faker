@@ -61,7 +61,9 @@ public class ClickGuiScreen extends GuiScreen {
         drawRect(0, 0, this.width, this.height, backgroundColor.getRGB());
         for (ClickGuiButton button : this.clickGuiButtonList) {
             button.setAlpha((int) this.alpha);
-            button.module.onClickGuiUpdate();
+            if (button.module != null) {
+                button.module.onClickGuiUpdate();
+            }
             button.drawButton(this.mc, mouseX, mouseY);
         }
 

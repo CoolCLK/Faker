@@ -13,8 +13,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(NetworkManager.class)
 public abstract class MixinNetworkManager {
-
-
     @Inject(at = @At(value = "HEAD"), method = "sendPacket(Lnet/minecraft/network/Packet;)V", cancellable = true)
     public void sendPacket(Packet<?> packetIn, CallbackInfo ci) {
         if (MinecraftForge.EVENT_BUS.post(new PacketSendEvent(packetIn))) ci.cancel();

@@ -17,7 +17,7 @@ modules.module.KillArea.range.name=Range
 modules.module.KillArea.attackDelay.name=Attack Delay
 modules.module.Velocity.name=Velocity
 modules.module.Velocity.full.name=Full
-modules.module.counteractPer.full.name=Counteract Percent
+modules.module.Velocity.counteractPer.full.name=Counteract Percent
 
 modules.type.movement.name=Movement
 modules.module.BHop.name=Bunny Hop
@@ -58,6 +58,8 @@ modules.module.ESP.bed.name=Bed
 modules.module.FreeCam.name=Free Camera
 modules.module.FreeCam.flySpeed.name=Fly Speed
 modules.module.FullBright.name=Full Bright
+modules.module.HUD.name=HUD
+modules.module.NameTag.name=Name Tag
 modules.module.HurtCam.name=Hurt Camera
 modules.module.HurtCam.per.name=Hurt Shake Percent
 modules.module.NoInvisible.name=No Invisible

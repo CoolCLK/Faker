@@ -5,11 +5,8 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.KeyBinding;
 import org.lwjgl.input.Keyboard;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import static coolclk.faker.launch.FakerForgeMod.LOGGER;
 
 public class Module {
     public static class ModuleArgument {
@@ -146,12 +143,7 @@ public class Module {
         } else {
             this.onDisable();
         }
-        try {
-            ModuleHandler.saveConfigs();
-        } catch (IOException e) {
-            LOGGER.error(I18n.format("modules.message.ModuleThrowsError", this.getDisplayName()));
-            throw new RuntimeException(e);
-        }
+        ModuleHandler.saveConfigs();
     }
 
     public void toggleModule() {

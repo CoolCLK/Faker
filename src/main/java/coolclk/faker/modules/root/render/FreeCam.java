@@ -22,6 +22,9 @@ public class FreeCam extends Module {
 
     public FreeCam() {
         super("FreeCam", Collections.singletonList(new ModuleArgument("flySpeed", 0.5, 0.1, 10)));
+        if (this.getEnable()) {
+            this.toggleModule();
+        }
     }
 
     @Override
@@ -57,8 +60,10 @@ public class FreeCam extends Module {
 
     @SubscribeEvent
     public void onPacketSend(PacketSendEvent event) {
-        if (event.packet instanceof C08PacketPlayerBlockPlacement || event.packet instanceof C07PacketPlayerDigging || event.packet instanceof C02PacketUseEntity || event.packet instanceof C00Handshake || event.packet instanceof C03PacketPlayer) {
-            event.setCanceled(true);
+        if (this.getEnable()) {
+            if (event.packet instanceof C08PacketPlayerBlockPlacement || event.packet instanceof C07PacketPlayerDigging || event.packet instanceof C02PacketUseEntity || event.packet instanceof C00Handshake || event.packet instanceof C03PacketPlayer) {
+                event.setCanceled(true);
+            }
         }
     }
 }

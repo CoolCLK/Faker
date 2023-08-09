@@ -1,13 +1,15 @@
 package coolclk.faker.launch;
 
 import coolclk.faker.event.EventHandler;
+import coolclk.faker.gui.GuiHandler;
+import coolclk.faker.modules.ModuleHandler;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.io.IOException;
 
 @Mod(modid = FakerForgeMod.MODID, name = FakerForgeMod.NAME, version = FakerForgeMod.VERSION, clientSideOnly = true)
 public class FakerForgeMod {
@@ -22,10 +24,16 @@ public class FakerForgeMod {
     @Mod.EventHandler
     public void beforeFMLInitialization(FMLPreInitializationEvent event) {
         LOGGER = event.getModLog();
+
+        ModuleHandler.registerConfig(event.getSuggestedConfigurationFile());
     }
 
     @Mod.EventHandler
-    public void onFMLInitialization(FMLInitializationEvent event) throws IOException {
-        new EventHandler().onFMLInitialization();
+    public void onFMLInitialization(FMLInitializationEvent event) {
+        MinecraftForge.EVENT_BUS.register(new EventHandler());
+        NetworkRegistry.INSTANCE.registerGuiHandler(FakerForgeMod.INSTANCE, new GuiHandler());
+
+        ModuleHandler.loadConfigs();
+        ModuleHandler.register();
     }
 }
