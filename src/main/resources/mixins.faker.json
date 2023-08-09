@@ -7,9 +7,11 @@
     "MixinEntityRenderer",
     "MixinGuiIngameForge",
     "MixinMinecraft",
-    "MixinPlayerControllerMP"
+    "MixinPlayerControllerMP",
+    "MixinRender"
   ],
   "mixins": [
+    "MixinBlock",
     "MixinEntity",
     "MixinFoodStats",
     "MixinItemFood",

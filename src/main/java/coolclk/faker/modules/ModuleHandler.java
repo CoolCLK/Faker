@@ -1,11 +1,12 @@
 package coolclk.faker.modules;
 
+import coolclk.faker.modules.root.combat.AntiBot;
 import coolclk.faker.modules.root.combat.Criticals;
 import coolclk.faker.modules.root.combat.KillArea;
-import coolclk.faker.modules.root.movement.BHop;
-import coolclk.faker.modules.root.movement.ForceSprinting;
-import coolclk.faker.modules.root.movement.NoFall;
+import coolclk.faker.modules.root.combat.Velocity;
+import coolclk.faker.modules.root.movement.*;
 import coolclk.faker.modules.root.player.Derp;
+import coolclk.faker.modules.root.player.FastBreak;
 import coolclk.faker.modules.root.player.Reach;
 import coolclk.faker.modules.root.player.Timer;
 import coolclk.faker.modules.root.render.*;
@@ -17,10 +18,10 @@ import java.util.List;
 
 public class ModuleHandler {
     private final static List<ModuleType> modules = Arrays.asList(
-            new ModuleType("combat", 10, 10, Criticals.INSTANCE, KillArea.INSTANCE),
-            new ModuleType("movement", 70, 10, ForceSprinting.INSTANCE, BHop.INSTANCE, NoFall.INSTANCE),
-            new ModuleType("player", 140, 10, Derp.INSTANCE, Reach.INSTANCE, Timer.INSTANCE),
-            new ModuleType("render", 210, 10, ClickGui.INSTANCE, FreeCam.INSTANCE, FullBright.INSTANCE, HUD.INSTANCE, HurtCam.INSTANCE, NoInvisible.INSTANCE));
+            new ModuleType("combat", 10, 10, AntiBot.INSTANCE, Criticals.INSTANCE, KillArea.INSTANCE, Velocity.INSTANCE, Reach.INSTANCE),
+            new ModuleType("movement", 70, 10, BHop.INSTANCE, Fly.INSTANCE, ForceSprinting.INSTANCE, HighJump.INSTANCE, Jesus.INSTANCE, NoFall.INSTANCE, Scaffold.INSTANCE),
+            new ModuleType("player", 140, 10, Derp.INSTANCE, FastBreak.INSTANCE, FastBreak.INSTANCE, Reach.INSTANCE, Scaffold.INSTANCE, Timer.INSTANCE),
+            new ModuleType("render", 210, 10, ClickGui.INSTANCE, ESP.INSTANCE, FreeCam.INSTANCE, FullBright.INSTANCE, HUD.INSTANCE, HurtCam.INSTANCE, NoInvisible.INSTANCE, NoWeather.INSTANCE));
 
     public static List<ModuleType> getAllModules() {
         return modules;

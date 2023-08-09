@@ -6,7 +6,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import org.lwjgl.input.Keyboard;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class KillArea extends Module {
     public static KillArea INSTANCE = new KillArea();
@@ -19,7 +21,7 @@ public class KillArea extends Module {
     double attackDelay, range;
 
     public KillArea() {
-        super("KillArea", Arrays.asList(new ModuleArgument("single", false), new ModuleArgument("allowPlayer", true), new ModuleArgument("allowMob", false), new ModuleArgument("range", 3, 3, 6), new ModuleArgument("attackDelay", 5, 0.1, 20)));
+        super("KillArea", Arrays.asList(new ModuleArgument("single", true), new ModuleArgument("aim", true), new ModuleArgument("allowPlayer", true), new ModuleArgument("allowMob", false), new ModuleArgument("range", 3, 3, 6), new ModuleArgument("attackDelay", 5, 0.1, 20)));
     }
 
     public void onEnable() {
@@ -42,7 +44,7 @@ public class KillArea extends Module {
                         boolean targeting = false;
                         if (entity instanceof EntityPlayer) {
                             if (allowPlayer) {
-                                if (AntiBot.INSTANCE.isBot((EntityPlayer) entity)) {
+                                if (AntiBot.INSTANCE.isBot(entity)) {
                                     targeting = true;
                                 }
                             }
@@ -65,7 +67,7 @@ public class KillArea extends Module {
 
             if (ModuleUtil.gPC() != null) {
                 for (Entity target : targets) {
-                    if (target != null) {
+                    if (target != null && (!this.getArgument("aim").getBooleanValue() || (ModuleUtil.gM().objectMouseOver != null && ModuleUtil.gM().objectMouseOver.entityHit == target))) {
                         ModuleUtil.gEP().swingItem();
                         ModuleUtil.gPC().attackEntity(ModuleUtil.gEP(), target);
                     }

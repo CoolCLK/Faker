@@ -14,6 +14,11 @@ public class Velocity extends Module {
         super("Velocity", Arrays.asList(new ModuleArgument("full", true), new ModuleArgument("counteractPer", 0.5, 0.1, 1)));
     }
 
+    @Override
+    public void onClickGuiUpdate() {
+        this.getArgument("counteractPer").setVisible(!this.getArgument("full").getBooleanValue());
+    }
+
     @SubscribeEvent
     public void onLivingHurt(LivingHurtEvent event) {
         if (this.getEnable()) {

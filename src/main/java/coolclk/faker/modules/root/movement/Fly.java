@@ -7,6 +7,8 @@ import coolclk.faker.util.ModuleUtil;
 import java.util.Collections;
 
 public class Fly extends Module {
+    public static Fly INSTANCE = new Fly();
+
     public Fly() {
         super("Fly", Collections.singletonList(new ModuleArgument("flySpeed", 0.5, 0.1, 10)));
     }
