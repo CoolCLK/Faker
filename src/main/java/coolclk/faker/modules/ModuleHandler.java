@@ -13,10 +13,12 @@ import coolclk.faker.modules.root.player.Reach;
 import coolclk.faker.modules.root.player.Timer;
 import coolclk.faker.modules.root.render.*;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
