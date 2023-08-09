@@ -64,7 +64,7 @@ public class ClickGuiScreen extends GuiScreen {
             if (button.module != null) {
                 button.module.onClickGuiUpdate();
             }
-            button.drawButton(this.mc, mouseX, mouseY);
+            button.drawButton(this.mc, mouseX, mouseY, partialTicks);
         }
 
         if (this.alpha < 50 && !menuOpen) {

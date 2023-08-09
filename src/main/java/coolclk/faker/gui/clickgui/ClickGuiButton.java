@@ -10,6 +10,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.resources.I18n;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,7 +67,7 @@ public class ClickGuiButton extends GuiButton {
     }
 
     @Override
-    public void drawButton(Minecraft mc, int mouseX, int mouseY) {
+    public void drawButton(@Nonnull Minecraft mc, int mouseX, int mouseY, float partialTicks) {
         this.visible = this.isGroup || !this.moduleType.getFold();
         if (this.visible) {
             if (this.isMouseOver()) {
@@ -83,11 +84,11 @@ public class ClickGuiButton extends GuiButton {
                     }
                 }
             }
-            FontRenderer fontrenderer = mc.fontRendererObj;
-            this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
+            FontRenderer fontrenderer = mc.fontRenderer;
+            this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
             if (!this.dragging && !ClickGuiScreen.dragging && this.isMouseOver() && InputHandler.isMousePressing(InputHandler.BUTTON_LEFT)) {
-                this.dragOriginX = this.xPosition - mouseX;
-                this.dragOriginY = this.yPosition - mouseY;
+                this.dragOriginX = this.x - mouseX;
+                this.dragOriginY = this.y - mouseY;
                 this.dragging = true;
                 ClickGuiScreen.dragging = true;
             } else if (ClickGuiScreen.dragging && !InputHandler.isMousePressing(InputHandler.BUTTON_LEFT)) {
@@ -96,10 +97,10 @@ public class ClickGuiButton extends GuiButton {
             }
             if (this.dragging) {
                 if (this.canDrag) {
-                    this.xPosition = mouseX + this.dragOriginX;
-                    this.yPosition = mouseY + this.dragOriginY;
+                    this.x = mouseX + this.dragOriginX;
+                    this.y = mouseY + this.dragOriginY;
                     assert this.moduleType != null;
-                    moduleType.setClickGuiPosition(this.xPosition, this.yPosition);
+                    moduleType.setClickGuiPosition(this.x, this.y);
                 }
             }
 
@@ -108,7 +109,7 @@ public class ClickGuiButton extends GuiButton {
                 this.defaultWidth = fontrenderer.getStringWidth(I18n.format(this.displayString)) + buttonSideMargin;
             }
             if (isGroup) {
-                int yPosition = this.yPosition + this.height, targetWidth = this.defaultWidth;
+                int y = this.y + this.height, targetWidth = this.defaultWidth;
                 for (ClickGuiButton submodule : this.groupSubmodules) {
                     if (submodule.moduleWidth > targetWidth) {
                         targetWidth = submodule.moduleWidth;
@@ -118,9 +119,9 @@ public class ClickGuiButton extends GuiButton {
                 this.width = (int) Math.round(this.currentWidth);
                 for (ClickGuiButton submodule : this.groupSubmodules) {
                     submodule.width = this.width;
-                    submodule.xPosition = this.xPosition;
-                    submodule.yPosition = yPosition;
-                    yPosition += submodule.currentHeight;
+                    submodule.x = this.x;
+                    submodule.y = y;
+                    y += submodule.currentHeight;
                 }
             } else {
                 assert this.module != null;
@@ -131,8 +132,8 @@ public class ClickGuiButton extends GuiButton {
                     for (Module.ModuleArgument argument : arguments) {
                         if (argument.getVisible()) {
                             int argumentCurrentHeight = argumentsHeight * (argument.getValueType() == Module.ModuleArgument.ArgumentType.NUMBER ? 2 : 1);
-                            boolean hovering = mouseX >= this.xPosition && mouseX <= this.xPosition + this.width && mouseY >= this.yPosition + this.currentHeight + argumentCurrentHeight - argumentsHeight && mouseY <= this.yPosition + this.currentHeight + argumentCurrentHeight;
-                            drawRect(this.xPosition, this.yPosition + this.currentHeight, this.xPosition + this.width, this.yPosition + this.currentHeight + argumentCurrentHeight, ((this.alpha & 0xFF) << 24) | backgroundColors[2]);
+                            boolean hovering = mouseX >= this.x && mouseX <= this.x + this.width && mouseY >= this.y + this.currentHeight + argumentCurrentHeight - argumentsHeight && mouseY <= this.y + this.currentHeight + argumentCurrentHeight;
+                            drawRect(this.x, this.y + this.currentHeight, this.x + this.width, this.y + this.currentHeight + argumentCurrentHeight, ((this.alpha & 0xFF) << 24) | backgroundColors[2]);
                             String argumentName = I18n.format("modules.module." + module.getName() + "." + argument.getName() + ".name");
                             if (fontrenderer.getStringWidth(argumentName) > newWidth - (argumentsMargin * 2)) {
                                 newWidth = fontrenderer.getStringWidth(argumentName) + (argumentsMargin * 2);
@@ -142,17 +143,17 @@ public class ClickGuiButton extends GuiButton {
                                     if (hovering && InputHandler.isMousePressed(InputHandler.BUTTON_LEFT)) {
                                         argument.toggleBooleanValue();
                                     }
-                                    this.drawString(fontrenderer, I18n.format("modules.module." + module.getName() + "." + argument.getName() + ".name"), this.xPosition + argumentsMargin, this.yPosition + this.currentHeight + argumentsMargin, argument.getBooleanValue() ? 0xFFFFFFFF : 0xFF333333);
+                                    this.drawString(fontrenderer, I18n.format("modules.module." + module.getName() + "." + argument.getName() + ".name"), this.x + argumentsMargin, this.y + this.currentHeight + argumentsMargin, argument.getBooleanValue() ? 0xFFFFFFFF : 0xFF333333);
                                     break;
                                 }
                                 case PERCENT:
                                 case NUMBER: {
                                     if (hovering && InputHandler.isMousePressing(InputHandler.BUTTON_LEFT)) {
-                                        double unformattedValue = argument.getNumberMinValue() + ((argument.getNumberMaxValue() - argument.getNumberMinValue()) * ((double) (mouseX - this.xPosition - argumentsMargin) / (this.width - (argumentsMargin * 2))));
+                                        double unformattedValue = argument.getNumberMinValue() + ((argument.getNumberMaxValue() - argument.getNumberMinValue()) * ((double) (mouseX - this.x - argumentsMargin) / (this.width - (argumentsMargin * 2))));
                                         argument.setNumberValue(Math.floor(unformattedValue * 100) / 100);
                                         ModuleHandler.saveConfigs();
                                     }
-                                    this.drawString(fontrenderer, argumentName, this.xPosition + argumentsMargin, this.yPosition + this.currentHeight + argumentsMargin, 0xFFFFFFFF);
+                                    this.drawString(fontrenderer, argumentName, this.x + argumentsMargin, this.y + this.currentHeight + argumentsMargin, 0xFFFFFFFF);
                                     String argumentValue = Double.toString(argument.getNumberValueD());
                                     if (argument.getValueType() == Module.ModuleArgument.ArgumentType.PERCENT) {
                                         argumentValue = (argument.getNumberValueD() * 100) + "%";
@@ -160,9 +161,9 @@ public class ClickGuiButton extends GuiButton {
                                     if (fontrenderer.getStringWidth(argumentName + "  " + argumentValue) > newWidth - (argumentsMargin * 2)) {
                                         newWidth += fontrenderer.getStringWidth("  " + argumentValue);
                                     }
-                                    this.drawString(fontrenderer, argumentValue, this.xPosition + this.width - argumentsMargin - fontrenderer.getStringWidth(argumentValue), this.yPosition + this.currentHeight + argumentsMargin, 0xFFFFFFFF);
+                                    this.drawString(fontrenderer, argumentValue, this.x + this.width - argumentsMargin - fontrenderer.getStringWidth(argumentValue), this.y + this.currentHeight + argumentsMargin, 0xFFFFFFFF);
                                     this.currentHeight += argumentsHeight;
-                                    this.drawHorizontalSlideBar(this.xPosition + argumentsMargin, this.xPosition + this.width - argumentsMargin, this.yPosition + this.currentHeight + (this.height / 2), (argument.getNumberValueD() - argument.getNumberMinValue()) / (argument.getNumberMaxValue() - argument.getNumberMinValue()), ((this.alpha & 0xFF) << 24) | backgroundColors[1]);
+                                    this.drawHorizontalSlideBar(this.x + argumentsMargin, this.x + this.width - argumentsMargin, this.y + this.currentHeight + (this.height / 2), (argument.getNumberValueD() - argument.getNumberMinValue()) / (argument.getNumberMaxValue() - argument.getNumberMinValue()), ((this.alpha & 0xFF) << 24) | backgroundColors[1]);
                                     break;
                                 }
                             }
@@ -177,8 +178,8 @@ public class ClickGuiButton extends GuiButton {
                 }
             }
             backgroundColor = GuiHandler.easeColorRGBA(this.backgroundColor, ((this.alpha & 0xFF) << 24) | backgroundColors[isGroup ? 0 : (module.getEnable() ? 1 : 0)], GuiHandler.easeOutQuad(1));
-            drawRect(this.xPosition, this.yPosition, this.xPosition + this.width, this.yPosition + this.height, ((this.alpha & 0xFF) << 24) | this.backgroundColor);
-            this.drawCenteredString(fontrenderer, I18n.format(this.displayString), this.xPosition + this.width / 2, this.yPosition + (this.height - 8) / 2, ((this.alpha & 0xFF) << 24) | this.textColor);
+            drawRect(this.x, this.y, this.x + this.width, this.y + this.height, ((this.alpha & 0xFF) << 24) | this.backgroundColor);
+            this.drawCenteredString(fontrenderer, I18n.format(this.displayString), this.x + this.width / 2, this.y + (this.height - 8) / 2, ((this.alpha & 0xFF) << 24) | this.textColor);
         }
     }
 

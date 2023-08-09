@@ -1,9 +1,6 @@
 package coolclk.faker.injection.mixins;
 
-import coolclk.faker.modules.root.movement.Jesus;
 import coolclk.faker.modules.root.player.FastEat;
-import coolclk.faker.modules.root.render.NoInvisible;
-import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemFood;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

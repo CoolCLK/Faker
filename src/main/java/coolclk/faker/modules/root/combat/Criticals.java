@@ -2,8 +2,7 @@ package coolclk.faker.modules.root.combat;
 
 import coolclk.faker.modules.Module;
 import coolclk.faker.util.ModuleUtil;
-import net.minecraft.client.Minecraft;
-import net.minecraft.network.play.client.C03PacketPlayer;
+import net.minecraft.network.play.client.CPacketPlayer;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -19,18 +18,20 @@ public class Criticals extends Module {
     @SubscribeEvent
     public void onAttackEntity(AttackEntityEvent event) {
         if (this.getEnable()) {
-            if (event.entityPlayer == ModuleUtil.gEP()) {
-                if (event.entityPlayer.onGround) {
-                    event.entityPlayer.onGround = false;
-                    event.entityPlayer.fallDistance = 0.01F;
+            if (event.getEntityPlayer() == ModuleUtil.gEP()) {
+                if (event.getEntityPlayer().onGround) {
+                    event.getEntityPlayer().onGround = false;
+                    event.getEntityPlayer().fallDistance = 0.01F;
                     if (this.getArgument("onlyPacket").getBooleanValue()) {
                         for (double d : new double[] { 0.0625, 0.01 - Math.random() / 10000 }) {
-                            Minecraft.getMinecraft().getNetHandler().getNetworkManager().sendPacket(new C03PacketPlayer.C04PacketPlayerPosition(event.entityPlayer.posX, event.entityPlayer.posY + d, event.entityPlayer.posZ, false));
+                            if (ModuleUtil.getNetworkManager() != null) {
+                                ModuleUtil.gNM().sendPacket(new CPacketPlayer.Position(event.getEntityPlayer().posX, event.getEntityPlayer().posY + d, event.getEntityPlayer().posZ, false));
+                            }
                         }
                     } else {
                         double offset = 0.01;
-                        event.entityPlayer.posY += offset;
-                        event.entityPlayer.motionY = this.getArgument("jumpHeight").getNumberValueD() - offset;
+                        event.getEntityPlayer().posY += offset;
+                        event.getEntityPlayer().motionY = this.getArgument("jumpHeight").getNumberValueD() - offset;
                     }
                 }
             }

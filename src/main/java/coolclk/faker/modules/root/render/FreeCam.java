@@ -5,10 +5,9 @@ import coolclk.faker.modules.Module;
 import coolclk.faker.util.ModuleUtil;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.network.handshake.client.C00Handshake;
-import net.minecraft.network.play.client.C02PacketUseEntity;
-import net.minecraft.network.play.client.C03PacketPlayer;
-import net.minecraft.network.play.client.C07PacketPlayerDigging;
-import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
+import net.minecraft.network.play.client.CPacketPlayer;
+import net.minecraft.network.play.client.CPacketPlayerDigging;
+import net.minecraft.network.play.client.CPacketUseEntity;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.Collections;
@@ -61,7 +60,7 @@ public class FreeCam extends Module {
     @SubscribeEvent
     public void onPacketSend(PacketSendEvent event) {
         if (this.getEnable()) {
-            if (event.packet instanceof C08PacketPlayerBlockPlacement || event.packet instanceof C07PacketPlayerDigging || event.packet instanceof C02PacketUseEntity || event.packet instanceof C00Handshake || event.packet instanceof C03PacketPlayer) {
+            if (event.packet instanceof CPacketPlayer || event.packet instanceof CPacketPlayerDigging || event.packet instanceof CPacketUseEntity || event.packet instanceof C00Handshake) {
                 event.setCanceled(true);
             }
         }

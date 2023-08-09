@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MixinGuiIngameForge {
     @Inject(at = @At(value = "RETURN"), method = "renderGameOverlay")
     private void renderGameOverlay(float partialTicks, CallbackInfo ci) {
-        FontRenderer fontRendererObj = Minecraft.getMinecraft().fontRendererObj;
+        FontRenderer fontRendererObj = Minecraft.getMinecraft().fontRenderer;
         if (HUD.INSTANCE.getEnable()) {
             int margin = 15;
             fontRendererObj.drawStringWithShadow("Faker", margin, margin, GuiHandler.getRainbowColor(0.000125));

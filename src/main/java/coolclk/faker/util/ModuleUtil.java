@@ -8,6 +8,7 @@ import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.network.NetworkManager;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
@@ -20,7 +21,7 @@ public class ModuleUtil {
     }
 
     public static EntityPlayerSP getEntityPlayer() {
-        return getMinecraft().thePlayer;
+        return getMinecraft().player;
     }
 
     public static PlayerControllerMP getPlayerController() {
@@ -28,7 +29,17 @@ public class ModuleUtil {
     }
 
     public static WorldClient getWorld() {
-        return getMinecraft().theWorld;
+        return getMinecraft().world;
+    }
+
+    public static NetworkManager getNetworkManager() {
+        try {
+            return (NetworkManager) getInaccessibleVariable(getMinecraft(), "networkManager");
+        } catch (NoSuchFieldException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static List<EntityLivingBase> findEntitiesWithDistance(EntityPlayer player, double range) {
@@ -133,6 +144,10 @@ public class ModuleUtil {
 
     public static WorldClient gW() {
         return getWorld();
+    }
+
+    public static NetworkManager gNM() {
+        return getNetworkManager();
     }
 
     public static double eTED(Entity a, Entity b) {

@@ -1,10 +1,10 @@
 package coolclk.faker.modules.root.combat;
 
 import coolclk.faker.modules.Module;
+import coolclk.faker.util.MathHelper;
 import coolclk.faker.util.ModuleUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.MathHelper;
 
 import java.util.Arrays;
 
@@ -23,10 +23,11 @@ public class AimAssist extends Module {
             float[] targetRotations = getRotations(ModuleUtil.gEP(), target);
             yaw += (targetRotations[0] - yaw) * (getArgument("assistSpeed").getNumberValueF() / 20);
             pitch += (targetRotations[1] - pitch) * (getArgument("assistSpeed").getNumberValueF() / 20);
-            ModuleUtil.gEP().setAngles(yaw, pitch);
+            ModuleUtil.gEP().rotationYaw = yaw;
+            ModuleUtil.gEP().rotationPitch = pitch;
         }
     }
-    
+
     private float[] getRotations(EntityPlayer player, Entity target) {
         final double var4 = (target.posX - (target.lastTickPosX - target.posX)) + 0.01 - player.posX;
         final double var6 = (target.posZ - (target.lastTickPosZ - target.posZ)) - player.posZ;
