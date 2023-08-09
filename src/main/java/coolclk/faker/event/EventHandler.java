@@ -12,8 +12,10 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import java.io.IOException;
+
 public class EventHandler {
-    public void onFMLInitialization() {
+    public void onFMLInitialization() throws IOException {
         NetworkRegistry.INSTANCE.registerGuiHandler(FakerForgeMod.INSTANCE, new GuiHandler());
         ModuleHandler.loadConfigs();
         ModuleHandler.registerKey();

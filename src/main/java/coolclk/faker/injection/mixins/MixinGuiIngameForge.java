@@ -17,11 +17,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(GuiIngameForge.class)
 public abstract class MixinGuiIngameForge {
-    @Shadow
-    public ScaledResolution getResolution() {
-        return null;
-    }
-
     @Inject(at = @At(value = "RETURN"), method = "renderGameOverlay")
     private void renderGameOverlay(float partialTicks, CallbackInfo ci) {
         FontRenderer fontRendererObj = Minecraft.getMinecraft().fontRendererObj;
@@ -32,7 +27,7 @@ public abstract class MixinGuiIngameForge {
             for (ModuleType group : ModuleHandler.getAllModules()) {
                 for (Module module : group.getModules()) {
                     if (module.getEnable()) {
-                        fontRendererObj.drawStringWithShadow(module.getDisplayName(), this.getResolution().getScaledWidth() - fontRendererObj.getStringWidth(module.getDisplayName()) - margin, yPosition, GuiHandler.getRainbowColor(0.000125));
+                        fontRendererObj.drawStringWithShadow(module.getDisplayName(), Minecraft.getMinecraft().displayWidth - fontRendererObj.getStringWidth(module.getDisplayName()) - margin, yPosition, GuiHandler.getRainbowColor(0.000125));
                         yPosition += 10;
                     }
                 }

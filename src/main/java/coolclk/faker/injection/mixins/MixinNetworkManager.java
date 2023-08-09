@@ -15,11 +15,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(NetworkManager.class)
 public abstract class MixinNetworkManager {
-    @Shadow public abstract void sendPacket(Packet packetIn, GenericFutureListener<? extends Future<? super Void>> listener, GenericFutureListener<? extends Future<? super Void>>... listeners);
 
-    @Overwrite
-    public void sendPacket(Packet<?> packetIn) {
-        this.sendPacket(packetIn, null);
+
+    @Inject(at = @At(value = "HEAD"), method = "sendPacket(Lnet/minecraft/network/Packet;)V", cancellable = true)
+    public void sendPacket(Packet packetIn, CallbackInfo ci) {
+        if (MinecraftForge.EVENT_BUS.post(new PacketSendEvent(packetIn))) ci.cancel();
     }
 
     @Inject(at = @At(value = "HEAD"), method = "sendPacket(Lnet/minecraft/network/Packet;Lio/netty/util/concurrent/GenericFutureListener;[Lio/netty/util/concurrent/GenericFutureListener;)V", cancellable = true)

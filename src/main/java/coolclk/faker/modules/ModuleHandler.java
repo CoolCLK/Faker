@@ -1,5 +1,7 @@
 package coolclk.faker.modules;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import coolclk.faker.modules.root.combat.AntiBot;
 import coolclk.faker.modules.root.combat.Criticals;
 import coolclk.faker.modules.root.combat.KillArea;
@@ -11,17 +13,20 @@ import coolclk.faker.modules.root.player.Reach;
 import coolclk.faker.modules.root.player.Timer;
 import coolclk.faker.modules.root.render.*;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 
+import java.io.*;
 import java.util.Arrays;
 import java.util.List;
 
 public class ModuleHandler {
-    private final static List<ModuleType> modules = Arrays.asList(
+    private static List<ModuleType> modules = Arrays.asList(
             new ModuleType("combat", 10, 10, AntiBot.INSTANCE, Criticals.INSTANCE, KillArea.INSTANCE, Velocity.INSTANCE, Reach.INSTANCE),
             new ModuleType("movement", 70, 10, BHop.INSTANCE, Fly.INSTANCE, ForceSprinting.INSTANCE, HighJump.INSTANCE, Jesus.INSTANCE, NoFall.INSTANCE, Scaffold.INSTANCE),
             new ModuleType("player", 140, 10, Derp.INSTANCE, FastBreak.INSTANCE, FastBreak.INSTANCE, Reach.INSTANCE, Scaffold.INSTANCE, Timer.INSTANCE),
             new ModuleType("render", 210, 10, ClickGui.INSTANCE, ESP.INSTANCE, FreeCam.INSTANCE, FullBright.INSTANCE, HUD.INSTANCE, HurtCam.INSTANCE, NoInvisible.INSTANCE, NoWeather.INSTANCE));
+    private final static File configFile = new File("./Faker/config.json");
 
     public static List<ModuleType> getAllModules() {
         return modules;
@@ -46,11 +51,18 @@ public class ModuleHandler {
         }
     }
 
-    public static void saveConfigs() {
-
+    public static void loadConfigs() throws IOException {
+        if (configFile.exists()) {
+            modules = new Gson().fromJson(new FileReader(configFile), new TypeToken<List<ModuleType>>() {  }.getType());
+        } else {
+            configFile.createNewFile();
+        }
     }
 
-    public static void loadConfigs() {
-
+    public static void saveConfigs() throws IOException {
+        if (!configFile.exists()) {
+            configFile.createNewFile();
+        }
+        new Gson().toJson(modules, new FileWriter(configFile));
     }
 }

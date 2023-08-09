@@ -7,6 +7,8 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.IOException;
+
 @Mod(modid = FakerForgeMod.MODID, name = FakerForgeMod.NAME, version = FakerForgeMod.VERSION, clientSideOnly = true)
 public class FakerForgeMod {
     public final static String MODID = "faker";
@@ -23,7 +25,7 @@ public class FakerForgeMod {
     }
 
     @Mod.EventHandler
-    public void onFMLInitialization(FMLInitializationEvent event) {
+    public void onFMLInitialization(FMLInitializationEvent event) throws IOException {
         new EventHandler().onFMLInitialization();
     }
 }

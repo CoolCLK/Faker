@@ -10,8 +10,11 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.resources.I18n;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static coolclk.faker.launch.FakerForgeMod.LOGGER;
 
 public class ClickGuiButton extends GuiButton {
     private int alpha = 255;
@@ -150,7 +153,12 @@ public class ClickGuiButton extends GuiButton {
                                     if (hovering && InputHandler.isMousePressing(InputHandler.BUTTON_LEFT)) {
                                         double unformattedValue = argument.getNumberMinValue() + ((argument.getNumberMaxValue() - argument.getNumberMinValue()) * ((double) (mouseX - this.xPosition - argumentsMargin) / (this.width - (argumentsMargin * 2))));
                                         argument.setNumberValue(Math.floor(unformattedValue * 100) / 100);
-                                        ModuleHandler.saveConfigs();
+                                        try {
+                                            ModuleHandler.saveConfigs();
+                                        } catch (IOException e) {
+                                            LOGGER.error(I18n.format("modules.message.ModuleThrowsError", module.getDisplayName()));
+                                            throw new RuntimeException(e);
+                                        }
                                     }
                                     this.drawString(fontrenderer, argumentName, this.xPosition + argumentsMargin, this.yPosition + this.currentHeight + argumentsMargin, 0xFFFFFFFF);
                                     String argumentValue = Double.toString(argument.getNumberValueD());
