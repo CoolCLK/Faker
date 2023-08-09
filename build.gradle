@@ -5,7 +5,7 @@ buildscript {
         maven { url = "https://files.minecraftforge.net/maven" }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
         classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
     }
 }
@@ -16,11 +16,17 @@ version = "1.0.0"
 group= "coolclk.faker"
 archivesBaseName = "faker"
 
+sourceCompatibility = targetCompatibility = '1.8'
+compileJava {
+    sourceCompatibility = targetCompatibility = '1.8'
+}
+
 minecraft {
-    version = "1.8.9-11.15.1.2318-1.8.9"
+    version = "1.12.2-14.23.5.2847"
     runDir = "run"
 
-    mappings = "stable_22"
+    mappings = "stable_39"
+    // makeObfSourceJar = false
 }
 
 repositories {
