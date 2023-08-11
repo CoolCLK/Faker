@@ -12,7 +12,7 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'org.spongepowered.mixin'
 
-version = "1.0.0"
+version = "1.0.1"
 group= "coolclk.faker"
 archivesBaseName = "faker"
 
@@ -47,6 +47,8 @@ dependencies {
         exclude module: "log4j-core"
         exclude module: "slf4j-api"
     }
+
+    implementation 'org.reflections:reflections:0.10.2'
 }
 
 processResources {
@@ -62,6 +64,22 @@ processResources {
 
 jar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    from {
+        configurations.compile.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+
+    manifest.attributes([
+            'FMLCorePlugin': 'coolclk.faker.injection.MixinLoader',
+            'FMLCorePluginContainsFMLMod': 'true',
+            'ForceLoadAsMod': 'true',
+            'MixinConfigs': 'mixins.faker.json',
+            'ModSide': 'CLIENT',
+            'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
+            'TweakOrder': '0'
+    ])
 }
 
 sourceSets {

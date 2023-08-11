@@ -13,19 +13,23 @@ public class InputHandler {
 
     private static final List<Integer> mousePressed = new ArrayList<Integer>();
 
-    public static boolean isMousePressed(int button) {
+    public static boolean isMousePressed(Integer button) {
         if (Mouse.isCreated() && Mouse.getEventButtonState() && Mouse.getEventButton() == button) {
             if (!mousePressed.contains(button)) {
                 mousePressed.add(button);
                 return true;
             }
-        } else if (mousePressed.contains(button)) {
-            mousePressed.remove((Integer) button);
+        } else {
+            mousePressed.remove(button);
         }
         return false;
     }
 
     public static boolean isMousePressing(int button) {
-        return Mouse.isCreated() && Mouse.isButtonDown(button);
+        boolean pressing = Mouse.isCreated() && Mouse.isButtonDown(button);
+        if (mousePressed.contains(button) && pressing) {
+            mousePressed.remove(button);
+        }
+        return pressing;
     }
 }

@@ -7,12 +7,8 @@ import org.spongepowered.asm.mixin.Mixins;
 
 import java.util.Map;
 
-import static coolclk.faker.launch.FakerForgeMod.LOGGER;
-
 public class MixinLoader implements IFMLLoadingPlugin {
     public MixinLoader() {
-        LOGGER.info("Injecting mod by FMLLoadingPlugin.");
-
         MixinBootstrap.init();
         Mixins.addConfiguration("mixins.faker.json");
         MixinEnvironment.getDefaultEnvironment().setSide(MixinEnvironment.Side.CLIENT);

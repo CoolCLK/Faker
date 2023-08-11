@@ -8,6 +8,7 @@ import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.network.NetworkManager;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
@@ -31,6 +32,10 @@ public class ModuleUtil {
         return getMinecraft().theWorld;
     }
 
+    public static NetworkManager getNetworkManager() {
+        return getMinecraft().getNetHandler().getNetworkManager();
+    }
+
     public static List<EntityLivingBase> findEntitiesWithDistance(EntityPlayer player, double range) {
         List<EntityLivingBase> targets = new ArrayList<EntityLivingBase>();
         List<EntityLivingBase> checkTargets = new ArrayList<EntityLivingBase>(player.getEntityWorld().getEntities(EntityLivingBase.class, new Predicate<EntityLivingBase>() {
@@ -49,7 +54,7 @@ public class ModuleUtil {
         return targets;
     }
 
-    public static EntityLivingBase findClosestEntity(Entity entity, int range) {
+    public static EntityLivingBase findClosestEntity(Entity entity, double range) {
         EntityLivingBase target = null;
         List<EntityLivingBase> entities = new ArrayList<EntityLivingBase>(entity.getEntityWorld().getEntities(EntityLivingBase.class, new Predicate<EntityLivingBase>() {
             @Override
@@ -69,6 +74,11 @@ public class ModuleUtil {
         return findClosestEntity(entity, -1);
     }
 
+    public static double getPositionToPositionAngle(double x1, double y1, double x2, double y2) {
+        double value = (x1 * x2 + y1 * y2) / (Math.sqrt(x1 * x1 + y1 * y1) * Math.sqrt(x2 * x2 + y2 * y2));
+        return Math.toDegrees(Math.acos(value));
+    }
+
     public static double entityToEntityDistance(Entity a, Entity b) {
         return positionToPositionDistance(a.getPosition().getX(), a.getPosition().getY(), a.getPosition().getZ(), b.getPosition().getX(), b.getPosition().getY(), b.getPosition().getZ());
     }
@@ -81,10 +91,10 @@ public class ModuleUtil {
         return Math.sqrt(Math.pow(positionToPositionDistance2d(x1, y1, x2, y2), 2) + Math.pow(z1 - z2, 2));
     }
 
-    public static Object getInaccessibleVariable(Class<?> anyClass, String variableName) throws NoSuchFieldException, IllegalAccessException {
-        Field field = anyClass.getDeclaredField(variableName);
+    public static Object getInaccessibleVariable(Class<?> clazz, String variableName) throws NoSuchFieldException, IllegalAccessException {
+        Field field = clazz.getDeclaredField(variableName);
         field.setAccessible(true);
-        return field.get(anyClass);
+        return field.get(clazz);
     }
 
     public static Object getInaccessibleVariable(Object object, String variableName) throws NoSuchFieldException, IllegalAccessException {
@@ -93,10 +103,10 @@ public class ModuleUtil {
         return field.get(object);
     }
 
-    public static float getInaccessibleVariableF(Class<?> anyClass, String variableName) throws NoSuchFieldException, IllegalAccessException {
-        Field field = anyClass.getDeclaredField(variableName);
+    public static float getInaccessibleVariableF(Class<?> clazz, String variableName) throws NoSuchFieldException, IllegalAccessException {
+        Field field = clazz.getDeclaredField(variableName);
         field.setAccessible(true);
-        return field.getFloat(anyClass);
+        return field.getFloat(clazz);
     }
 
     public static float getInaccessibleVariableF(Object object, String variableName) throws NoSuchFieldException, IllegalAccessException {
@@ -105,10 +115,10 @@ public class ModuleUtil {
         return field.getFloat(object);
     }
 
-    public static void setInaccessibleVariable(Class<?> anyClass, String variableName, Object variableNewValue) throws NoSuchFieldException, IllegalAccessException {
-        Field field = anyClass.getDeclaredField(variableName);
+    public static void setInaccessibleVariable(Class<?> clazz, String variableName, Object variableNewValue) throws NoSuchFieldException, IllegalAccessException {
+        Field field = clazz.getDeclaredField(variableName);
         field.setAccessible(true);
-        field.set(anyClass, variableNewValue);
+        field.set(clazz, variableNewValue);
     }
 
     public static void setInaccessibleVariable(Object object, String variableName, Object variableNewValue) throws NoSuchFieldException, IllegalAccessException {
@@ -133,6 +143,10 @@ public class ModuleUtil {
 
     public static WorldClient gW() {
         return getWorld();
+    }
+
+    public static NetworkManager gNM() {
+        return getNetworkManager();
     }
 
     public static double eTED(Entity a, Entity b) {

@@ -7,8 +7,8 @@
     "MixinEntityRenderer",
     "MixinGuiIngameForge",
     "MixinMinecraft",
-    "MixinPlayerControllerMP",
-    "MixinRender"
+    "MixinRender",
+    "MixinTimer"
   ],
   "mixins": [
     "MixinBlock",

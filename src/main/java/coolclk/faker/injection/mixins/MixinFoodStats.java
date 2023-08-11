@@ -1,6 +1,7 @@
 package coolclk.faker.injection.mixins;
 
-import coolclk.faker.modules.root.player.Regen;
+import coolclk.faker.feature.ModuleHandler;
+import coolclk.faker.feature.modules.player.Regen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.FoodStats;
 import org.spongepowered.asm.mixin.Mixin;
@@ -14,13 +15,13 @@ public class MixinFoodStats {
     @Unique
     private int faker$foodTimer;
 
-    @Inject(at = @At(value = "RETURN"), method = "onUpdate")
+    @Inject(method = "onUpdate", at = @At(value = "RETURN"))
     public void onUpdate(EntityPlayer player, CallbackInfo ci) {
-        if (Regen.INSTANCE.getEnable()) {
+        if (ModuleHandler.findModule(Regen.class).getEnable()) {
             this.faker$foodTimer++;
 
-            if (this.faker$foodTimer >= Regen.INSTANCE.getArgument("speed").getNumberValueF()) {
-                player.heal(Regen.INSTANCE.getArgument("heal").getNumberValueF() - 1);
+            if (this.faker$foodTimer >= ModuleHandler.findModule(Regen.class).healSpeed.getValue()) {
+                player.heal(ModuleHandler.findModule(Regen.class).healHealth.getValue() - 1);
                 this.faker$foodTimer = 0;
             }
         }

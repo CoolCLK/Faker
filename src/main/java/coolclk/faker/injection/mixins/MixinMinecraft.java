@@ -1,7 +1,9 @@
 package coolclk.faker.injection.mixins;
 
+import coolclk.faker.event.RefreshResourcesEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Util;
+import net.minecraftforge.common.MinecraftForge;
 import org.apache.commons.io.IOUtils;
 import org.lwjgl.opengl.Display;
 import org.spongepowered.asm.mixin.Mixin;
@@ -16,12 +18,12 @@ import java.nio.ByteBuffer;
 
 @Mixin(Minecraft.class)
 public abstract class MixinMinecraft {
-    @Inject(at = @At(value = "RETURN"), method = "createDisplay")
-    private void setWindowTitle(CallbackInfo ci) {
+    @Inject(method = "createDisplay", at = @At(value = "RETURN"))
+    private void createDisplay(CallbackInfo ci) {
         Display.setTitle(Display.getTitle() + " | " + "Faker made by CoolCLK");
     }
 
-    @Inject(at = @At(value = "RETURN"), method = "setWindowIcon")
+    @Inject(method = "setWindowIcon", at = @At(value = "RETURN"))
     private void setWindowIcon(CallbackInfo ci) {
         if (Util.getOSType() != Util.EnumOS.OSX) {
             InputStream icon16x = null;
@@ -45,6 +47,11 @@ public abstract class MixinMinecraft {
                 IOUtils.closeQuietly(icon128x);
             }
         }
+    }
+
+    @Inject(method = "refreshResources", at = @At(value = "RETURN"), cancellable = true)
+    public void refreshResources(CallbackInfo ci) {
+        if (MinecraftForge.EVENT_BUS.post(new RefreshResourcesEvent())) ci.cancel();
     }
 
     @Shadow protected abstract ByteBuffer readImageToBuffer(InputStream imageStream) throws IOException;

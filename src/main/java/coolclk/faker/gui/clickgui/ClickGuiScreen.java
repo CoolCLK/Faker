@@ -1,9 +1,10 @@
 package coolclk.faker.gui.clickgui;
 
+import coolclk.faker.feature.ModuleHandler;
 import coolclk.faker.gui.GuiHandler;
-import coolclk.faker.modules.Module;
-import coolclk.faker.modules.ModuleHandler;
-import coolclk.faker.modules.ModuleType;
+import coolclk.faker.feature.api.Module;
+import coolclk.faker.feature.modules.ModuleCategory;
+import coolclk.faker.feature.modules.render.ClickGui;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import org.lwjgl.input.Keyboard;
@@ -13,34 +14,38 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static coolclk.faker.launch.FakerForgeMod.LOGGER;
+
 public class ClickGuiScreen extends GuiScreen {
-    public final static int ID = 1;
     public static ClickGuiScreen INSTANCE = new ClickGuiScreen();
+    public static String MESSAGE = "";
 
     private double alpha = 0;
     private final List<ClickGuiButton> clickGuiButtonList = new ArrayList<ClickGuiButton>();
-
-    public final static int buttonWidth = 50;
-    public final static int buttonHeight = 15;
-    public final static int groupButtonColor = 0x343434;
-    public final static int childrenButtonMenuColor = 0x5C5C5C;
-    public final static int childrenButtonDisableColor = 0x696969;
-    public final static int childrenButtonEnableColor = 0x0091A6;
 
     private boolean menuOpen = true;
     public static boolean dragging = false;
 
     public ClickGuiScreen() {
         super();
-        for (ModuleType group : ModuleHandler.getAllModules()) {
-            List<ClickGuiButton> submodules = new ArrayList<ClickGuiButton>();
-            int yPosition = group.getClickGuiPositionY();
-            for (Module module : group.getModules()) {
-                yPosition += buttonHeight;
-                submodules.add(new ClickGuiButton(group.getClickGuiPositionX(), yPosition, buttonWidth, buttonHeight, module.getI18nKey(), new int[] { childrenButtonDisableColor, childrenButtonEnableColor, childrenButtonMenuColor }, 0xFFFFFF, module, group));
+    }
+
+    public void registerButtons() {
+        LOGGER.debug("Register ClickGui buttons");
+        for (ModuleCategory category : ModuleCategory.values()) {
+            if (category == ModuleCategory.None) {
+                continue;
+            }
+            List<ClickGuiModuleButton> submodules = new ArrayList<ClickGuiModuleButton>();
+            int yPosition = category.getPositionX();
+            for (Module module : category.getModules()) {
+                yPosition += GuiHandler.Theme.BUTTON_HEIGHT;
+                submodules.add(new ClickGuiModuleButton(category.getPositionX(), yPosition, module));
+                LOGGER.debug("Register ClickGui module button " + module.getDisplayName());
             }
             this.clickGuiButtonList.addAll(submodules);
-            this.clickGuiButtonList.add(new ClickGuiButton(group.getClickGuiPositionX(), group.getClickGuiPositionY(), buttonWidth, buttonHeight, group.getI18nKey(), groupButtonColor, 0xFFFFFFFF, group, submodules));
+            this.clickGuiButtonList.add(new ClickGuiCategoryButton(category.getPositionX(), category.getPositionY(), category, submodules));
+            LOGGER.debug("Register ClickGui category button " + category.name());
         }
     }
 
@@ -59,12 +64,11 @@ public class ClickGuiScreen extends GuiScreen {
         this.alpha += ((this.menuOpen ? 255 : 0) - this.alpha) * GuiHandler.easeOutQuad(1);
         Color backgroundColor = new Color(0, 0, 0, (int) (this.alpha * 0.25));
         drawRect(0, 0, this.width, this.height, backgroundColor.getRGB());
+        drawString(this.fontRendererObj, MESSAGE, 10, 10, 0xFFFFFFFF);
+
         for (ClickGuiButton button : this.clickGuiButtonList) {
+            button.drawButton(mc, mouseX, mouseY);
             button.setAlpha((int) this.alpha);
-            if (button.module != null) {
-                button.module.onClickGuiUpdate();
-            }
-            button.drawButton(this.mc, mouseX, mouseY);
         }
 
         if (this.alpha < 50 && !menuOpen) {
@@ -86,8 +90,15 @@ public class ClickGuiScreen extends GuiScreen {
     @Override
     protected void keyTyped(char text, int keycode) {
         if (keycode == Keyboard.KEY_ESCAPE) {
+            ModuleHandler.findModule(ClickGui.class).toggleModule();
             this.menuOpen = false;
             dragging = false;
+        }
+    }
+
+    public void updateDisplayName() {
+        for (ClickGuiButton button : this.clickGuiButtonList) {
+            button.updateDisplayName();
         }
     }
 }
