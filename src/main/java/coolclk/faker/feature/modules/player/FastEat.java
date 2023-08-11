@@ -7,5 +7,5 @@ import coolclk.faker.feature.modules.ModuleCategory;
 
 @ModuleInfo(name = "FastEat", category = ModuleCategory.Player)
 public class FastEat extends Module {
-    public SettingsInteger duration = new SettingsInteger(this, "duration", 0, 0, 32);
+    public SettingsInteger duration = new SettingsInteger(this, "duration", 32, 0, 32);
 }

@@ -16,7 +16,6 @@ public class ClickGuiButton extends GuiButton {
         super(0, x, y, GuiHandler.Theme.BUTTON_WIDTH, GuiHandler.Theme.BUTTON_HEIGHT, "");
     }
 
-
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
         this.fontrenderer = mc.fontRendererObj;
@@ -28,6 +27,10 @@ public class ClickGuiButton extends GuiButton {
             drawRect(this.xPosition, this.yPosition, this.xPosition + this.width, this.yPosition + this.height, ((this.alpha & 0xFF) << 24) | this.currentBackgroundColor);
             this.drawCenteredString(this.fontrenderer, this.displayString, this.xPosition + this.width / 2, this.yPosition + (this.height - 8) / 2, ((this.alpha & 0xFF) << 24) | this.textColor);
         }
+    }
+
+    public void afterDrawButton(Minecraft mc, int mouseX, int mouseY) {
+
     }
 
     public void drawHorizontalSlideBar(int startX, int endX, int y, double per, int color) {

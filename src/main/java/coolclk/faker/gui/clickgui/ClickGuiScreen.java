@@ -70,6 +70,9 @@ public class ClickGuiScreen extends GuiScreen {
             button.drawButton(mc, mouseX, mouseY);
             button.setAlpha((int) this.alpha);
         }
+        for (ClickGuiButton button : this.clickGuiButtonList) {
+            button.afterDrawButton(mc, mouseX, mouseY);
+        }
 
         if (this.alpha < 50 && !menuOpen) {
             try {

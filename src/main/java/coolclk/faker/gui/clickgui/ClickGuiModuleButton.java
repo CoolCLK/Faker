@@ -109,12 +109,17 @@ public class ClickGuiModuleButton extends ClickGuiButton {
             } else {
                 this.width = GuiHandler.Theme.BUTTON_WIDTH;
             }
-            if (this.isMouseOver()) {
-                String description = module.getDisplayDescription();
-                if (description != null && !description.equals(module.getDescriptionTranslateKey())) {
-                    drawRect(mouseX, mouseY, mouseX + this.fontrenderer.getStringWidth(description), mouseY + this.fontrenderer.FONT_HEIGHT, ((this.alpha & 0xFF) << 24) | GuiHandler.Theme.MODULE_BUTTON_DESCRIPTION_BACKGROUND_COLOR);
-                    this.drawString(this.fontrenderer, description, mouseX, mouseY, ((this.alpha & 0xFF) << 24) | this.textColor);
-                }
+        }
+    }
+
+    @Override
+    public void afterDrawButton(Minecraft mc, int mouseX, int mouseY) {
+        if (this.isMouseOver()) {
+            String description = module.getDisplayDescription();
+            if (description != null && !description.equals(module.getDescriptionTranslateKey())) {
+                description = "  " + description;
+                drawRect(mouseX, mouseY, mouseX + this.fontrenderer.getStringWidth(description), mouseY + this.fontrenderer.FONT_HEIGHT, ((this.alpha & 0xFF) << 24) | GuiHandler.Theme.MODULE_BUTTON_DESCRIPTION_BACKGROUND_COLOR);
+                this.drawString(this.fontrenderer, description, mouseX, mouseY, ((this.alpha & 0xFF) << 24) | this.textColor);
             }
         }
     }
