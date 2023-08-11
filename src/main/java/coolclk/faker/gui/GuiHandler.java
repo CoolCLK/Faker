@@ -11,7 +11,7 @@ public class GuiHandler {
         public final static int MODULE_BUTTON_SETTINGS_MARGIN = 1;
 
         public final static int CATEGORY_BUTTON_BACKGROUND_COLOR = 0x343434;
-        public final static int MODULE_BUTTON_DESCRIPTION_BACKGROUND_COLOR = 0x5C5C5C;
+        public final static int MODULE_BUTTON_DESCRIPTION_BACKGROUND_COLOR = 0x343434;
         public final static int MODULE_BUTTON_SETTINGS_BACKGROUND_COLOR = 0x5C5C5C;
         public final static int MODULE_BUTTON_SETTINGS_ENABLE_COLOR = 0xFFFFFF;
         public final static int MODULE_BUTTON_SETTINGS_DISABLE_COLOR = 0x333333;
