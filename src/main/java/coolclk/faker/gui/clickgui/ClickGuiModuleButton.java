@@ -111,7 +111,7 @@ public class ClickGuiModuleButton extends ClickGuiButton {
             }
             if (this.isMouseOver()) {
                 String description = module.getDisplayDescription();
-                if (description != null && description.equals(module.getDescriptionTranslateKey())) {
+                if (description != null && !description.equals(module.getDescriptionTranslateKey())) {
                     drawRect(mouseX, mouseY, mouseX + this.fontrenderer.getStringWidth(description), mouseY + this.fontrenderer.FONT_HEIGHT, ((this.alpha & 0xFF) << 24) | GuiHandler.Theme.MODULE_BUTTON_DESCRIPTION_BACKGROUND_COLOR);
                     this.drawString(this.fontrenderer, description, mouseX, mouseY, ((this.alpha & 0xFF) << 24) | this.textColor);
                 }

@@ -47,6 +47,7 @@ faker.module.ForceSprinting.name=强制疾跑
 faker.module.HighJump.name=高跳
 faker.module.Jesus.name=轻功水上漂
 faker.module.NoFall.name=无摔落伤害
+faker.module.NoSlow.name=无缓慢
 faker.module.Scaffold.name=自动搭路
 faker.module.Derp.name=发癫
 faker.module.FastBreak.name=快速挖掘

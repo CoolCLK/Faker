@@ -47,6 +47,7 @@ faker.module.ForceSprinting.name=Force Sprinting
 faker.module.HighJump.name=High Jump
 faker.module.Jesus.name=Jesus
 faker.module.NoFall.name=No Fall
+faker.module.NoSlow.name=No Slow
 faker.module.Scaffold.name=Scaffold
 faker.module.Derp.name=Derp
 faker.module.FastBreak.name=Fast Break
