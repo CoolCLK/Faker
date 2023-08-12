@@ -16,7 +16,7 @@ public class MixinLoader implements IFMLLoadingPlugin {
 
     @Override
     public String[] getASMTransformerClass() {
-        return new String[] {  };
+        return new String[0];
     }
 
     @Override

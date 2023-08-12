@@ -1,10 +1,7 @@
 package coolclk.faker.feature.modules.combat;
 
 import coolclk.faker.feature.ModuleHandler;
-import coolclk.faker.feature.api.Module;
-import coolclk.faker.feature.api.ModuleInfo;
-import coolclk.faker.feature.api.SettingsBoolean;
-import coolclk.faker.feature.api.SettingsDouble;
+import coolclk.faker.feature.api.*;
 import coolclk.faker.feature.modules.ModuleCategory;
 import coolclk.faker.util.ModuleUtil;
 import net.minecraft.entity.Entity;
@@ -18,18 +15,26 @@ import java.util.List;
 public class KillArea extends Module {
     private final List<Entity> targets = new ArrayList<Entity>();
     private Entity closestTarget = null;
-    private long lastAttackTime = 0;
+    private long nextAttackTime = 0;
 
-    public SettingsBoolean onlyAiming = new SettingsBoolean(this, "onlyAiming", true);
-    public SettingsBoolean onlySingle = new SettingsBoolean(this, "onlySingle", true);
+    public SettingsBoolean onlyAiming = new SettingsBoolean(this, "onlyAttackAiming", true);
+    public SettingsBoolean onlySingle = new SettingsBoolean(this, "onlyAttackSingle", true);
     public SettingsBoolean allowPlayer = new SettingsBoolean(this, "allowAttackPlayer", true);
     public SettingsBoolean allowMob = new SettingsBoolean(this, "allowAttackMob", true);
-    public SettingsDouble attackDelay = new SettingsDouble(this, "attackDelay", 3D, 3D, 8D);
+    public SettingsLong minAttackSpeed = new SettingsLong(this, "minAttackSpeed", 6L, 0L, 20L);
+    public SettingsLong maxAttackSpeed = new SettingsLong(this, "maxAttackSpeed", 12L, 0L, 20L);
     public SettingsDouble range = new SettingsDouble(this, "range", 5D, 0D, 20D);
 
     @Override
+    public void onClickGuiUpdate() {
+        if (minAttackSpeed.getValue() > maxAttackSpeed.getValue()) {
+            maxAttackSpeed.setValue(minAttackSpeed.getValue());
+        }
+    }
+
+    @Override
     public void onEnabling() {
-        if (System.currentTimeMillis() >= lastAttackTime + (attackDelay.getValue() * 50)){
+        if (System.currentTimeMillis() >= nextAttackTime){
             targets.clear();
             if (ModuleUtil.gEP() != null) {
                 List<? extends Entity> entities = ModuleUtil.findEntitiesWithDistance(ModuleUtil.gEP(), range.getValue());
@@ -68,7 +73,7 @@ public class KillArea extends Module {
                 }
             }
 
-            lastAttackTime = System.currentTimeMillis();
+            nextAttackTime = (long) (System.currentTimeMillis() + ((1 / (minAttackSpeed.getValue() + Math.random() * (maxAttackSpeed.getValue() - minAttackSpeed.getValue()))) * 1000));
         }
     }
 }

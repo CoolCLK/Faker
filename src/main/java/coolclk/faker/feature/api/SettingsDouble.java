@@ -26,4 +26,8 @@ public class SettingsDouble extends SettingsNumber<Double> {
         value = ((int) (value * Math.pow(10, this.getDecimalPlaces().doubleValue()))) / Math.pow(10, this.getDecimalPlaces().doubleValue());
         super.setValue(value);
     }
+
+    public void setValueByPercent(Number percent) {
+        this.setValue(this.getMinValue() + (this.getMaxValue() - this.getMinValue()) * percent.doubleValue());
+    }
 }

@@ -1,17 +1,17 @@
 package coolclk.faker.gui.clickgui;
 
-import coolclk.faker.gui.GuiHandler;
-import coolclk.faker.gui.InputHandler;
 import coolclk.faker.feature.modules.ModuleCategory;
+import coolclk.faker.gui.GuiHandler;
 import net.minecraft.client.Minecraft;
 
 import java.util.List;
 
 public class ClickGuiCategoryButton extends ClickGuiButton {
     private final ModuleCategory moduleCategory;
-    private final List<ClickGuiModuleButton> subButtons;
+    public final List<ClickGuiModuleButton> subButtons;
     private boolean dragging = false;
     private int dragOriginX = 0, dragOriginY = 0;
+    public boolean moveOver = false;
     private double currentWidth = this.width;
 
     public ClickGuiCategoryButton(int x, int y, ModuleCategory category, List<ClickGuiModuleButton> subModuleButtons) {
@@ -24,23 +24,24 @@ public class ClickGuiCategoryButton extends ClickGuiButton {
     }
 
     @Override
-    public void drawButton(Minecraft mc, int mouseX, int mouseY) {
-        super.drawButton(mc, mouseX, mouseY);
+    public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
+        super.drawButton(mc, mouseX, mouseY, partialTicks);
         if (this.isMouseOver()) {
-            if (InputHandler.isMousePressed(InputHandler.BUTTON_RIGHT)) {
+            if (mouseRightClick) {
+                this.moveOver = true;
                 moduleCategory.toggleDisplayFold();
                 for (ClickGuiModuleButton button : this.subButtons) {
                     button.visible = !moduleCategory.getDisplayFold();
                 }
             }
         }
-        if (!this.dragging && !ClickGuiScreen.dragging && this.isMouseOver() && InputHandler.isMousePressing(InputHandler.BUTTON_LEFT)) {
+        if (!this.dragging && !ClickGuiScreen.dragging && this.isMouseOver() && mouseLeftDrag) {
             this.dragOriginX = this.xPosition - mouseX;
             this.dragOriginY = this.yPosition - mouseY;
             this.dragging = true;
             ClickGuiScreen.dragging = true;
         }
-        if ((ClickGuiScreen.dragging || this.dragging) && !InputHandler.isMousePressing(InputHandler.BUTTON_LEFT)) {
+        if ((ClickGuiScreen.dragging || this.dragging) && !mouseLeftDrag) {
             this.dragging = false;
             ClickGuiScreen.dragging = false;
         }
@@ -48,6 +49,7 @@ public class ClickGuiCategoryButton extends ClickGuiButton {
             this.xPosition = mouseX + this.dragOriginX;
             this.yPosition = mouseY + this.dragOriginY;
             moduleCategory.setPosition(this.xPosition, this.yPosition);
+            this.moveOver = true;
         }
         int yPosition = this.yPosition + this.height, targetWidth = GuiHandler.Theme.BUTTON_WIDTH;
         for (ClickGuiModuleButton submodule : this.subButtons) {
@@ -68,5 +70,10 @@ public class ClickGuiCategoryButton extends ClickGuiButton {
     @Override
     public void updateDisplayName() {
         this.displayString = moduleCategory.getDisplayName();
+    }
+
+    @Override
+    public boolean isCategoryButton() {
+        return true;
     }
 }

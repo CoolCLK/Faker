@@ -34,7 +34,7 @@ public class SettingsMode<T> extends Settings<T> {
         if (getDisplayFold()) {
             return super.getDisplayLines();
         }
-        return super.getDisplayLines() * (1 + this.modes.size());
+        return super.getDisplayLines() * (1 + this.getValues().size());
     }
 
     public String getDisplayName() {
@@ -42,17 +42,21 @@ public class SettingsMode<T> extends Settings<T> {
     }
 
     public String getModeDisplayName(T mode) {
-        if (this.modes.contains(mode)) {
-            return I18n.format("faker.settings.mode." + this.modes.get(this.modes.indexOf(mode)).toString() + ".name");
+        if (this.getValues().contains(mode)) {
+            return I18n.format("faker.settings.mode." + this.getValues().get(this.getValues().indexOf(mode)).toString() + ".name");
         }
         return "";
     }
 
     public String getModeDisplayName(int index) {
-        if (index >= 0 && index < this.modes.size()) {
-            return I18n.format("faker.settings.mode." + this.modes.get(index).toString() + ".name");
+        if (index >= 0 && index < this.getValues().size()) {
+            return I18n.format("faker.settings.mode." + this.getValues().get(index).toString() + ".name");
         }
         return "";
+    }
+
+    public int getValueDisplayLine() {
+        return this.getValues().indexOf(this.getValue());
     }
 
     public boolean getDisplayFold() {

@@ -17,23 +17,16 @@ public class SettingsNumber<T extends Number> extends Settings<T> {
         return this.minValue;
     }
 
-    public Number getValuePercent() {
+    public Double getValuePercent() {
         return (this.getValue().doubleValue() - this.getMinValue().doubleValue()) / (this.getMaxValue().doubleValue() - this.getMinValue().doubleValue());
-    }
-
-    @Override
-    public void setValue(T value) {
-        if (value.doubleValue() < minValue.doubleValue()) {
-            value = this.getMinValue();
-        }
-        if (value.doubleValue() > maxValue.doubleValue()) {
-            value = this.getMaxValue();
-        }
-        super.setValue(value);
     }
 
     public String getDisplayValue() {
         return Double.toString((double) ((int) (this.getValue().doubleValue() * 100)) / 100);
+    }
+
+    public void setValueByPercent(Number percent) {
+
     }
 
     @Override

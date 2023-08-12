@@ -2,7 +2,6 @@ package coolclk.faker.injection.mixins;
 
 import coolclk.faker.feature.ModuleHandler;
 import coolclk.faker.feature.modules.render.ChestESP;
-import coolclk.faker.feature.modules.render.ESP;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.BlockPos;
@@ -17,6 +16,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class MixinBlock {
     @Inject(method = "shouldSideBeRendered", at = @At(value = "RETURN"), cancellable = true)
     public void shouldSideBeRendered(IBlockAccess worldIn, BlockPos pos, EnumFacing side, CallbackInfoReturnable<Boolean> cir) {
-        cir.setReturnValue((ModuleHandler.findModule(ESP.class).getEnable() && ((ModuleHandler.findModule(ChestESP.class).getEnable() && (worldIn.getBlockState(pos).getBlock() == Blocks.chest || worldIn.getBlockState(pos).getBlock() == Blocks.ender_chest || worldIn.getBlockState(pos).getBlock() == Blocks.trapped_chest)))) || cir.getReturnValue());
+        cir.setReturnValue((ModuleHandler.findModule(ChestESP.class).getEnable() && (worldIn.getBlockState(pos).getBlock() == Blocks.chest || worldIn.getBlockState(pos).getBlock() == Blocks.ender_chest || worldIn.getBlockState(pos).getBlock() == Blocks.trapped_chest)) || cir.getReturnValue());
     }
 }

@@ -3,7 +3,9 @@ package coolclk.faker.feature.api;
 import coolclk.faker.launch.FakerForgeMod;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +17,8 @@ public class Module implements IModule {
     private KeyBinding keyBinding = null;
     private final List<Settings<?>> settings = new ArrayList<Settings<?>>();
 
+    protected Logger LOGGER = FakerForgeMod.LOGGER;
+
     public Module() {
         if (this.getClass().isAnnotationPresent(ModuleInfo.class)) {
             ModuleInfo moduleInfo = this.getClass().getAnnotation(ModuleInfo.class);
@@ -22,6 +26,7 @@ public class Module implements IModule {
             this.nameTranslateKey = FakerForgeMod.MODID + ".module." + this.getName() + ".name";
             this.descriptionTranslateKey = FakerForgeMod.MODID + ".module." + this.getName() + ".description";
             this.updateKeyBinding(moduleInfo.defaultKeycode());
+            MinecraftForge.EVENT_BUS.register(this);
             ClientRegistry.registerKeyBinding(this.getKeyBinding());
             moduleInfo.category().addModule(this);
         }

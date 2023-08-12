@@ -43,6 +43,8 @@ public class AimAssist extends Module {
             float yaw = ModuleUtil.gEP().rotationYaw, pitch = ModuleUtil.gEP().rotationPitch, targetYaw, targetPitch;
             targetYaw = (float) ModuleUtil.getPositionToPositionAngle(ModuleUtil.gEP().posX, ModuleUtil.gEP().posZ, target.posX, target.posZ);
             targetPitch = (float) ModuleUtil.getPositionToPositionAngle(Math.sqrt(Math.pow(ModuleUtil.gEP().posX, 2) + Math.pow(ModuleUtil.gEP().posZ, 2)), ModuleUtil.gEP().posY, Math.sqrt(Math.pow(target.posX, 2) + Math.pow(target.posZ, 2)), target.posY);
+            targetYaw = targetYaw % 360;
+            targetPitch = targetPitch % 180 - 90;
             yaw += (targetYaw - yaw) * (speed.getValue() / 20);
             pitch += (targetPitch - pitch) * (speed.getValue() / 20);
             ModuleUtil.gEP().setAngles(yaw, pitch);

@@ -66,12 +66,29 @@ public class ClickGuiScreen extends GuiScreen {
         drawRect(0, 0, this.width, this.height, backgroundColor.getRGB());
         drawString(this.fontRendererObj, MESSAGE, 10, 10, 0xFFFFFFFF);
 
+        List<ClickGuiButton> defaultButtons = new ArrayList<ClickGuiButton>(this.clickGuiButtonList);
+        List<ClickGuiButton> overButtons = new ArrayList<ClickGuiButton>();
         for (ClickGuiButton button : this.clickGuiButtonList) {
-            button.drawButton(mc, mouseX, mouseY);
+            if (button.isCategoryButton()) {
+                if (((ClickGuiCategoryButton) button).moveOver) {
+                    ((ClickGuiCategoryButton) button).moveOver = false;
+                    overButtons.add(button);
+                    overButtons.addAll(((ClickGuiCategoryButton) button).subButtons);
+                    defaultButtons.remove(button);
+                    defaultButtons.removeAll(((ClickGuiCategoryButton) button).subButtons);
+                }
+            }
+        }
+        this.clickGuiButtonList.clear();
+        this.clickGuiButtonList.addAll(defaultButtons);
+        this.clickGuiButtonList.addAll(overButtons);
+
+        for (ClickGuiButton button : this.clickGuiButtonList) {
+            button.drawButton(mc, mouseX, mouseY, partialTicks);
             button.setAlpha((int) this.alpha);
         }
         for (ClickGuiButton button : this.clickGuiButtonList) {
-            button.afterDrawButton(mc, mouseX, mouseY);
+            button.afterDrawButton(mc, mouseX, mouseY, partialTicks);
         }
 
         if (this.alpha < 50 && !menuOpen) {
@@ -80,13 +97,6 @@ public class ClickGuiScreen extends GuiScreen {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-        }
-    }
-
-    @Override
-    protected void mouseReleased(int mouseX, int mouseY, int state) {
-        for (ClickGuiButton button : this.clickGuiButtonList) {
-            button.mouseReleased(mouseX, mouseY);
         }
     }
 

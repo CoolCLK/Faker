@@ -1,12 +1,12 @@
 package coolclk.faker.feature.api;
 
-public class SettingsInteger extends SettingsNumber<Integer> {
-    public SettingsInteger(Module parent, String name, Integer value, Integer minValue, Integer maxValue) {
+public class SettingsLong extends SettingsNumber<Long> {
+    public SettingsLong(Module parent, String name, Long value, Long minValue, Long maxValue) {
         super(parent, name, value, minValue, maxValue);
     }
 
     @Override
-    public void setValue(Integer value) {
+    public void setValue(Long value) {
         if (value < this.getMinValue()) {
             value = this.getMinValue();
         }
@@ -17,6 +17,6 @@ public class SettingsInteger extends SettingsNumber<Integer> {
     }
 
     public void setValueByPercent(Number percent) {
-        this.setValue((int) (this.getMinValue() + (this.getMaxValue() - this.getMinValue()) * percent.doubleValue()));
+        this.setValue((long) (this.getMinValue() + (this.getMaxValue() - this.getMinValue()) * percent.doubleValue()));
     }
 }

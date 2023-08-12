@@ -23,7 +23,11 @@ public class SettingsFloat extends SettingsNumber<Float> {
         if (value > this.getMaxValue()) {
             value = this.getMaxValue();
         }
-        value = ((int) (value * Math.pow(10, this.getDecimalPlaces().doubleValue()))) / Double.valueOf(Math.pow(10, this.getDecimalPlaces().doubleValue())).floatValue();
+        value = (float) (((int) (value * Math.pow(10, this.getDecimalPlaces().doubleValue()))) / Math.pow(10, this.getDecimalPlaces().doubleValue()));
         super.setValue(value);
+    }
+
+    public void setValueByPercent(Number percent) {
+        this.setValue((float) (this.getMinValue() + (this.getMaxValue() - this.getMinValue()) * percent.doubleValue()));
     }
 }

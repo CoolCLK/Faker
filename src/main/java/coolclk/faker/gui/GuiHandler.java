@@ -1,5 +1,6 @@
 package coolclk.faker.gui;
 
+import coolclk.faker.util.ModuleUtil;
 import net.minecraft.client.Minecraft;
 
 import java.awt.*;
@@ -8,7 +9,7 @@ public class GuiHandler {
     public static class Theme {
         public final static int BUTTON_WIDTH = 50;
         public final static int BUTTON_HEIGHT = 15;
-        public final static int MODULE_BUTTON_SETTINGS_MARGIN = 1;
+        public final static double MODULE_BUTTON_SETTINGS_MARGIN = 1;
 
         public final static int CATEGORY_BUTTON_BACKGROUND_COLOR = 0x343434;
         public final static int MODULE_BUTTON_DESCRIPTION_BACKGROUND_COLOR = 0x343434;
@@ -19,8 +20,12 @@ public class GuiHandler {
         public final static int MODULE_BUTTON_ENABLE_BACKGROUND_COLOR = 0x0091A6;
     }
 
+    public static int getRainbowColor(double speed, int movedColor) {
+        return Color.getHSBColor((int) (Math.abs(Math.sin(((double) Minecraft.getSystemTime() / 2000000L) * speed) * 255) + movedColor) % 256, 255, 255).hashCode();
+    }
+
     public static int getRainbowColor(double speed) {
-        return Color.getHSBColor((float) Math.abs(Math.sin(((double) Minecraft.getSystemTime() / 1000) * speed) * 255), 255, 255).getRGB();
+        return getRainbowColor(speed, 0);
     }
 
     public static double easeOutQuad(double speed) {
@@ -29,12 +34,25 @@ public class GuiHandler {
 
     public static int easeColorRGBA(int originalColor, int targetColor, double speed) {
         Color from = new Color(originalColor, true), to = new Color(targetColor, true);
-        int r = from.getRed(), g = from.getBlue(), b = from.getBlue(), a = from.getAlpha();
-        r += (int) Math.round((to.getRed() - r) * speed);
-        g += (int) Math.round((to.getGreen() - g) * speed);
-        b += (int) Math.round((to.getBlue() - b) * speed);
-        a += (int) Math.round((to.getAlpha() - a) * speed);
-        return new Color(r, g, b, a).hashCode();
+        int fr = from.getRed(), fg = from.getBlue(), fb = from.getBlue(), fa = from.getAlpha();
+        int tr = to.getRed(), tg = to.getBlue(), tb = to.getBlue(), ta = to.getAlpha();
+        fr += (int) Math.round((tr - fr) * speed);
+        fg += (int) Math.round((tg - fg) * speed);
+        fb += (int) Math.round((tb - fb) * speed);
+        fa += (int) Math.round((ta - fa) * speed);
+        if (ModuleUtil.inRange(fr, tr - 25, tr)) {
+            fr = tr;
+        }
+        if (ModuleUtil.inRange(fg, tg - 25, tg)) {
+            fg = tg;
+        }
+        if (ModuleUtil.inRange(fb, tb - 25, tb)) {
+            fb = tb;
+        }
+        if (ModuleUtil.inRange(fa, ta - 25, ta)) {
+            fa = ta;
+        }
+        return new Color(fr, fg, fb, fa).hashCode();
     }
 
     public static int easeColorRGB(int originalColor, int targetColor, double speed) {

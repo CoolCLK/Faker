@@ -1,20 +1,22 @@
 {
   "required": true,
-  "minVersion": "0.7.11",
+  "compatibilityLevel": "JAVA_8",
   "package": "coolclk.faker.injection.mixins",
   "refmap": "mixins.faker.refmap.json",
-  "client": [
-    "MixinEntityRenderer",
-    "MixinGuiIngameForge",
-    "MixinMinecraft",
-    "MixinRender",
-    "MixinTimer"
-  ],
   "mixins": [
     "MixinBlock",
     "MixinEntity",
+    "MixinEntityLivingBase",
+    "MixinEntityPlayer",
+    "MixinEntityRenderer",
     "MixinFoodStats",
     "MixinItemFood",
-    "MixinNetworkManager"
+    "MixinMaterial",
+    "MixinMinecraft",
+    "MixinNetworkManager",
+    "MixinRender",
+    "MixinTimer",
+    "MixinWorld",
+    "MixinWorldSettingsGameType"
   ]
 }

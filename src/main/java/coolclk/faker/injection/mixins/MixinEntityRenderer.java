@@ -56,10 +56,10 @@ public abstract class MixinEntityRenderer {
         }
     }
 
-    @Inject(method = "getMouseOver", at = @At(value = "HEAD"), cancellable = true)
+    @Inject(method = "getMouseOver", at = @At(value = "RETURN"))
     public void getMouseOver(float partialTicks, CallbackInfo ci) {
         Minecraft mc = Minecraft.getMinecraft();
-        if (ModuleHandler.findModule(Reach.class).getEnable() && mc.objectMouseOver == null) {
+        if (ModuleHandler.findModule(Reach.class).getEnable()) {
             Entity entity = mc.getRenderViewEntity();
 
             if (entity != null) {
@@ -133,7 +133,6 @@ public abstract class MixinEntityRenderer {
                     mc.mcProfiler.endSection();
                 }
             }
-            ci.cancel();
         }
     }
 }

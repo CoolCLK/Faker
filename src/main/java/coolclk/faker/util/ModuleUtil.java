@@ -16,6 +16,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ModuleUtil {
+    public static boolean inRange(Double number, Double min, Double max) {
+        double minNum = Math.min(min, max), maxNum = Math.max(min, max);
+        return number >= minNum && number <= maxNum;
+    }
+
+    public static boolean inRange(Integer number, Integer min, Integer max) {
+        return inRange(number.doubleValue(), min.doubleValue(), max.doubleValue());
+    }
+
     public static Minecraft getMinecraft() {
         return Minecraft.getMinecraft();
     }
@@ -47,7 +56,7 @@ public class ModuleUtil {
 
         for (EntityLivingBase entity : checkTargets) {
             double distance = entityToEntityDistance(player, entity);
-            if (entity != player && distance < range) {
+            if (entity != player && (distance < 0 || distance < range)) {
                 targets.add(entity);
             }
         }

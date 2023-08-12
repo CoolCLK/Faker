@@ -9,7 +9,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 @ModuleInfo(name = "Criticals", category = ModuleCategory.Combat)
 public class Criticals extends Module {
-    public SettingsModeString mode = new SettingsModeString(this, "mode", "jump", "packet", "jump", "custom");
+    public SettingsModeString mode = new SettingsModeString(this, "jump", "jump", "packet", "custom");
     public SettingsDouble jumpHeight = new SettingsDouble(this, "jumpHeight", 0.42, 0.01, 0.5);
 
     @Override

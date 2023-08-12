@@ -21,6 +21,7 @@ minecraft {
     runDir = "run"
 
     mappings = "stable_22"
+    makeObfSourceJar = false
 }
 
 repositories {
@@ -34,7 +35,7 @@ repositories {
 
 configurations {
     include
-    implementation.extendsFrom(include)
+    compile.extendsFrom(include)
 }
 
 dependencies {
@@ -48,7 +49,9 @@ dependencies {
         exclude module: "slf4j-api"
     }
 
-    implementation 'org.reflections:reflections:0.10.2'
+    annotationProcessor 'org.spongepowered:mixin:0.7.11-SNAPSHOT'
+
+    compile 'org.reflections:reflections:0.10.2'
 }
 
 processResources {
@@ -64,6 +67,7 @@ processResources {
 
 jar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    baseName = baseName + "-" + minecraft.version
 
     from {
         configurations.compile.collect {
@@ -87,4 +91,10 @@ sourceSets {
         output.resourcesDir = file('build/combined')
         java.outputDir = file('build/combined')
     }
+}
+
+mixin {
+    disableRefMapWarning = true
+    defaultObfuscationEnv searge
+    add sourceSets.main, "mixins.faker.refmap.json"
 }

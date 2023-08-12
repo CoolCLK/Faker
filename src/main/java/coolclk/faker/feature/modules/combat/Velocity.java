@@ -19,7 +19,7 @@ public class Velocity extends Module {
     public SettingsFloat counteractPercent = new SettingsFloat(this, "counteractPercent", 0.5F, 0F, 1F) {
         @Override
         public String getDisplayValue() {
-            return (super.getValuePercent().doubleValue() * 100) + "%";
+            return (super.getValuePercent() * 100) + "%";
         }
     };
 
@@ -43,11 +43,11 @@ public class Velocity extends Module {
     @SubscribeEvent
     public void onLivingHurt(LivingHurtEvent event) {
         if (this.getEnable()) {
-            if (event.entityLiving instanceof EntityPlayer && ((EntityPlayer) event.entityLiving).isUser()) {
+            if (event.entityLiving == ModuleUtil.gEP() && ((EntityPlayer) event.entityLiving).isUser()) {
                 if (mode.getValue().equals("timer")) {
                     slowing = 5;
                 } else {
-                    float per = counteractPercent.getValue();
+                    float per = 1 - counteractPercent.getValue();
                     ModuleUtil.gEP().motionX *= per;
                     ModuleUtil.gEP().motionY *= per;
                     ModuleUtil.gEP().motionZ *= per;
