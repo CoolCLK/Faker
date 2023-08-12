@@ -25,7 +25,7 @@ public class HUD extends Module {
                     fontRendererObj.drawStringWithShadow(module.getDisplayName(), new ScaledResolution(Minecraft.getMinecraft()).getScaledWidth() - fontRendererObj.getStringWidth(module.getDisplayName()) - margin, yPosition, GuiHandler.getRainbowColor(1, colorMoved));
                     yPosition += fontRendererObj.FONT_HEIGHT;
                 }
-                colorMoved += 2;
+                colorMoved += 5;
             }
         }
     }

@@ -1,7 +1,6 @@
 package coolclk.faker.gui;
 
 import coolclk.faker.util.ModuleUtil;
-import net.minecraft.client.Minecraft;
 
 import java.awt.*;
 
@@ -21,7 +20,7 @@ public class GuiHandler {
     }
 
     public static int getRainbowColor(double speed, int movedColor) {
-        return Color.getHSBColor((int) (Math.abs(Math.sin(((double) Minecraft.getSystemTime() / 2000000L) * speed) * 255) + movedColor) % 256, 255, 255).hashCode();
+        return Color.getHSBColor((int) (Math.abs(Math.sin(((double) System.currentTimeMillis() / 1000L) * speed) * 255) + movedColor) % 256, 255, 255).hashCode();
     }
 
     public static int getRainbowColor(double speed) {
