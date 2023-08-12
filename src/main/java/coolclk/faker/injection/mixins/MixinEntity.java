@@ -28,8 +28,6 @@ public abstract class MixinEntity {
 
     @Shadow public abstract AxisAlignedBB getEntityBoundingBox();
 
-    @Shadow public abstract void setRenderYawOffset(float offset);
-
     @Inject(method = "isInvisible", at = @At(value = "RETURN"), cancellable = true)
     public void isInvisible(CallbackInfoReturnable<Boolean> cir) {
         cir.setReturnValue(!ModuleHandler.findModule(NoInvisible.class).getEnable() && cir.getReturnValue());
