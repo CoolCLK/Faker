@@ -75,9 +75,7 @@ public enum ModuleCategory {
     public static List<Module> getAllModules() {
         final List<Module> modules = new ArrayList<Module>();
         for (ModuleCategory category : ModuleCategory.values()) {
-            if (category != ModuleCategory.None) {
-                modules.addAll(category.getModules());
-            }
+            modules.addAll(category.getModules());
         }
         return modules;
     }

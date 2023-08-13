@@ -17,15 +17,15 @@ public class HUD extends Module {
         if (this.getEnable() && event.type == RenderGameOverlayEvent.ElementType.ALL) {
             FontRenderer fontRendererObj = Minecraft.getMinecraft().fontRendererObj;
             int margin = 10;
-            fontRendererObj.drawStringWithShadow("Faker", margin, margin, GuiHandler.getRainbowColor(1));
+            fontRendererObj.drawStringWithShadow("Faker", margin, margin, GuiHandler.getRainbowColor(3));
             int yPosition = margin;
             int colorMoved = 0;
             for (Module module : ModuleCategory.getAllModules()) {
                 if (module.getEnable()) {
-                    fontRendererObj.drawStringWithShadow(module.getDisplayName(), new ScaledResolution(Minecraft.getMinecraft()).getScaledWidth() - fontRendererObj.getStringWidth(module.getDisplayName()) - margin, yPosition, GuiHandler.getRainbowColor(1, colorMoved));
+                    fontRendererObj.drawStringWithShadow(module.getDisplayName(), new ScaledResolution(Minecraft.getMinecraft()).getScaledWidth() - fontRendererObj.getStringWidth(module.getDisplayName()) - margin, yPosition, GuiHandler.getRainbowColor(3, colorMoved));
                     yPosition += fontRendererObj.FONT_HEIGHT;
                 }
-                colorMoved += 5;
+                colorMoved += 1;
             }
         }
     }

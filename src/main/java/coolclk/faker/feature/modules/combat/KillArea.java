@@ -23,7 +23,7 @@ public class KillArea extends Module {
     public SettingsBoolean allowMob = new SettingsBoolean(this, "allowAttackMob", true);
     public SettingsLong minAttackSpeed = new SettingsLong(this, "minAttackSpeed", 6L, 0L, 20L);
     public SettingsLong maxAttackSpeed = new SettingsLong(this, "maxAttackSpeed", 12L, 0L, 20L);
-    public SettingsDouble range = new SettingsDouble(this, "range", 5D, 0D, 20D);
+    public SettingsDouble range = new SettingsDouble(this, "range", 5D, 0D, 6D);
 
     @Override
     public void onClickGuiUpdate() {

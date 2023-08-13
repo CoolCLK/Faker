@@ -15,15 +15,23 @@ public class AntiBot extends Module {
     private final List<Entity> bots = new ArrayList<Entity>();
 
     @Override
-    public void onEnabling() {
+    public void onEnable() {
         bots.clear();
+    }
+
+    @Override
+    public void onEnabling() {
+        List<Entity> possibleBots = new ArrayList<Entity>();
         for (EntityPlayer player : ModuleUtil.gW().playerEntities) {
-            for (Character character : player.getName().toCharArray()) {
-                if (!"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_".contains(character.toString())) {
-                    bots.add(player);
+            for (int i = 0; i < player.getName().length(); i++) {
+                if (!"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_1234567890".contains(Character.toString(player.getName().charAt(i)))) {
+                    possibleBots.add(player);
+                    break;
                 }
             }
         }
+        bots.clear();
+        bots.addAll(possibleBots);
     }
 
     @Override

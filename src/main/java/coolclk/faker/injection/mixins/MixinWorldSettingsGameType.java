@@ -2,6 +2,7 @@ package coolclk.faker.injection.mixins;
 
 import coolclk.faker.feature.ModuleHandler;
 import coolclk.faker.feature.modules.movement.Fly;
+import coolclk.faker.feature.modules.player.DisableDamage;
 import coolclk.faker.feature.modules.player.NoAntiBuild;
 import coolclk.faker.feature.modules.render.FreeCam;
 import net.minecraft.entity.player.PlayerCapabilities;
@@ -15,6 +16,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinWorldSettingsGameType {
     @Inject(method = "configurePlayerCapabilities", at = @At(value = "RETURN"))
     public void configurePlayerCapabilities(PlayerCapabilities capabilities, CallbackInfo ci) {
+        if (ModuleHandler.findModule(DisableDamage.class).getEnable()) {
+            capabilities.disableDamage = true;
+        }
         if (ModuleHandler.findModule(Fly.class).getEnable() || ModuleHandler.findModule(FreeCam.class).getEnable()) {
             capabilities.allowFlying = true;
         }

@@ -9,7 +9,7 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Vec3;
 
-@ModuleInfo(name = "Scaffold", category = ModuleCategory.Movement)
+@ModuleInfo(name = "Scaffold", category = ModuleCategory.None)
 public class Scaffold extends Module {
     @Override
     public void onEnabling() {

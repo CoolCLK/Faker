@@ -1,5 +1,6 @@
 package coolclk.faker.feature.api;
 
+import coolclk.faker.feature.modules.ModuleCategory;
 import coolclk.faker.launch.FakerForgeMod;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.KeyBinding;
@@ -26,8 +27,10 @@ public class Module implements IModule {
             this.nameTranslateKey = FakerForgeMod.MODID + ".module." + this.getName() + ".name";
             this.descriptionTranslateKey = FakerForgeMod.MODID + ".module." + this.getName() + ".description";
             this.updateKeyBinding(moduleInfo.defaultKeycode());
-            MinecraftForge.EVENT_BUS.register(this);
-            ClientRegistry.registerKeyBinding(this.getKeyBinding());
+            if (moduleInfo.category() != ModuleCategory.None) {
+                MinecraftForge.EVENT_BUS.register(this);
+                ClientRegistry.registerKeyBinding(this.getKeyBinding());
+            }
             moduleInfo.category().addModule(this);
         }
     }

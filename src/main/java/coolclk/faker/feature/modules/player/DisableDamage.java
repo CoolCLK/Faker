@@ -6,17 +6,17 @@ import coolclk.faker.feature.modules.ModuleCategory;
 import coolclk.faker.util.ModuleUtil;
 import net.minecraft.world.WorldSettings;
 
-@ModuleInfo(name = "NoAntiBuild", category = ModuleCategory.Movement)
-public class NoAntiBuild extends Module {
+@ModuleInfo(name = "DisableDamage", category = ModuleCategory.Player)
+public class DisableDamage extends Module {
     @Override
     public void onEnabling() {
-        if (!ModuleUtil.gEP().capabilities.allowEdit) {
-            ModuleUtil.gEP().capabilities.allowEdit = true;
+        if (!ModuleUtil.gEP().capabilities.disableDamage) {
+            ModuleUtil.gEP().capabilities.disableDamage = true;
         }
     }
 
     @Override
     public void onDisable() {
-        ModuleUtil.gEP().capabilities.allowEdit = ModuleUtil.gPC().getCurrentGameType() != WorldSettings.GameType.ADVENTURE;
+        ModuleUtil.gEP().capabilities.disableDamage = ModuleUtil.gPC().getCurrentGameType() == WorldSettings.GameType.CREATIVE;
     }
 }

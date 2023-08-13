@@ -21,7 +21,7 @@ public class MixinFoodStats {
             this.faker$foodTimer++;
 
             if (this.faker$foodTimer >= ModuleHandler.findModule(Regen.class).healSpeed.getValue()) {
-                player.heal(ModuleHandler.findModule(Regen.class).healHealth.getValue() - 1);
+                player.heal(ModuleHandler.findModule(Regen.class).healHealth.getValue());
                 this.faker$foodTimer = 0;
             }
         }

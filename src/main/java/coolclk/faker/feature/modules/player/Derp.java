@@ -10,11 +10,16 @@ import net.minecraft.network.play.client.C03PacketPlayer;
 @ModuleInfo(name = "Derp", category = ModuleCategory.Player)
 public class Derp extends Module {
     private long lastTime = 0;
-    public SettingsLong delayTicks = new SettingsLong(this, "delayTicks", 50L, 0L, 100L);
+    public SettingsLong delay = new SettingsLong(this, "delay", 50L, 0L, 100L) {
+        @Override
+        public String getDisplayValue() {
+            return super.getDisplayValue() + "ms";
+        }
+    };
 
     @Override
     public void onEnabling() {
-        if (System.currentTimeMillis() >= lastTime + delayTicks.getValue()) {
+        if (System.currentTimeMillis() >= lastTime + delay.getValue()) {
             float yaw = ModuleUtil.gEP().rotationYawHead, motionYaw;
             motionYaw = (float) (Math.random() * 360 - yaw);
             yaw += motionYaw;

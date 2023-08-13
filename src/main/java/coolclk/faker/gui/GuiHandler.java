@@ -20,7 +20,7 @@ public class GuiHandler {
     }
 
     public static int getRainbowColor(double speed, int movedColor) {
-        return Color.getHSBColor((int) (Math.abs(Math.sin(((double) System.currentTimeMillis() / 1000L) * speed) * 255) + movedColor) % 256, 255, 255).hashCode();
+        return Color.getHSBColor((float) (((System.currentTimeMillis() / 1000 * speed) % 256 + movedColor) / 255), 1, 1).hashCode();
     }
 
     public static int getRainbowColor(double speed) {

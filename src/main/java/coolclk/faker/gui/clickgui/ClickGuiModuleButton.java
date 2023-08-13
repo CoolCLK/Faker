@@ -26,12 +26,12 @@ public class ClickGuiModuleButton extends ClickGuiButton {
             if (this.isMouseOver()) {
                 if (mouseLeftClick) {
                     this.module.toggleModule();
-                    this.backgroundColor = this.module.getEnable() ? GuiHandler.Theme.MODULE_BUTTON_ENABLE_BACKGROUND_COLOR : GuiHandler.Theme.MODULE_BUTTON_DISABLE_BACKGROUND_COLOR;
                 }
                 if (mouseRightClick) {
                     this.fold = !this.fold;
                 }
             }
+            this.backgroundColor = this.module.getEnable() ? GuiHandler.Theme.MODULE_BUTTON_ENABLE_BACKGROUND_COLOR : GuiHandler.Theme.MODULE_BUTTON_DISABLE_BACKGROUND_COLOR;
             this.currentHeight = this.height;
             if (!this.fold) {
                 this.module.onClickGuiUpdate();
