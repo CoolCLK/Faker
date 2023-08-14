@@ -109,6 +109,7 @@ public class ModuleHandler {
                         } else LOGGER.warn("Cannot found module \"" + configuration.name + "\"! Mod will ignore it");
                     }
                 }
+                reader.close();
             } else configFile.createNewFile();
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -123,6 +124,8 @@ public class ModuleHandler {
             List<ModuleConfiguration> configurations = new ArrayList<ModuleConfiguration>();
             for (Module module : ModuleCategory.getAllModules()) configurations.add(new ModuleConfiguration(module));
             writer.write(new Gson().toJson(configurations));
+            writer.flush();
+            writer.close();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
