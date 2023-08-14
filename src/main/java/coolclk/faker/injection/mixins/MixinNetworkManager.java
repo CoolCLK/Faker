@@ -12,18 +12,6 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(NetworkManager.class)
 public abstract class MixinNetworkManager {
-    /*
-    @Inject(method = "sendPacket(Lnet/minecraft/network/Packet;)V", at = @At(value = "HEAD"), cancellable = true)
-    public void sendPacket(Packet<?> packetIn, CallbackInfo ci) {
-        if (MinecraftForge.EVENT_BUS.post(new PacketSendEvent(packetIn))) ci.cancel();
-    }
-
-    @Inject(method = "sendPacket(Lnet/minecraft/network/Packet;Lio/netty/util/concurrent/GenericFutureListener;[Lio/netty/util/concurrent/GenericFutureListener;)V", at = @At(value = "HEAD"), cancellable = true)
-    public void sendPacketEvent(Packet<?> packetIn, GenericFutureListener<? extends Future<? super Void>> listener, GenericFutureListener<? extends Future<? super Void>>[] listeners, CallbackInfo ci) {
-        if (MinecraftForge.EVENT_BUS.post(new PacketSendEvent(packetIn))) ci.cancel();
-    }
-    */
-
     @Shadow public abstract boolean isChannelOpen();
 
     @Shadow protected abstract void flushOutboundQueue();

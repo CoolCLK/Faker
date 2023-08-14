@@ -1,8 +1,10 @@
 package coolclk.faker.feature.modules.combat;
 
+import coolclk.faker.feature.ModuleHandler;
 import coolclk.faker.feature.api.Module;
 import coolclk.faker.feature.api.ModuleInfo;
 import coolclk.faker.feature.modules.ModuleCategory;
+import coolclk.faker.feature.modules.render.FreeCam;
 import coolclk.faker.util.ModuleUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -40,6 +42,6 @@ public class AntiBot extends Module {
     }
 
     public boolean isBot(Entity player) {
-        return bots.contains(player);
+        return bots.contains(player) || player == ModuleHandler.findModule(FreeCam.class).getFreeCamObject();
     }
 }

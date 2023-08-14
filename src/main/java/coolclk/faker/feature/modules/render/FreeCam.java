@@ -10,20 +10,19 @@ import coolclk.faker.feature.modules.ModuleCategory;
 import coolclk.faker.feature.modules.movement.Fly;
 import coolclk.faker.util.ModuleUtil;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.play.client.C01PacketChatMessage;
 import net.minecraft.network.play.client.C14PacketTabComplete;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 @ModuleInfo(name = "FreeCam", category = ModuleCategory.Render)
 public class FreeCam extends Module {
-    private EntityOtherPlayerMP fakePlayer;
+    private EntityOtherPlayerMP fakePlayer = null;
     private float oldRotationPitch, oldRotationYaw;
     private double oldPosX, oldPosY, oldPosZ;
 
     public SettingsFloat flyHorizontalSpeed = new SettingsFloat(this, "flyHorizontalSpeed", 0.1F, 0F, 5F);
     public SettingsDouble flyVerticalSpeed = new SettingsDouble(this, "flyVerticalSpeed", 0.1D, 0D, 5D);
-
-    private boolean oldIsFlying = false;
 
     @Override
     public void onRegister() {
@@ -49,8 +48,6 @@ public class FreeCam extends Module {
         if (ModuleHandler.findModule(Fly.class).getEnable()) {
             ModuleHandler.findModule(Fly.class).toggleModule();
         }
-
-        oldIsFlying = ModuleUtil.gEP().capabilities.isFlying;
     }
 
     @Override
@@ -75,7 +72,7 @@ public class FreeCam extends Module {
         ModuleUtil.gEP().onGround = true;
         ModuleUtil.gEP().fallDistance = 0;
         ModuleUtil.gEP().motionY = 0;
-        ModuleUtil.gEP().capabilities.isFlying = oldIsFlying;
+        ModuleUtil.gEP().capabilities.isFlying = ModuleHandler.findModule(Fly.class).getEnable();
     }
 
     @SubscribeEvent
@@ -85,5 +82,9 @@ public class FreeCam extends Module {
                 event.setCanceled(true);
             }
         }
+    }
+
+    public EntityPlayer getFreeCamObject() {
+        return fakePlayer;
     }
 }

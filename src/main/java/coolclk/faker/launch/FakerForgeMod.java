@@ -30,7 +30,14 @@ public class FakerForgeMod {
     public void onFMLInitialization(FMLInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(new EventHandler());
 
-        ModuleHandler.loadConfigs();
         ModuleHandler.registerModules();
+        ModuleHandler.loadConfigs();
+
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                ModuleHandler.saveConfigs();
+            }
+        });
     }
 }

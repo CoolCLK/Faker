@@ -10,7 +10,7 @@ public class NoFall extends Module {
     @Override
     public void onEnabling() {
         if ((ModuleUtil.gEP()).fallDistance > 2) {
-            ModuleUtil.gEP().onGround = true;
+            ModuleUtil.gEP().onGround = ModuleUtil.gEP().motionY < 0;
             (ModuleUtil.gEP()).fallDistance = 0;
         }
     }

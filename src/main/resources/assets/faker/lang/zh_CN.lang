@@ -11,6 +11,7 @@ faker.settings.allowAttackPlayer.name=攻击玩家
 faker.settings.allowAttackMob.name=攻击生物
 faker.settings.allowAimPlayer.name=瞄准玩家
 faker.settings.allowAimMob.name=瞄准生物
+faker.settings.distance.name=距离
 faker.settings.range.name=范围
 faker.settings.count.name=数量
 faker.settings.minAttackSpeed.name=最小攻击速度
@@ -31,6 +32,9 @@ faker.settings.blockDistance.name=方块距离
 faker.settings.healSpeed.name=回复速度
 faker.settings.healHealth.name=回复血量
 faker.settings.shakePercent.name=抖动百分比
+faker.settings.mode.outline.name=描边
+faker.settings.outlineWidth.name=描边宽度
+faker.settings.outlineAlpha.name=描边透明度
 
 faker.category.Combat.name=战斗
 faker.category.Movement.name=移动

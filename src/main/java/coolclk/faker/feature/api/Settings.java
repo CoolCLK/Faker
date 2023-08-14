@@ -1,6 +1,8 @@
 package coolclk.faker.feature.api;
 
+import coolclk.faker.event.ModuleChangeStatEvent;
 import net.minecraft.client.resources.I18n;
+import net.minecraftforge.common.MinecraftForge;
 
 public class Settings<T> {
     private final String name;
@@ -15,10 +17,15 @@ public class Settings<T> {
 
     public void setValue(T value) {
         this.value = value;
+        MinecraftForge.EVENT_BUS.post(new ModuleChangeStatEvent());
     }
 
     public T getValue() {
         return this.value;
+    }
+
+    public String getName() {
+        return I18n.format(this.getTranslateKey());
     }
 
     protected String getTranslateKey() {

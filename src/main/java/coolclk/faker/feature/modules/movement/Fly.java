@@ -1,10 +1,12 @@
 package coolclk.faker.feature.modules.movement;
 
+import coolclk.faker.feature.ModuleHandler;
 import coolclk.faker.feature.api.Module;
 import coolclk.faker.feature.api.ModuleInfo;
 import coolclk.faker.feature.api.SettingsDouble;
 import coolclk.faker.feature.api.SettingsFloat;
 import coolclk.faker.feature.modules.ModuleCategory;
+import coolclk.faker.feature.modules.render.FreeCam;
 import coolclk.faker.util.ModuleUtil;
 import org.lwjgl.input.Keyboard;
 
@@ -13,18 +15,11 @@ public class Fly extends Module {
     public SettingsFloat flyHorizontalSpeed = new SettingsFloat(this, "flyHorizontalSpeed", 0.1F, 0F, 5F);
     public SettingsDouble flyVerticalSpeed = new SettingsDouble(this, "flyVerticalSpeed", 0.1D, 0D, 5D);
 
-    private boolean oldIsFlying = false;
-
     @Override
     public void onRegister() {
         if (this.getEnable()) {
             this.toggleModule();
         }
-    }
-
-    @Override
-    public void onEnable() {
-        oldIsFlying = ModuleUtil.gEP().capabilities.isFlying;
     }
 
     @Override
@@ -40,6 +35,6 @@ public class Fly extends Module {
 
     @Override
     public void onDisable() {
-        ModuleUtil.gEP().capabilities.isFlying = oldIsFlying;
+        ModuleUtil.gEP().capabilities.isFlying = ModuleHandler.findModule(FreeCam.class).getEnable();
     }
 }

@@ -26,4 +26,9 @@ public class EventHandler {
     public void onRefreshResources(RefreshResourcesEvent event) {
         ModuleHandler.updateModules();
     }
+
+    @SubscribeEvent
+    public void onModuleChangeStat(ModuleChangeStatEvent event) {
+        ModuleHandler.saveConfigs();
+    }
 }

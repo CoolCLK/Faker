@@ -1,6 +1,8 @@
 package coolclk.faker.feature.api;
 
+import coolclk.faker.event.ModuleChangeStatEvent;
 import coolclk.faker.feature.modules.ModuleCategory;
+import coolclk.faker.feature.modules.player.Timer;
 import coolclk.faker.launch.FakerForgeMod;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.KeyBinding;
@@ -13,6 +15,7 @@ import java.util.List;
 
 public class Module implements IModule {
     private boolean enable = false;
+    private Long enableTime = 0L;
     private String name = "";
     private String nameTranslateKey = "", descriptionTranslateKey = "";
     private KeyBinding keyBinding = null;
@@ -65,15 +68,22 @@ public class Module implements IModule {
 
     public void setEnable(boolean enable) {
         this.enable = enable;
+        MinecraftForge.EVENT_BUS.post(new ModuleChangeStatEvent());
         if (enable) {
+            this.enableTime = System.currentTimeMillis();
             this.onEnable();
         } else {
             this.onDisable();
+            this.afterDisable();
         }
     }
 
     public boolean getEnable() {
         return this.enable;
+    }
+
+    public Float getEnableTicks() {
+        return (this.getEnable() ? (System.currentTimeMillis() - this.enableTime) : 0) / Timer.currentTimerSpeed;
     }
 
     public void toggleModule() {
@@ -104,11 +114,28 @@ public class Module implements IModule {
 
     }
 
+    public void afterEnabling() {
+
+    }
+
     public void onDisable() {
+
+    }
+
+    public void afterDisable() {
 
     }
 
     public void onClickGuiUpdate() {
 
+    }
+
+    public String getHUDInfo() {
+        for (Settings<?> settings : this.settings) {
+            if (settings.rootOf(SettingsMode.class)) {
+                return settings.getDisplayValue();
+            }
+        }
+        return "";
     }
 }

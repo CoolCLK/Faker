@@ -12,20 +12,34 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 @ModuleInfo(name = "HUD", category = ModuleCategory.Render)
 public class HUD extends Module {
+    public static String MESSAGE = "";
+
     @SubscribeEvent
     public void onRenderGameOverlay(RenderGameOverlayEvent event) {
-        if (this.getEnable() && event.type == RenderGameOverlayEvent.ElementType.ALL) {
-            FontRenderer fontRendererObj = Minecraft.getMinecraft().fontRendererObj;
-            int margin = 10;
-            fontRendererObj.drawStringWithShadow("Faker", margin, margin, GuiHandler.getRainbowColor(3));
-            int yPosition = margin;
-            int colorMoved = 0;
-            for (Module module : ModuleCategory.getAllModules()) {
-                if (module.getEnable()) {
-                    fontRendererObj.drawStringWithShadow(module.getDisplayName(), new ScaledResolution(Minecraft.getMinecraft()).getScaledWidth() - fontRendererObj.getStringWidth(module.getDisplayName()) - margin, yPosition, GuiHandler.getRainbowColor(3, colorMoved));
-                    yPosition += fontRendererObj.FONT_HEIGHT;
+        if (event.type == RenderGameOverlayEvent.ElementType.TEXT) {
+            if (this.getEnable()) {
+                FontRenderer fontRendererObj = Minecraft.getMinecraft().fontRendererObj;
+                int margin = 10, rainbowSpeed = 5;
+                int yPosition = margin;
+                int colorMoved = 0;
+                for (Module module : ModuleCategory.getAllModules()) {
+                    String moduleInfo = module.getHUDInfo();
+                    if (moduleInfo.trim().isEmpty()) moduleInfo = "";
+                    if (module.getEnable()) {
+                        fontRendererObj.drawStringWithShadow(module.getDisplayName(), new ScaledResolution(Minecraft.getMinecraft()).getScaledWidth() - fontRendererObj.getStringWidth(module.getDisplayName() + moduleInfo) - (moduleInfo.isEmpty() ? 0 : 2) - margin, yPosition, GuiHandler.getRainbowColor(rainbowSpeed, colorMoved));
+                        fontRendererObj.drawStringWithShadow(moduleInfo, new ScaledResolution(Minecraft.getMinecraft()).getScaledWidth() - fontRendererObj.getStringWidth(moduleInfo) - margin, yPosition, GuiHandler.Theme.MODULE_BUTTON_HUD_INFO_COLOR);
+                        yPosition += fontRendererObj.FONT_HEIGHT;
+                        colorMoved += 1;
+                    }
                 }
-                colorMoved += 1;
+
+                yPosition = margin;
+                colorMoved = 0;
+                for (String line : MESSAGE.contains("\n") ? MESSAGE.split("\n") : new String[]{MESSAGE}) {
+                    fontRendererObj.drawStringWithShadow(line, margin, yPosition, GuiHandler.getRainbowColor(rainbowSpeed, 0));
+                    yPosition += fontRendererObj.FONT_HEIGHT;
+                    colorMoved += 1;
+                }
             }
         }
     }

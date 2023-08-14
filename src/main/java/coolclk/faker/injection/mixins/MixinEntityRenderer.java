@@ -13,6 +13,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.util.*;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -23,6 +24,8 @@ import java.util.List;
 @Mixin(EntityRenderer.class)
 public abstract class MixinEntityRenderer {
     @Shadow private Entity pointedEntity;
+
+    @Shadow private Minecraft mc;
 
     @Inject(method = "hurtCameraEffect", at = @At(value = "HEAD"), cancellable = true)
     private void hurtCameraEffect(float partialTicks, CallbackInfo ci) {
@@ -56,82 +59,99 @@ public abstract class MixinEntityRenderer {
         }
     }
 
-    @Inject(method = "getMouseOver", at = @At(value = "RETURN"))
-    public void getMouseOver(float partialTicks, CallbackInfo ci) {
+    /**
+     * @author CoolCLK
+     * @reason Change view
+     */
+    @Overwrite
+    public void getMouseOver(float partialTicks) {
         Minecraft mc = Minecraft.getMinecraft();
-        if (ModuleHandler.findModule(Reach.class).getEnable()) {
-            Entity entity = mc.getRenderViewEntity();
+        Entity entity = mc.getRenderViewEntity();
 
-            if (entity != null) {
-                if (mc.theWorld != null) {
-                    mc.mcProfiler.startSection("pick");
-                    mc.pointedEntity = null;
-                    double blockReachDistance = ModuleHandler.findModule(Reach.class).blockDistance.getValue();
-                    mc.objectMouseOver = entity.rayTrace(blockReachDistance, partialTicks);
-                    double entityReachDistance = ModuleHandler.findModule(Reach.class).entityDistance.getValue();
-                    Vec3 eyesPosition = entity.getPositionEyes(partialTicks);
+        if (entity != null) {
+            if (mc.theWorld != null) {
+                mc.mcProfiler.startSection("pick");
+                mc.pointedEntity = null;
+                double blockReachDistance = this.mc.playerController.getBlockReachDistance();
+                mc.objectMouseOver = entity.rayTrace(blockReachDistance, partialTicks);
+                double entityReachDistance = blockReachDistance;
+                Vec3 eyesPosition = entity.getPositionEyes(partialTicks);
+                boolean flag = false;
 
-                    if (mc.objectMouseOver != null) {
-                        entityReachDistance = mc.objectMouseOver.hitVec.distanceTo(eyesPosition);
+                if (ModuleHandler.findModule(Reach.class).getEnable()) {
+                    blockReachDistance = ModuleHandler.findModule(Reach.class).distance.getValue();
+                    entityReachDistance = blockReachDistance;
+                }
+                else if (this.mc.playerController.extendedReach()) {
+                    blockReachDistance = 6.0D;
+                    entityReachDistance = 6.0D;
+                }
+                else {
+                    if (blockReachDistance > 3.0D) {
+                        flag = true;
                     }
+                }
 
-                    Vec3 targetEyesPosition = entity.getLook(partialTicks);
-                    this.pointedEntity = null;
-                    Vec3 reachPosition = null;
-                    float boxSize = 1.0F;
-                    List<Entity> list = mc.theWorld.getEntitiesInAABBexcluding(entity, entity.getEntityBoundingBox().addCoord(targetEyesPosition.xCoord * blockReachDistance, targetEyesPosition.yCoord * blockReachDistance, targetEyesPosition.zCoord * blockReachDistance).expand(boxSize, boxSize, boxSize), Predicates.and(EntitySelectors.NOT_SPECTATING, new Predicate<Entity>() {
-                        public boolean apply(Entity p_apply_1_) {
-                            return p_apply_1_.canBeCollidedWith();
+                if (mc.objectMouseOver != null) {
+                    entityReachDistance = mc.objectMouseOver.hitVec.distanceTo(eyesPosition);
+                }
+
+                Vec3 targetEyesPosition = entity.getLook(partialTicks);
+                this.pointedEntity = null;
+                Vec3 reachPosition = null;
+                float boxSize = 1.0F;
+                List<Entity> list = mc.theWorld.getEntitiesInAABBexcluding(entity, entity.getEntityBoundingBox().addCoord(targetEyesPosition.xCoord * blockReachDistance, targetEyesPosition.yCoord * blockReachDistance, targetEyesPosition.zCoord * blockReachDistance).expand(boxSize, boxSize, boxSize), Predicates.and(EntitySelectors.NOT_SPECTATING, new Predicate<Entity>() {
+                    public boolean apply(Entity p_apply_1_) {
+                        return p_apply_1_.canBeCollidedWith();
+                    }
+                }));
+                double d2 = entityReachDistance;
+
+                for (Entity value : list) {
+                    float f1 = value.getCollisionBorderSize();
+                    AxisAlignedBB axisalignedbb = value.getEntityBoundingBox().expand(f1, f1, f1);
+                    MovingObjectPosition movingobjectposition = axisalignedbb.calculateIntercept(eyesPosition, eyesPosition.addVector(targetEyesPosition.xCoord * blockReachDistance, targetEyesPosition.yCoord * blockReachDistance, targetEyesPosition.zCoord * blockReachDistance));
+
+                    if (axisalignedbb.isVecInside(eyesPosition)) {
+                        if (d2 >= 0.0D) {
+                            this.pointedEntity = value;
+                            reachPosition = movingobjectposition == null ? eyesPosition : movingobjectposition.hitVec;
+                            d2 = 0.0D;
                         }
-                    }));
-                    double d2 = entityReachDistance;
+                    } else if (movingobjectposition != null) {
+                        double d3 = eyesPosition.distanceTo(movingobjectposition.hitVec);
 
-                    for (Entity value : list) {
-                        float f1 = value.getCollisionBorderSize();
-                        AxisAlignedBB axisalignedbb = value.getEntityBoundingBox().expand(f1, f1, f1);
-                        MovingObjectPosition movingobjectposition = axisalignedbb.calculateIntercept(eyesPosition, eyesPosition.addVector(targetEyesPosition.xCoord * blockReachDistance, targetEyesPosition.yCoord * blockReachDistance, targetEyesPosition.zCoord * blockReachDistance));
-
-                        if (axisalignedbb.isVecInside(eyesPosition)) {
-                            if (d2 >= 0.0D) {
-                                this.pointedEntity = value;
-                                reachPosition = movingobjectposition == null ? eyesPosition : movingobjectposition.hitVec;
-                                d2 = 0.0D;
-                            }
-                        } else if (movingobjectposition != null) {
-                            double d3 = eyesPosition.distanceTo(movingobjectposition.hitVec);
-
-                            if (d3 < d2 || d2 == 0.0D) {
-                                if (value == entity.ridingEntity && !entity.canRiderInteract()) {
-                                    if (d2 == 0.0D) {
-                                        this.pointedEntity = value;
-                                        reachPosition = movingobjectposition.hitVec;
-                                    }
-                                } else {
+                        if (d3 < d2 || d2 == 0.0D) {
+                            if (value == entity.ridingEntity && !entity.canRiderInteract()) {
+                                if (d2 == 0.0D) {
                                     this.pointedEntity = value;
                                     reachPosition = movingobjectposition.hitVec;
-                                    d2 = d3;
                                 }
+                            } else {
+                                this.pointedEntity = value;
+                                reachPosition = movingobjectposition.hitVec;
+                                d2 = d3;
                             }
                         }
                     }
-
-                    if (this.pointedEntity != null && eyesPosition.distanceTo(reachPosition) > entityReachDistance) {
-                        this.pointedEntity = null;
-                        if (reachPosition != null) {
-                            mc.objectMouseOver = new MovingObjectPosition(MovingObjectPosition.MovingObjectType.MISS, reachPosition, null, new BlockPos(reachPosition));
-                        }
-                    }
-
-                    if (this.pointedEntity != null && (d2 < entityReachDistance || mc.objectMouseOver == null)) {
-                        mc.objectMouseOver = new MovingObjectPosition(this.pointedEntity, reachPosition);
-
-                        if (this.pointedEntity instanceof EntityLivingBase || this.pointedEntity instanceof EntityItemFrame) {
-                            mc.pointedEntity = this.pointedEntity;
-                        }
-                    }
-
-                    mc.mcProfiler.endSection();
                 }
+
+                if (this.pointedEntity != null && flag && eyesPosition.distanceTo(reachPosition) > entityReachDistance) {
+                    this.pointedEntity = null;
+                    if (reachPosition != null) {
+                        mc.objectMouseOver = new MovingObjectPosition(MovingObjectPosition.MovingObjectType.MISS, reachPosition, null, new BlockPos(reachPosition));
+                    }
+                }
+
+                if (this.pointedEntity != null && (d2 < entityReachDistance || mc.objectMouseOver == null)) {
+                    mc.objectMouseOver = new MovingObjectPosition(this.pointedEntity, reachPosition);
+
+                    if (this.pointedEntity instanceof EntityLivingBase || this.pointedEntity instanceof EntityItemFrame) {
+                        mc.pointedEntity = this.pointedEntity;
+                    }
+                }
+
+                mc.mcProfiler.endSection();
             }
         }
     }

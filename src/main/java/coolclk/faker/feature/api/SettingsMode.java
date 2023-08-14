@@ -41,6 +41,11 @@ public class SettingsMode<T> extends Settings<T> {
         return super.getDisplayName() + " " + (this.getDisplayFold() ? "+" : "-");
     }
 
+    @Override
+    public String getDisplayValue() {
+        return this.getModeDisplayName(this.getValue());
+    }
+
     public String getModeDisplayName(T mode) {
         if (this.getValues().contains(mode)) {
             return I18n.format("faker.settings.mode." + this.getValues().get(this.getValues().indexOf(mode)).toString() + ".name");

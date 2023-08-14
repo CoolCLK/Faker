@@ -1,6 +1,5 @@
 package coolclk.faker.feature.modules.movement;
 
-import coolclk.faker.feature.ModuleHandler;
 import coolclk.faker.feature.api.Module;
 import coolclk.faker.feature.api.ModuleInfo;
 import coolclk.faker.feature.api.SettingsDouble;
@@ -21,7 +20,7 @@ public class BHop extends Module {
             movedStep = 0;
         }
 
-        if (movedStep >= hopInterval.getValue() && !ModuleUtil.gEP().isSneaking() && ((ModuleUtil.gEP().onGround || ModuleHandler.findModule(AirJump.class).getEnable()) && !ModuleUtil.gEP().isInWater() && !ModuleUtil.gEP().isInLava())) {
+        if (movedStep >= hopInterval.getValue() && !ModuleUtil.gEP().isSneaking() && ((ModuleUtil.gEP().onGround && ModuleUtil.gEP().motionY >= 0) && !ModuleUtil.gEP().isInWater() && !ModuleUtil.gEP().isInLava())) {
             ModuleUtil.gEP().jump();
             movedStep = 0;
         }
