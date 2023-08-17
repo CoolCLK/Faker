@@ -16,7 +16,7 @@ public class FakerLoader implements IFMLLoadingPlugin {
 
     @Override
     public String[] getASMTransformerClass() {
-        return new String[] { "coolclk.faker.launch.agent.Bootstrap" };
+        return new String[] { /* "coolclk.faker.launch.agent.Bootstrap" */ };
     }
 
     @Override

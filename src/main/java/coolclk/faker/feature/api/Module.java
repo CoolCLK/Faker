@@ -69,7 +69,7 @@ public class Module implements IModule {
     public void setEnable(boolean enable, boolean update) {
         this.enable = enable;
         if (update) {
-            MinecraftForge.EVENT_BUS.post(new ModuleChangeStatEvent());
+            if (this.getCanKeepEnable()) MinecraftForge.EVENT_BUS.post(new ModuleChangeStatEvent());
             if (enable) {
                 this.enableTime = System.currentTimeMillis();
                 this.onEnable();
