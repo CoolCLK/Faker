@@ -1,7 +1,7 @@
 package coolclk.faker.feature.modules;
 
 import coolclk.faker.feature.api.Module;
-import coolclk.faker.launch.FakerForgeMod;
+import coolclk.faker.launch.forge.FakerForgeMod;
 import net.minecraft.client.resources.I18n;
 
 import java.util.ArrayList;

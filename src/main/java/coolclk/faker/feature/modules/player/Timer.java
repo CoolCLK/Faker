@@ -9,5 +9,4 @@ import coolclk.faker.feature.modules.ModuleCategory;
 public class Timer extends Module {
     public static float currentTimerSpeed = 0;
     public SettingsFloat speed = new SettingsFloat(this, "speed", 1.08F, 0.1F, 2F);
-    public float multiplier = 1;
 }

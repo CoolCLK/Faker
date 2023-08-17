@@ -1,14 +1,12 @@
 package coolclk.faker.feature.modules.combat;
 
-import coolclk.faker.feature.ModuleHandler;
+import coolclk.faker.event.UpdateTimerEvent;
 import coolclk.faker.feature.api.Module;
 import coolclk.faker.feature.api.ModuleInfo;
 import coolclk.faker.feature.api.SettingsFloat;
 import coolclk.faker.feature.api.SettingsModeString;
 import coolclk.faker.feature.modules.ModuleCategory;
-import coolclk.faker.feature.modules.player.Timer;
 import coolclk.faker.util.ModuleUtil;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -24,15 +22,6 @@ public class Velocity extends Module {
     };
 
     private int slowing = 0;
-    @Override
-    public void onEnabling() {
-        if (mode.getValue().equals("timer")) {
-            if (slowing > 0) {
-                ModuleHandler.findModule(Timer.class).multiplier = timerSpeed.getValue();
-            }
-            slowing--;
-        }
-    }
 
     @Override
     public void onClickGuiUpdate() {
@@ -43,7 +32,7 @@ public class Velocity extends Module {
     @SubscribeEvent
     public void onLivingHurt(LivingHurtEvent event) {
         if (this.getEnable()) {
-            if (event.entityLiving == ModuleUtil.gEP() && ((EntityPlayer) event.entityLiving).isUser()) {
+            if (event.entityLiving == ModuleUtil.gEP()) {
                 if (mode.getValue().equals("timer")) {
                     slowing = 5;
                 } else {
@@ -52,6 +41,18 @@ public class Velocity extends Module {
                     ModuleUtil.gEP().motionY *= per;
                     ModuleUtil.gEP().motionZ *= per;
                 }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void onUpdateTimer(UpdateTimerEvent event) {
+        if (this.getEnable()) {
+            if (mode.getValue().equals("timer")) {
+                if (slowing > 0) {
+                    event.addMultiplier(timerSpeed.getValue());
+                }
+                slowing--;
             }
         }
     }

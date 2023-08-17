@@ -3,6 +3,7 @@ package coolclk.faker.gui.clickgui;
 import coolclk.faker.feature.api.*;
 import coolclk.faker.gui.GuiHandler;
 import net.minecraft.client.Minecraft;
+import org.lwjgl.input.Keyboard;
 
 import java.util.List;
 
@@ -21,8 +22,12 @@ public class ClickGuiModuleButton extends ClickGuiButton {
 
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
+        super.drawButton(mc, mouseX, mouseY, partialTicks);
+
+        List<Settings<?>> moduleSettings = this.module.getSettings();
+        int mouseHoveredLine = (mouseX >= this.xPosition && mouseX <= this.xPosition + this.width) ? (int) ((mouseY - this.yPosition - this.height) / (fontrenderer.FONT_HEIGHT + (GuiHandler.Theme.MODULE_BUTTON_SETTINGS_MARGIN * 2))) : -1;
+
         if (this.visible) {
-            super.drawButton(mc, mouseX, mouseY, partialTicks);
             if (this.isMouseOver()) {
                 if (mouseLeftClick) {
                     this.module.toggleModule();
@@ -34,13 +39,25 @@ public class ClickGuiModuleButton extends ClickGuiButton {
             this.backgroundColor = this.module.getEnable() ? GuiHandler.Theme.MODULE_BUTTON_ENABLE_BACKGROUND_COLOR : GuiHandler.Theme.MODULE_BUTTON_DISABLE_BACKGROUND_COLOR;
             this.currentHeight = this.height;
             if (!this.fold) {
+                int lineIndex = 0;
+                for (Settings<?> settings : moduleSettings) {
+                    if (settings.getDisplayVisible()) {
+                        if (settings.rootOf(SettingsNumber.class)) {
+                            if (mouseRightClick && this.isMouseOver() && mouseHoveredLine == lineIndex) {
+                                ((SettingsNumber<?>) settings).setIsForceChangingValue(true);
+                            } else if (mouseRightClick || mouseLeftClick) {
+                                ((SettingsNumber<?>) settings).setIsForceChangingValue(false);
+                            }
+                        }
+                    }
+                    lineIndex += settings.getDisplayLines();
+                }
+
                 this.module.onClickGuiUpdate();
 
-                List<Settings<?>> arguments = this.module.getSettings();
                 int newWidth = GuiHandler.Theme.BUTTON_WIDTH;
-                int mouseHoveredLine = (mouseX >= this.xPosition && mouseX <= this.xPosition + this.width) ? (int) ((mouseY - this.yPosition - this.height) / (fontrenderer.FONT_HEIGHT + (GuiHandler.Theme.MODULE_BUTTON_SETTINGS_MARGIN * 2))) : -1;
-                int lineIndex = 0;
-                for (Settings<?> argument : arguments) {
+                lineIndex = 0;
+                for (Settings<?> argument : moduleSettings) {
                     if (argument.getDisplayVisible()) {
                         int argumentCurrentLines = argument.getDisplayLines(), argumentCurrentHeight = (int) (argumentCurrentLines * (this.fontrenderer.FONT_HEIGHT + (GuiHandler.Theme.MODULE_BUTTON_SETTINGS_MARGIN * 2)));
                         drawRect(this.xPosition, this.yPosition + this.currentHeight, this.xPosition + this.width, this.yPosition + this.currentHeight + argumentCurrentHeight, ((this.alpha & 0xFF) << 24) | GuiHandler.Theme.MODULE_BUTTON_SETTINGS_BACKGROUND_COLOR);
@@ -76,16 +93,23 @@ public class ClickGuiModuleButton extends ClickGuiButton {
                                 this.drawString(fontrenderer, display, (int) (this.xPosition + (GuiHandler.Theme.MODULE_BUTTON_SETTINGS_MARGIN * (drawLine == 0 ? 1 : 3))), (int) (this.yPosition + this.currentHeight + GuiHandler.Theme.MODULE_BUTTON_SETTINGS_MARGIN + (drawLine * (this.fontrenderer.FONT_HEIGHT + GuiHandler.Theme.MODULE_BUTTON_SETTINGS_MARGIN * 2))), (drawLine == 0 || ((SettingsMode<?>) argument).getValueDisplayLine() == drawLine - 1) ? ((this.alpha & 0xFF) << 24) | GuiHandler.Theme.MODULE_BUTTON_SETTINGS_ENABLE_COLOR : ((this.alpha & 0xFF) << 24) | GuiHandler.Theme.MODULE_BUTTON_SETTINGS_DISABLE_COLOR);
                             }
                         } else if (argument.rootOf(SettingsNumber.class)) {
+                            String argumentValue = argument.getDisplayValue();
                             if (mouseHoveredLine == lineIndex + 1 && mouseLeftDrag) {
                                 double percent = (mouseX - this.xPosition - GuiHandler.Theme.MODULE_BUTTON_SETTINGS_MARGIN) / (this.width - (GuiHandler.Theme.MODULE_BUTTON_SETTINGS_MARGIN * 2));
                                 ((SettingsNumber<?>) argument).setValueByPercent(percent);
                             }
                             this.drawString(fontrenderer, argumentName, (int) (this.xPosition + GuiHandler.Theme.MODULE_BUTTON_SETTINGS_MARGIN), (int) (this.yPosition + this.currentHeight + GuiHandler.Theme.MODULE_BUTTON_SETTINGS_MARGIN), 0xFFFFFFFF);
-                            String argumentValue = argument.getDisplayValue();
+                            if (((SettingsNumber<?>) argument).isForceChangingValue()) {
+                                if (Keyboard.getEventKeyState()) {
+                                    if (Keyboard.getEventKey() == Keyboard.KEY_BACK) ((SettingsNumber<?>) argument).backspaceForceChangingValue();
+                                    else ((SettingsNumber<?>) argument).addForceChangingValue(Keyboard.getEventCharacter());
+                                }
+                                argumentValue = ((SettingsNumber<?>) argument).getForceChangingValue();
+                            }
                             if (fontrenderer.getStringWidth(argumentName + "  " + argumentValue) > newWidth - (GuiHandler.Theme.MODULE_BUTTON_SETTINGS_MARGIN * 2)) {
                                 newWidth += fontrenderer.getStringWidth("  " + argumentValue);
                             }
-                            this.drawString(fontrenderer, argumentValue, (int) (this.xPosition + this.width - GuiHandler.Theme.MODULE_BUTTON_SETTINGS_MARGIN - fontrenderer.getStringWidth(argumentValue)), (int) (this.yPosition + this.currentHeight + GuiHandler.Theme.MODULE_BUTTON_SETTINGS_MARGIN), 0xFFFFFFFF);
+                            this.drawString(fontrenderer, argumentValue, (int) (this.xPosition + this.width - GuiHandler.Theme.MODULE_BUTTON_SETTINGS_MARGIN - fontrenderer.getStringWidth(argumentValue)), (int) (this.yPosition + this.currentHeight + GuiHandler.Theme.MODULE_BUTTON_SETTINGS_MARGIN), ((SettingsNumber<?>) argument).isForceChangingValue() ? GuiHandler.getRainbowColor(1) : 0xFFFFFFFF);
                             this.drawHorizontalSlideBar((int) (this.xPosition + GuiHandler.Theme.MODULE_BUTTON_SETTINGS_MARGIN), (int) (this.xPosition + this.width - GuiHandler.Theme.MODULE_BUTTON_SETTINGS_MARGIN), this.yPosition + this.currentHeight + ((argumentCurrentHeight + this.height) / 2), ((SettingsNumber<?>) argument).getValuePercent(), ((this.alpha & 0xFF) << 24) | GuiHandler.Theme.MODULE_BUTTON_ENABLE_BACKGROUND_COLOR);
                         }
                         lineIndex += argument.getDisplayLines();

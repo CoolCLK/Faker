@@ -20,7 +20,7 @@ public class BHop extends Module {
             movedStep = 0;
         }
 
-        if (movedStep >= hopInterval.getValue() && !ModuleUtil.gEP().isSneaking() && ((ModuleUtil.gEP().onGround && ModuleUtil.gEP().motionY >= 0) && !ModuleUtil.gEP().isInWater() && !ModuleUtil.gEP().isInLava())) {
+        if (movedStep >= hopInterval.getValue() && !ModuleUtil.gEP().isSneaking() && ((ModuleUtil.gEP().onGround && ModuleUtil.gEP().fallDistance <= 0 && ModuleUtil.gEP().motionY <= 0) && !ModuleUtil.gEP().isInWater() && !ModuleUtil.gEP().isInLava())) {
             ModuleUtil.gEP().jump();
             movedStep = 0;
         }

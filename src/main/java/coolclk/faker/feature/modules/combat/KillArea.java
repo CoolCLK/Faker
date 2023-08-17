@@ -20,7 +20,7 @@ public class KillArea extends Module {
     public SettingsBoolean onlyAiming = new SettingsBoolean(this, "onlyAttackAiming", true);
     public SettingsBoolean onlySingle = new SettingsBoolean(this, "onlyAttackSingle", true);
     public SettingsBoolean allowPlayer = new SettingsBoolean(this, "allowAttackPlayer", true);
-    public SettingsBoolean allowMob = new SettingsBoolean(this, "allowAttackMob", true);
+    public SettingsBoolean allowMob = new SettingsBoolean(this, "allowAttackMob", false);
     public SettingsLong minAttackSpeed = new SettingsLong(this, "minAttackSpeed", 6L, 0L, 20L);
     public SettingsLong maxAttackSpeed = new SettingsLong(this, "maxAttackSpeed", 12L, 0L, 20L);
     public SettingsDouble range = new SettingsDouble(this, "range", 5D, 0D, 6D);

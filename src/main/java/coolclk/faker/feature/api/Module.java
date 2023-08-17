@@ -3,7 +3,7 @@ package coolclk.faker.feature.api;
 import coolclk.faker.event.ModuleChangeStatEvent;
 import coolclk.faker.feature.modules.ModuleCategory;
 import coolclk.faker.feature.modules.player.Timer;
-import coolclk.faker.launch.FakerForgeMod;
+import coolclk.faker.launch.forge.FakerForgeMod;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.common.MinecraftForge;
@@ -66,16 +66,26 @@ public class Module implements IModule {
         return I18n.format(this.getDescriptionTranslateKey());
     }
 
-    public void setEnable(boolean enable) {
+    public void setEnable(boolean enable, boolean update) {
         this.enable = enable;
-        MinecraftForge.EVENT_BUS.post(new ModuleChangeStatEvent());
-        if (enable) {
-            this.enableTime = System.currentTimeMillis();
-            this.onEnable();
-        } else {
-            this.onDisable();
-            this.afterDisable();
+        if (update) {
+            MinecraftForge.EVENT_BUS.post(new ModuleChangeStatEvent());
+            if (enable) {
+                this.enableTime = System.currentTimeMillis();
+                this.onEnable();
+            } else {
+                this.onDisable();
+                this.afterDisable();
+            }
         }
+    }
+
+    public void setEnable(boolean enable) {
+        this.setEnable(enable, true);
+    }
+
+    public boolean getCanKeepEnable() {
+        return true;
     }
 
     public boolean getEnable() {

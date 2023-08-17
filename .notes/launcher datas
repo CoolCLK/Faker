@@ -1,0 +1,35 @@
+Notes:
+    %MINECRAFT_TWEAK_CLASS% can be:
+        Vanilla: None
+        Forge: net.minecraftforge.fml.common.launcher.FMLTweaker
+        Forge + Optifine: optifine.OptiFineForgeTweaker
+        Soar Client: me.eldodebug.soar.injection.mixin.SoarTweaker
+    %MINECRAFT_LIBRARY_PATH% can be:
+        PCL: %MINECRAFT_DIR%\versions\%MINECRAFT_VERSION%\%MINECRAFT_VERSION%-natives
+    %LUNAR_CLIENT_DIR% can be:
+        %appdata%\.lunarclient
+    %LUNAR_CLIENT_ICHOR_CLASS_PATH% can be:
+        Default is will had: lunar-lang.jar,lunar-emote.jar,lunar.jar,common-0.1.0-SNAPSHOT-all.jar,v1_8-0.1.0-SNAPSHOT-all.jar,optifine-0.1.0-SNAPSHOT-all.jar,genesis-0.1.0-SNAPSHOT-all.jar
+        If use Forge will add: lunar-replaymod-mixins-0.1.0-SNAPSHOT-all.jar,skyblock-0.1.0-SNAPSHOT-all.jar,forge-0.1.0-SNAPSHOT-all.jar
+    %LUNAR_CLIENT_ICHOR_EXTERNAL_FILES% can be:
+        Lunar + Optifine: OptiFine_v1_8.jar
+    Fun Facts:
+        Did you know the %PLAYER_NAME% and %PLAYER_UUID% in Soar Client default are "Soar User" and "0"?
+
+PCL:
+    Main Class: %appdata%\PCL\JavaWrapper.jar
+    Main Args: net.minecraft.launchwrapper.Launch --username %PLAYER_NAME% --version %MINECRAFT_DIR% --gameDir %MINECRAFT_DIR% --assetsDir %MINECRAFT_DIR%\assets --assetIndex 1.8 --uuid %PLAYER_UUID% --accessToken %PLAYER_TOKEN% --userProperties {} --userType msa --tweakClass %MINECRAFT_TWEAK_CLASS% --height 480 --width 854
+    Jvm Args: -Doolloo.jlw.tmpdir=%appdata%\Roaming\PCL -XX:+UseG1GC -XX:-UseAdaptiveSizePolicy -XX:-OmitStackTraceInFastThrow -Dfml.ignoreInvalidMinecraftCertificates=True -Dfml.ignorePatchDiscrepancies=True -Dlog4j2.formatMsgNoLookups=true -XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump -Xmn256m -Xmx9830m -Djava.library.path=%MINECRAFT_LIBRARY_PATH%
+    Attachable: true
+
+Soar Client:
+    Main Class: net.minecraft.launchwrapper.Launch
+    Main Args: --accessToken %PLAYER_TOKEN% --version %MINECRAFT_VERSION% --username %PLAYER_NAME% --uuid %PLAYER_UUID% --gameDir %SOAR_CLIENT_DIR%\game --assetsDir %SOAR_CLIENT_DIR%\assets --assetIndex 1.8 --tweakClass %MINECRAFT_TWEAK_CLASS%
+    Jvm Args: -Xmx4G -Xms4G -XX:+DisableExplicitGC -XX:+UseConcMarkSweepGC -XX:+UseParNewGC -XX:+UseNUMA -XX:+CMSParallelRemarkEnabled -XX:MaxTenuringThreshold=15 -XX:MaxGCPauseMillis=30 -XX:GCPauseIntervalMillis=150 -XX:+UseAdaptiveGCBoundary -XX:-UseGCOverheadLimit -XX:+UseBiasedLocking -XX:SurvivorRatio=8 -XX:TargetSurvivorRatio=90 -XX:MaxTenuringThreshold=15 -Dfml.ignorePatchDiscrepancies=true -Dfml.ignoreInvalidMinecraftCertificates=true -XX:+UseFastAccessorMethods -XX:+UseCompressedOops -XX:+OptimizeStringConcat -XX:+AggressiveOpts -XX:ReservedCodeCacheSize=2048m -XX:+UseCodeCacheFlushing -XX:SoftRefLRUPolicyMSPerMB=10000 -XX:ParallelGCThreads=10 -Djava.library.path=%SOAR_CLIENT_DIR%\natives
+    Attachable: true
+
+Lunar Client:
+    Main Class: com.moonsworth.lunar.genesis.Genesis
+    Main Args: --version %MINECRAFT_VERSION% --accessToken %PLAYER_TOKEN% --assetIndex 1.8 --userProperties {} --gameDir %MINECRAFT_DIR%\.minecraft --texturesDir %LUNAR_CLIENT_DIR%\textures --uiDir %LUNAR_CLIENT_DIR%\ui --webosrDir %LUNAR_CLIENT_DIR%\offline\multiver\natives --launcherVersion %LUNAR_CLIENT_VERSION% --hwid %LUNAR_CLIENT_HWID% --installationId %LUNAR_CLIENT_INSTALLATION_ID% --width 854 --height 480 --workingDirectory . --classpathDir . --sentryTraceId %LUNAR_CLIENT_SENTRY_TRACE_ID% --ichorClassPath %LUNAR_CLIENT_ICHOR_CLASS_PATH% --ichorExternalFiles %LUNAR_CLIENT_ICHOR_EXTERNAL_FILES%
+    Jvm Args: -XX:+DisableAttachMechanism -XX:+DisableAttachMechanism --add-modules=jdk.naming.dns --add-exports=jdk.naming.dns/com.sun.jndi.dns=java.naming -Djna.boot.library.path=natives -Dlog4j2.formatMsgNoLookups=true --add-opens=java.base/java.io=ALL-UNNAMED -Xms3072m -Xmx3072m -Djava.library.path=natives -XX:+DisableAttachMechanism -XX:+DisableAttachMechanism
+    Attachable: false

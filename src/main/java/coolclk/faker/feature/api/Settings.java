@@ -15,9 +15,15 @@ public class Settings<T> {
         parent.addSettings(this);
     }
 
-    public void setValue(T value) {
+    public void setValue(T value, boolean update) {
         this.value = value;
-        MinecraftForge.EVENT_BUS.post(new ModuleChangeStatEvent());
+        if (update) {
+            MinecraftForge.EVENT_BUS.post(new ModuleChangeStatEvent());
+        }
+    }
+
+    public void setValue(T value) {
+        this.setValue(value, true);
     }
 
     public T getValue() {

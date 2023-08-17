@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static coolclk.faker.launch.FakerForgeMod.LOGGER;
+import static coolclk.faker.launch.forge.FakerForgeMod.LOGGER;
 
 public class ClickGuiScreen extends GuiScreen {
     public static ClickGuiScreen INSTANCE = new ClickGuiScreen();
@@ -61,6 +61,10 @@ public class ClickGuiScreen extends GuiScreen {
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        for (ClickGuiButton button : this.clickGuiButtonList) {
+            button.updateDisplayName();
+        }
+
         this.alpha += ((this.menuOpen ? 255 : 0) - this.alpha) * GuiHandler.easeOutQuad(1);
         Color backgroundColor = new Color(0, 0, 0, (int) (this.alpha * 0.25));
         drawRect(0, 0, this.width, this.height, backgroundColor.getRGB());
@@ -110,8 +114,5 @@ public class ClickGuiScreen extends GuiScreen {
     }
 
     public void updateDisplayName() {
-        for (ClickGuiButton button : this.clickGuiButtonList) {
-            button.updateDisplayName();
-        }
     }
 }

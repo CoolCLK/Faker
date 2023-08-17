@@ -2,11 +2,8 @@ package coolclk.faker.feature;
 
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
-import coolclk.faker.feature.api.Module;
-import coolclk.faker.feature.api.ModuleInfo;
-import coolclk.faker.feature.api.Settings;
+import coolclk.faker.feature.api.*;
 import coolclk.faker.feature.modules.ModuleCategory;
-import coolclk.faker.gui.clickgui.ClickGuiScreen;
 import org.reflections.Reflections;
 
 import java.io.File;
@@ -15,7 +12,7 @@ import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import static coolclk.faker.launch.FakerForgeMod.LOGGER;
+import static coolclk.faker.launch.forge.FakerForgeMod.LOGGER;
 
 public class ModuleHandler {
     public static File configFolder;
@@ -42,6 +39,7 @@ public class ModuleHandler {
         for (Module module : ModuleCategory.getAllModules()) {
             module.afterRegister();
         }
+        ModuleHandler.loadConfigs();
     }
 
     public static <T extends Module> T findModule(Class<T> moduleClass) {
@@ -55,7 +53,7 @@ public class ModuleHandler {
 
     public static Module findModule(String moduleName) {
         for (Module module : ModuleCategory.getAllModules()) {
-            if (module.getName() == moduleName) {
+            if (module.getName().equals(moduleName)) {
                 return module;
             }
         }
@@ -71,8 +69,12 @@ public class ModuleHandler {
         return false;
     }
 
-    public static void updateModules() {
-        ClickGuiScreen.INSTANCE.updateDisplayName();
+    public static void disableUnlikeableModules() {
+        for (Module module : ModuleCategory.getAllModules()) {
+            if (!module.getCanKeepEnable()) {
+                module.setEnable(false, false);
+            }
+        }
     }
 
     public static void tickEvent() {
@@ -92,25 +94,66 @@ public class ModuleHandler {
             if (configFile.exists()) {
                 FileReader reader = new FileReader(configFile);
                 List<ModuleConfiguration> configurations = new Gson().fromJson(reader, new TypeToken<List<ModuleConfiguration>>() {  }.getType());
-                if (configurations != null) {
-                    for (ModuleConfiguration configuration : configurations) {
-                        Module module = ModuleHandler.findModule(configuration.name);
-                        if (module != null) {
-                            for (Settings settings : configuration.settings) {
-                                Settings targetSettings = null;
-                                for (Settings activeSettings : module.getSettings()) {
-                                    if (activeSettings.getName().equals(settings.getName()))
-                                        targetSettings = activeSettings;
+                for (ModuleConfiguration configuration : configurations) {
+                    Module module = ModuleHandler.findModule(configuration.name);
+                    if (module != null) {
+                        if (module.getCanKeepEnable()) {
+                            LOGGER.debug("Load settings \"enable\" for module " + module.getDisplayName() + " from config");
+                            module.setEnable(configuration.enable, false);
+                        }
+                        for (Settings<?> settings : configuration.settings) {
+                            Settings<?> targetSettings = null;
+                            for (Settings<?> activeSettings : module.getSettings()) {
+                                if (activeSettings.getName().equals(settings.getName())) {
+                                    targetSettings = activeSettings;
                                 }
-                                if (targetSettings != null) targetSettings.setValue(settings.getValue());
-                                else
-                                    LOGGER.warn("Cannot found settings \"" + settings.getName() + "\" of module " + module.getDisplayName() + "! Mod will ignore it");
                             }
-                        } else LOGGER.warn("Cannot found module \"" + configuration.name + "\"! Mod will ignore it");
+                            if (targetSettings != null) {
+                                boolean failed = false;
+                                try {
+                                    if (targetSettings.rootOf(SettingsBoolean.class)) {
+                                        ((SettingsBoolean) targetSettings).setValue(Boolean.valueOf(settings.getValue().toString()), false);
+                                    } else if (targetSettings.rootOf(SettingsMode.class)) {
+                                        if (targetSettings.rootOf(SettingsModeString.class)) {
+                                            ((SettingsModeString) targetSettings).setValue(settings.getValue().toString(), false);
+                                        } else {
+                                            failed = true;
+                                        }
+                                    } else if (targetSettings.rootOf(SettingsNumber.class)) {
+                                        if (targetSettings.rootOf(SettingsDouble.class)) {
+                                            ((SettingsDouble) targetSettings).setValue(Double.valueOf(settings.getValue().toString()), false);
+                                        } else if (targetSettings.rootOf(SettingsFloat.class)) {
+                                            ((SettingsFloat) targetSettings).setValue(Float.valueOf(settings.getValue().toString()), false);
+                                        } else if (targetSettings.rootOf(SettingsInteger.class)) {
+                                            ((SettingsInteger) targetSettings).setValue(Integer.valueOf(settings.getValue().toString()), false);
+                                        } else if (targetSettings.rootOf(SettingsLong.class)) {
+                                            ((SettingsLong) targetSettings).setValue(Long.valueOf(settings.getValue().toString()), false);
+                                        } else {
+                                            failed = true;
+                                        }
+                                    } else {
+                                        failed = true;
+                                    }
+                                } catch (Exception e) {
+                                    failed = true;
+                                }
+                                if (!failed) {
+                                    LOGGER.debug("Load settings " + settings.getDisplayName() + " for module " + module.getDisplayName() + " from config");
+                                } else {
+                                    LOGGER.warn("Load settings " + settings.getDisplayName() + " for module " + module.getDisplayName() + " failed");
+                                }
+                            } else {
+                                LOGGER.warn("Cannot found settings \"" + settings.getName() + "\" of module " + module.getDisplayName() + "! Mod will ignore it");
+                            }
+                        }
+                    } else {
+                        LOGGER.warn("Cannot found module \"" + configuration.name + "\"! Mod will ignore it");
                     }
                 }
                 reader.close();
-            } else configFile.createNewFile();
+            } else {
+                configFile.createNewFile();
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -119,10 +162,14 @@ public class ModuleHandler {
     public static void saveConfigs() {
         try {
             File configFile = new File(configFolder.getPath() + "/defaultConfig.json");
-            if (!configFile.exists()) configFile.createNewFile();
+            if (!configFile.exists()) {
+                configFile.createNewFile();
+            }
             FileWriter writer = new FileWriter(configFile);
             List<ModuleConfiguration> configurations = new ArrayList<ModuleConfiguration>();
-            for (Module module : ModuleCategory.getAllModules()) configurations.add(new ModuleConfiguration(module));
+            for (Module module : ModuleCategory.getAllModules()) {
+                configurations.add(new ModuleConfiguration(module));
+            }
             writer.write(new Gson().toJson(configurations));
             writer.flush();
             writer.close();
@@ -138,7 +185,10 @@ public class ModuleHandler {
 
         public ModuleConfiguration(Module module) {
             this.name = module.getName();
-            this.enable = module.getEnable();
+            this.enable = false;
+            if (module.getCanKeepEnable()) {
+                this.enable = module.getEnable();
+            }
             this.settings = module.getSettings();
         }
     }

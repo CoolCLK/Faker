@@ -14,8 +14,8 @@
   ],
   "client": [
     "MixinEntityRenderer",
-    "MixinMinecraft",
     "MixinRendererLivingEntity",
+    "MixinRenderManager",
     "MixinTimer"
   ]
 }

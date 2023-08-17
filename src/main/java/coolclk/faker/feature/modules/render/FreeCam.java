@@ -1,6 +1,6 @@
 package coolclk.faker.feature.modules.render;
 
-import coolclk.faker.event.PacketSendEvent;
+import coolclk.faker.event.PacketEvent;
 import coolclk.faker.feature.ModuleHandler;
 import coolclk.faker.feature.api.Module;
 import coolclk.faker.feature.api.ModuleInfo;
@@ -11,8 +11,7 @@ import coolclk.faker.feature.modules.movement.Fly;
 import coolclk.faker.util.ModuleUtil;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.network.play.client.C01PacketChatMessage;
-import net.minecraft.network.play.client.C14PacketTabComplete;
+import net.minecraft.network.play.client.*;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 @ModuleInfo(name = "FreeCam", category = ModuleCategory.Render)
@@ -23,6 +22,11 @@ public class FreeCam extends Module {
 
     public SettingsFloat flyHorizontalSpeed = new SettingsFloat(this, "flyHorizontalSpeed", 0.1F, 0F, 5F);
     public SettingsDouble flyVerticalSpeed = new SettingsDouble(this, "flyVerticalSpeed", 0.1D, 0D, 5D);
+
+    @Override
+    public boolean getCanKeepEnable() {
+        return false;
+    }
 
     @Override
     public void onRegister() {
@@ -76,9 +80,9 @@ public class FreeCam extends Module {
     }
 
     @SubscribeEvent
-    public void onPacketSend(PacketSendEvent event) {
+    public void onPacketSend(PacketEvent.Send event) {
         if (this.getEnable()) {
-            if (!(event.packet instanceof C14PacketTabComplete || event.packet instanceof C01PacketChatMessage)) {
+            if (event.isTypeOf(C0APacketAnimation.class, C0BPacketEntityAction.class, C0CPacketInput.class, C02PacketUseEntity.class, C03PacketPlayer.class, C07PacketPlayerDigging.class, C08PacketPlayerBlockPlacement.class, C09PacketHeldItemChange.class, C10PacketCreativeInventoryAction.class, C11PacketEnchantItem.class, C12PacketUpdateSign.class, C13PacketPlayerAbilities.class)) {
                 event.setCanceled(true);
             }
         }

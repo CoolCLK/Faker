@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ModuleUtil {
+    public static double renderPosX, renderPosY, renderPosZ;
+
     public static boolean inRange(Double number, Double min, Double max) {
         double minNum = Math.min(min, max), maxNum = Math.max(min, max);
         return number >= minNum && number <= maxNum;
@@ -99,7 +101,7 @@ public class ModuleUtil {
     }
 
     public static double getPositionToPositionAngle(double x1, double y1, double x2, double y2) {
-        return -Math.toDegrees(Math.atan((x2 - x1) / (y2 - y1)));
+        return Math.toDegrees(Math.atan((x2 - x1) / (y2 - y1)));
     }
 
     public static double entityToEntityDistance(Entity a, Entity b) {
@@ -123,18 +125,18 @@ public class ModuleUtil {
     }
 
     public static Vector2f positionToPositionYawAndPitch(double fromX, double fromY, double fromZ, double toX, double toY, double toZ) {
-        float pitch = (float) ModuleUtil.getPositionToPositionAngle(0, fromY, ModuleUtil.positionToPositionDistance(fromX, fromY, fromZ, toX, toY, toZ), toY), yaw = (float) ModuleUtil.getPositionToPositionAngle(fromX, fromZ, toX, toZ);
+        float pitch = (float) -ModuleUtil.getPositionToPositionAngle(0, fromY, ModuleUtil.positionToPositionDistance2d(fromX, fromZ, toX, toZ), toY), yaw = (float) -ModuleUtil.getPositionToPositionAngle(fromX, fromZ, toX, toZ);
         if (toZ < ModuleUtil.gEP().posZ) {
-            if (toX >= ModuleUtil.gEP().posX) yaw -= 180;
-            if (toX < ModuleUtil.gEP().posX) yaw += 180;
+            if (toX > ModuleUtil.gEP().posX) yaw -= 180;
+            if (toX <= ModuleUtil.gEP().posX) yaw += 180;
             yaw %= 180;
         }
-        pitch %= 90;
-        return new Vector2f(pitch, yaw);
+        pitch /= 2;
+        return new Vector2f(yaw, pitch);
     }
 
     public static Vector2f entityToEntityYawAndPitch(Entity from, Entity to) {
-        return positionToPositionYawAndPitch(from.posX, from.posY, from.posZ, to.posX, to.posY, to.posZ);
+        return positionToPositionYawAndPitch(from.posX, from.posY + from.getEyeHeight(), from.posZ, to.posX, to.posY + to.getEyeHeight(), to.posZ);
     }
 
     public static Object getInaccessibleVariable(Class<?> clazz, String variableName) throws NoSuchFieldException, IllegalAccessException {

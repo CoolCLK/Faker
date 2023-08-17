@@ -6,6 +6,7 @@ import coolclk.faker.feature.ModuleHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 
 public class EventHandler {
     @SubscribeEvent
@@ -23,12 +24,12 @@ public class EventHandler {
     }
 
     @SubscribeEvent
-    public void onRefreshResources(RefreshResourcesEvent event) {
-        ModuleHandler.updateModules();
+    public void onModuleChangeStat(ModuleChangeStatEvent event) {
+        ModuleHandler.saveConfigs();
     }
 
     @SubscribeEvent
-    public void onModuleChangeStat(ModuleChangeStatEvent event) {
-        ModuleHandler.saveConfigs();
+    public void onClientConnectedToServer(FMLNetworkEvent.ClientConnectedToServerEvent event) {
+        ModuleHandler.disableUnlikeableModules();
     }
 }
