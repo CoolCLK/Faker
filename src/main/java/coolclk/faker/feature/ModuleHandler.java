@@ -81,8 +81,14 @@ public class ModuleHandler {
         for (ModuleCategory category : ModuleCategory.values()) {
             for (Module module : category.getModules()) {
                 if (module.getEnable()) {
-                    module.onEnabling();
-                    module.afterEnabling();
+                    try {
+                        module.onEnabling();
+                    } catch (Exception e) {
+                        LOGGER.warn("When enable module " + module.getDisplayName() + ", throws an exception: ");
+                        e.printStackTrace();
+                    } finally {
+                        module.afterEnabling();
+                    }
                 }
             }
         }

@@ -1,6 +1,6 @@
 package coolclk.faker.feature.modules.player;
 
-import coolclk.faker.event.PacketEvent;
+import coolclk.faker.event.events.PacketEvent;
 import coolclk.faker.feature.api.Module;
 import coolclk.faker.feature.api.ModuleInfo;
 import coolclk.faker.feature.api.SettingsLong;

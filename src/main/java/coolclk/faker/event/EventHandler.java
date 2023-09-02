@@ -1,16 +1,24 @@
 package coolclk.faker.event;
 
+import coolclk.faker.event.api.Event;
+import coolclk.faker.event.api.SubscribeEvent;
+import coolclk.faker.event.events.KeyInputEvent;
+import coolclk.faker.event.events.PlayerTickEvent;
+import coolclk.faker.feature.ModuleHandler;
 import coolclk.faker.feature.api.Module;
 import coolclk.faker.feature.modules.ModuleCategory;
-import coolclk.faker.feature.ModuleHandler;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.InputEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 
 public class EventHandler {
+    public static void post(Event event) {
+        try {
+            event.call();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @SubscribeEvent
-    public void onKeyInput(InputEvent.KeyInputEvent event) {
+    public static void onKeyInput(KeyInputEvent event) {
         for (Module module : ModuleCategory.getAllModules()) {
             if (module.getKeyBinding().isPressed()) {
                 module.toggleModule();
@@ -19,17 +27,7 @@ public class EventHandler {
     }
 
     @SubscribeEvent
-    public void onPlayerTick(TickEvent.PlayerTickEvent event) {
+    public static void onPlayerTick(PlayerTickEvent event) {
         ModuleHandler.tickEvent();
-    }
-
-    @SubscribeEvent
-    public void onModuleChangeStat(ModuleChangeStatEvent event) {
-        ModuleHandler.saveConfigs();
-    }
-
-    @SubscribeEvent
-    public void onClientConnectedToServer(FMLNetworkEvent.ClientConnectedToServerEvent event) {
-        ModuleHandler.disableUnlikeableModules();
     }
 }

@@ -5,12 +5,15 @@ import coolclk.faker.feature.api.ModuleInfo;
 import coolclk.faker.feature.modules.ModuleCategory;
 import coolclk.faker.util.ModuleUtil;
 
-@ModuleInfo(name = "NoFall", category = ModuleCategory.Movement)
-public class NoFall extends Module {
+@ModuleInfo(name = "NoClip", category = ModuleCategory.Movement)
+public class NoClip extends Module {
     @Override
     public void onEnabling() {
-        if ((ModuleUtil.gEP()).fallDistance > 2) {
-            (ModuleUtil.gEP()).fallDistance = 2;
-        }
+        ModuleUtil.gEP().noClip = true;
+    }
+
+    @Override
+    public void onDisable() {
+        ModuleUtil.gEP().noClip = false;
     }
 }

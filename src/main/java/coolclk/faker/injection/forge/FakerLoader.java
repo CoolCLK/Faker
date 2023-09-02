@@ -10,7 +10,7 @@ import java.util.Map;
 public class FakerLoader implements IFMLLoadingPlugin {
     public FakerLoader() {
         MixinBootstrap.init();
-        Mixins.addConfiguration("mixins.faker.json");
+        Mixins.addConfiguration("assets/faker/mixin/mixins.faker.json");
         MixinEnvironment.getDefaultEnvironment().setSide(MixinEnvironment.Side.CLIENT);
     }
 

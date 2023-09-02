@@ -7,11 +7,14 @@ import coolclk.faker.feature.modules.ModuleCategory;
 import coolclk.faker.util.ModuleUtil;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @ModuleInfo(name = "HighJump", category = ModuleCategory.Movement)
 public class HighJump extends Module {
     public SettingsDouble jumpHeight = new SettingsDouble(this, "jumpHeight", 0.42, 0.42, 3D);
 
+    @SideOnly(value = Side.CLIENT)
     @SubscribeEvent
     public void onLivingJump(LivingEvent.LivingJumpEvent event) {
         if (this.getEnable()) {

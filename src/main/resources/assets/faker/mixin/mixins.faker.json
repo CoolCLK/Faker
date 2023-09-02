@@ -4,6 +4,7 @@
   "package": "coolclk.faker.injection.mixins",
   "refmap": "mixins.faker.refmap.json",
   "mixins": [
+    "MixinBlockChest",
     "MixinBlockLiquid",
     "MixinEntity",
     "MixinFoodStats",

@@ -1,6 +1,6 @@
 package coolclk.faker.feature.modules.movement;
 
-import coolclk.faker.event.PacketEvent;
+import coolclk.faker.event.events.PacketEvent;
 import coolclk.faker.feature.api.Module;
 import coolclk.faker.feature.api.ModuleInfo;
 import coolclk.faker.feature.modules.ModuleCategory;
@@ -9,12 +9,13 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.network.play.client.C03PacketPlayer;
-import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
 import net.minecraft.network.play.server.S08PacketPlayerPosLook;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.util.vector.Vector2f;
 
@@ -82,6 +83,7 @@ public class Scaffold extends Module {
         lastFeetBlockPos = null;
     }
 
+    @SideOnly(value = Side.CLIENT)
     @SubscribeEvent
     public void onPacketSend(PacketEvent.Send event) {
         if (this.getEnable()) {
@@ -93,6 +95,7 @@ public class Scaffold extends Module {
         }
     }
 
+    @SideOnly(value = Side.CLIENT)
     @SubscribeEvent
     public void onPacketReceive(PacketEvent.Receive event) {
         if (this.getEnable()) {
@@ -102,11 +105,10 @@ public class Scaffold extends Module {
         }
     }
 
-    private void placeBlock(EntityPlayer player, BlockPos blockPos, EnumFacing facing) {
-        Vec3 hitVec = new Vec3(player.posX, player.posY, player.posZ);
-        float x = (float) (hitVec.xCoord - (double) blockPos.getX());
-        float y = (float) (hitVec.yCoord - (double) blockPos.getY());
-        float z = (float) (hitVec.zCoord - (double) blockPos.getZ());
-        ModuleUtil.gNM().sendPacket(new C08PacketPlayerBlockPlacement(blockPos, facing.getIndex(), player.inventory.getCurrentItem(), x, y, z));
+    public static void placeBlock(EntityPlayer player, BlockPos blockPos, EnumFacing facing) {
+        if (player.inventory.getCurrentItem() != null) {
+            ModuleUtil.gEP().swingItem();
+            ModuleUtil.gPC().onPlayerRightClick(ModuleUtil.gEP(), ModuleUtil.gW(), player.inventory.getCurrentItem(), blockPos, facing, new Vec3(player.posX, player.posY, player.posZ));
+        }
     }
 }

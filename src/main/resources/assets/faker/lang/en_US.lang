@@ -39,6 +39,8 @@ faker.settings.maxPacketCounts.name=Max Packet Counts
 faker.settings.walkSpeed.name=Walk Speed
 faker.settings.flySpeed.name=Fly Speed
 faker.settings.pingRange.name=Ping Range
+faker.settings.maxOpenTime.name=Max Open Time
+faker.settings.mode.cancelPacket.name=Cancel Packet
 
 faker.category.Combat.name=Combat
 faker.category.Movement.name=Movement
@@ -59,6 +61,7 @@ faker.module.Fly.name=Fly
 faker.module.ForceSprinting.name=Force Sprinting
 faker.module.HighJump.name=High Jump
 faker.module.Jesus.name=Jesus
+faker.module.NoClip.name=No Clip
 faker.module.NoFall.name=No Fall
 faker.module.NoSlow.name=No Slow
 faker.module.Scaffold.name=Scaffold

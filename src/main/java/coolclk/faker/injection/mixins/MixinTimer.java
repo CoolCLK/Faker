@@ -1,6 +1,6 @@
 package coolclk.faker.injection.mixins;
 
-import coolclk.faker.event.UpdateTimerEvent;
+import coolclk.faker.event.events.UpdateTimerEvent;
 import coolclk.faker.feature.ModuleHandler;
 import net.minecraft.util.Timer;
 import net.minecraftforge.common.MinecraftForge;

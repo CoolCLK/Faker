@@ -1,6 +1,6 @@
 package coolclk.faker.feature.api;
 
-import coolclk.faker.event.ModuleChangeStatEvent;
+import coolclk.faker.event.events.ModuleChangeStatEvent;
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.common.MinecraftForge;
 

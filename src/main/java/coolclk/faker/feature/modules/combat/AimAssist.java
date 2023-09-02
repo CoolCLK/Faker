@@ -29,8 +29,8 @@ public class AimAssist extends Module {
         });
         if (target != null) {
             Vector2f rotation = ModuleUtil.entityToEntityYawAndPitch(ModuleUtil.gEP(), target);
-            ModuleUtil.gEP().rotationYaw += (rotation.x - ModuleUtil.gEP().rotationYaw) * (speed.getValue() / 20);
-            ModuleUtil.gEP().rotationPitch += (rotation.y - ModuleUtil.gEP().rotationPitch) * (speed.getValue() / 20);
+            ModuleUtil.gEP().rotationYaw += (rotation.x - ModuleUtil.gEP().rotationYaw) * (speed.getValue() / speed.getMaxValue());
+            ModuleUtil.gEP().rotationPitch += (rotation.y - ModuleUtil.gEP().rotationPitch) * (speed.getValue() / speed.getMaxValue());
         }
     }
 }

@@ -6,6 +6,8 @@ import coolclk.faker.util.ModuleUtil;
 import net.minecraft.network.play.client.C03PacketPlayer;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @ModuleInfo(name = "Criticals", category = ModuleCategory.Combat)
 public class Criticals extends Module {
@@ -17,6 +19,7 @@ public class Criticals extends Module {
         jumpHeight.setDisplayVisible(mode.getValue().equals("custom"));
     }
 
+    @SideOnly(value = Side.CLIENT)
     @SubscribeEvent
     public void onAttackEntity(AttackEntityEvent event) {
         if (this.getEnable()) {

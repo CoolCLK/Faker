@@ -1,13 +1,18 @@
 package coolclk.faker.feature.api;
 
-import coolclk.faker.event.ModuleChangeStatEvent;
+import coolclk.faker.event.events.ModuleChangeStatEvent;
 import coolclk.faker.feature.modules.ModuleCategory;
 import coolclk.faker.feature.modules.player.Timer;
 import coolclk.faker.launch.forge.FakerForgeMod;
+import coolclk.faker.util.ModuleUtil;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
@@ -89,7 +94,7 @@ public class Module implements IModule {
     }
 
     public boolean getEnable() {
-        return this.enable;
+        return this.enable && ModuleUtil.gEP() != null;
     }
 
     public Float getEnableTicks() {
@@ -106,6 +111,12 @@ public class Module implements IModule {
 
     public void addSettings(Settings<?> settings) {
         this.settings.add(settings);
+    }
+
+    @SideOnly(value = Side.CLIENT)
+    @SubscribeEvent
+    public void onPlayerChangedDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
+        this.setEnable(this.getEnable() && !this.getCanKeepEnable(), false);
     }
 
     public void onRegister() {

@@ -9,11 +9,14 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @ModuleInfo(name = "HUD", category = ModuleCategory.Render)
 public class HUD extends Module {
     public static String MESSAGE = "";
 
+    @SideOnly(value = Side.CLIENT)
     @SubscribeEvent
     public void onRenderGameOverlay(RenderGameOverlayEvent event) {
         if (event.type == RenderGameOverlayEvent.ElementType.TEXT) {

@@ -13,7 +13,7 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'org.spongepowered.mixin'
 
-version = "1.0.5"
+version = "1.0.6"
 group= "coolclk.faker"
 archivesBaseName = "faker"
 
@@ -85,6 +85,8 @@ jar {
             'Main-Class': 'coolclk.faker.launch.injector.Bootstrap',
             // For agent
             'Agent-Class': 'coolclk.faker.launch.agent.Bootstrap',
+            'Premain-Class': 'coolclk.faker.launch.agent.Bootstrap',
+            'Can-Redefine-Classes': 'true',
             'Can-Retransform-Classes': 'true',
             // For Forge mod
             'FMLCorePlugin': 'coolclk.faker.injection.MixinLoader',

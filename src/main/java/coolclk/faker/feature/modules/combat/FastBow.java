@@ -1,11 +1,13 @@
 package coolclk.faker.feature.modules.combat;
 
-import coolclk.faker.event.UpdateTimerEvent;
+import coolclk.faker.event.events.UpdateTimerEvent;
 import coolclk.faker.feature.api.*;
 import coolclk.faker.feature.modules.ModuleCategory;
 import net.minecraft.init.Items;
 import net.minecraftforge.event.entity.player.PlayerUseItemEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @ModuleInfo(name = "FastBow", category = ModuleCategory.Combat)
 public class FastBow extends Module {
@@ -20,6 +22,7 @@ public class FastBow extends Module {
         bowSpeed.setDisplayVisible(mode.getValue().equals("custom"));
     }
 
+    @SideOnly(value = Side.CLIENT)
     @SubscribeEvent
     public void onPlayerUseItem(PlayerUseItemEvent.Start event) {
         if (this.getEnable() && event.item.getItem() == Items.bow) {
@@ -31,6 +34,7 @@ public class FastBow extends Module {
         }
     }
 
+    @SideOnly(value = Side.CLIENT)
     @SubscribeEvent
     public void onPlayerUseItem(PlayerUseItemEvent.Stop event) {
         if (event.item.getItem() == Items.bow) {
@@ -40,6 +44,7 @@ public class FastBow extends Module {
         }
     }
 
+    @SideOnly(value = Side.CLIENT)
     @SubscribeEvent
     public void onUpdateTimer(UpdateTimerEvent event) {
         if (this.getEnable()) {

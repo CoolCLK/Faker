@@ -1,6 +1,6 @@
 package coolclk.faker.feature.modules.render;
 
-import coolclk.faker.event.PacketEvent;
+import coolclk.faker.event.events.PacketEvent;
 import coolclk.faker.feature.ModuleHandler;
 import coolclk.faker.feature.api.Module;
 import coolclk.faker.feature.api.ModuleInfo;
@@ -13,6 +13,8 @@ import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.play.client.*;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @ModuleInfo(name = "FreeCam", category = ModuleCategory.Render)
 public class FreeCam extends Module {
@@ -79,6 +81,7 @@ public class FreeCam extends Module {
         ModuleUtil.gEP().capabilities.isFlying = ModuleHandler.findModule(Fly.class).getEnable();
     }
 
+    @SideOnly(value = Side.CLIENT)
     @SubscribeEvent
     public void onPacketSend(PacketEvent.Send event) {
         if (this.getEnable()) {

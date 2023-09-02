@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            fx:id="parent" fx:controller="coolclk.faker.launch.injector.JavaFxController" prefWidth="520" prefHeight="280"
+            style="-fx-background-color: #F4F4F4; -fx-background-radius: 1em;">
+    <top>
+        <HBox alignment="CENTER_RIGHT">
+            <Button fx:id="minimizeWindowButton" style="-fx-background: transparent;">
+                <graphic>
+                    <ImageView>
+                        <Image url="/assets/faker/javafx/minimize-button.png"/>
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Button fx:id="closeWindowButton" style="-fx-background: transparent;">
+                <graphic>
+                    <ImageView>
+                        <Image url="/assets/faker/javafx/close-button.png"/>
+                    </ImageView>
+                </graphic>
+            </Button>
+        </HBox>
+    </top>
+    <center>
+        <VBox alignment="CENTER">
+            <Text text="Faker injector" style="font-size: 20;"/>
+            <HBox fx:id="loginPane" alignment="CENTER" visible="false" managed="false">
+                <VBox>
+                    <Text text="Login" style="font-size: 20;"/>
+                    <TextField fx:id="loginTextField"/>
+                    <PasswordField fx:id="loginPasswordField"/>
+                    <Button fx:id="loginButton" text="Login"/>
+                </VBox>
+            </HBox>
+            <HBox fx:id="selectProcessPane" alignment="CENTER" visible="false" managed="false">
+                <VBox>
+                    <ChoiceBox fx:id="processChoiceBox"/>
+                    <Button fx:id="processConfirmButton" text="Confirm"/>
+                </VBox>
+            </HBox>
+            <HBox fx:id="injectPane" alignment="CENTER" visible="false" managed="false">
+                <VBox>
+                    <HBox>
+                        <Button fx:id="injectRetryButton" text="Retry" />
+                        <Button fx:id="injectFinishButton" text="Finish" />
+                    </HBox>
+                </VBox>
+            </HBox>
+        </VBox>
+    </center>
+    <bottom>
+        <HBox alignment="CENTER">
+            <VBox spacing="3">
+                <ProgressBar fx:id="progressBar" minWidth="460"/>
+                <Text fx:id="progressName"/>
+            </VBox>
+        </HBox>
+    </bottom>
+</BorderPane>

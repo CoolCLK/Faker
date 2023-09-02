@@ -1,6 +1,6 @@
 package coolclk.faker.launch.forge;
 
-import coolclk.faker.event.EventHandler;
+import coolclk.faker.event.ForgeEventHandler;
 import coolclk.faker.feature.ModuleHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
@@ -28,7 +28,7 @@ public class FakerForgeMod {
 
     @Mod.EventHandler
     public void onFMLInitialization(FMLInitializationEvent event) {
-        MinecraftForge.EVENT_BUS.register(new EventHandler());
+        MinecraftForge.EVENT_BUS.register(new ForgeEventHandler());
 
         ModuleHandler.registerModules();
     }

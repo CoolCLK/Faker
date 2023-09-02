@@ -1,4 +1,4 @@
-package coolclk.faker.event;
+package coolclk.faker.event.events;
 
 import net.minecraft.network.Packet;
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
@@ -14,6 +14,10 @@ public class PacketEvent extends Event {
 
     public Packet<?> getPacket() {
         return this.packet;
+    }
+
+    public void setPacket(Packet<?> packet) {
+        this.packet = packet;
     }
 
     public boolean isTypeOf(Class<?>... classes) {
