@@ -1,6 +1,7 @@
 package coolclk.faker.feature.modules.combat;
 
 import com.google.common.base.Predicate;
+import coolclk.faker.event.events.PlayerUpdateEvent;
 import coolclk.faker.feature.ModuleHandler;
 import coolclk.faker.feature.api.*;
 import coolclk.faker.feature.modules.ModuleCategory;
@@ -20,17 +21,17 @@ public class AimAssist extends Module {
     public SettingsFloat speed = new SettingsFloat(this, "speed", 3F, 0F, 20F);
 
     @Override
-    public void onEnabling() {
-        Entity target = ModuleUtil.findClosestEntityWithDistance(ModuleUtil.gEP(), range.getValue(), new Predicate<EntityLivingBase>() {
+    public void onUpdate(PlayerUpdateEvent event) {
+        Entity target = ModuleUtil.findClosestEntityWithDistance(event.getEntityPlayer(), range.getValue(), new Predicate<EntityLivingBase>() {
             @Override
             public boolean apply(@Nullable EntityLivingBase input) {
                 return (allowPlayer.getValue() && input instanceof EntityPlayer && ModuleHandler.findModule(AntiBot.class).isBot(input)) || allowMob.getValue();
             }
         });
         if (target != null) {
-            Vector2f rotation = ModuleUtil.entityToEntityYawAndPitch(ModuleUtil.gEP(), target);
-            ModuleUtil.gEP().rotationYaw += (rotation.x - ModuleUtil.gEP().rotationYaw) * (speed.getValue() / speed.getMaxValue());
-            ModuleUtil.gEP().rotationPitch += (rotation.y - ModuleUtil.gEP().rotationPitch) * (speed.getValue() / speed.getMaxValue());
+            Vector2f rotation = ModuleUtil.entityToEntityYawAndPitch(event.getEntityPlayer(), target);
+            event.getEntityPlayer().rotationYaw += (rotation.x - event.getEntityPlayer().rotationYaw) * (speed.getValue() / speed.getMaxValue());
+            event.getEntityPlayer().rotationPitch += (rotation.y - event.getEntityPlayer().rotationPitch) * (speed.getValue() / speed.getMaxValue());
         }
     }
 }

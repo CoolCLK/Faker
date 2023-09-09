@@ -25,9 +25,3 @@
 ### 开源
 
 你可以提交 Issue 或申请来帮助我们。如果你想要 Fork 这个仓库，你需要遵守 [MIT 开源协议](LICENSE) 后就可以编写了。
-
-### 社区
-
-Discord: https://discord.gg/HKZafnxQ
-
-QQ群: <a target="_blank" href="https://qm.qq.com/cgi-bin/qm/qr?k=lWO0yWOcJOBjsrFVzzB6c1qZ4A17OZGC&jump_from=webapi&authKey=pKj7R75LrppMheOIATQZVzEDwfT1SS0nHEQ6vCkCdaQU4aqU5qTcwfCwohfEu6sL"><img border="0" src="//pub.idqqimg.com/wpa/images/group.png" alt="Faker 交流群" title="Faker 交流群"></a>

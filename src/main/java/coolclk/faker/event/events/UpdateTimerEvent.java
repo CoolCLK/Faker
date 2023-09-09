@@ -1,6 +1,6 @@
 package coolclk.faker.event.events;
 
-import net.minecraftforge.fml.common.eventhandler.Event;
+import coolclk.faker.event.api.Event;
 
 public class UpdateTimerEvent extends Event {
     private float multiplier = 1;

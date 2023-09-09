@@ -4,7 +4,9 @@ import coolclk.faker.feature.ModuleHandler;
 import coolclk.faker.feature.modules.movement.NoSlow;
 import coolclk.faker.util.ModuleUtil;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
@@ -16,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class MixinWorld {
     @Inject(method = "handleMaterialAcceleration", at = @At(value = "RETURN"), cancellable = true)
     public void handleMaterialAcceleration(AxisAlignedBB bb, Material materialIn, Entity entityIn, CallbackInfoReturnable<Boolean> cir) {
-        if (ModuleHandler.findModule(NoSlow.class).getEnable() && entityIn == ModuleUtil.gEP()) {
+        if (ModuleHandler.findModule(NoSlow.class).getEnable() && entityIn instanceof EntityPlayerSP) {
             cir.setReturnValue(false);
         }
     }

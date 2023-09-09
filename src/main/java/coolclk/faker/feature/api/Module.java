@@ -1,32 +1,25 @@
 package coolclk.faker.feature.api;
 
+import coolclk.faker.event.EventHandler;
 import coolclk.faker.event.events.ModuleChangeStatEvent;
-import coolclk.faker.feature.modules.ModuleCategory;
-import coolclk.faker.feature.modules.player.Timer;
+import coolclk.faker.event.events.PlayerUpdateEvent;
 import coolclk.faker.launch.forge.FakerForgeMod;
-import coolclk.faker.util.ModuleUtil;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.client.settings.KeyBinding;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
+import coolclk.faker.util.I18nUtil;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Module implements IModule {
     private boolean enable = false;
-    private Long enableTime = 0L;
     private String name = "";
     private String nameTranslateKey = "", descriptionTranslateKey = "";
-    private KeyBinding keyBinding = null;
+    private int keyBinding = 0;
+    private final int defaultKeyBinding;
     private final List<Settings<?>> settings = new ArrayList<Settings<?>>();
-
-    protected Logger LOGGER = FakerForgeMod.LOGGER;
 
     public Module() {
         if (this.getClass().isAnnotationPresent(ModuleInfo.class)) {
@@ -34,21 +27,10 @@ public class Module implements IModule {
             this.name = moduleInfo.name();
             this.nameTranslateKey = FakerForgeMod.MODID + ".module." + this.getName() + ".name";
             this.descriptionTranslateKey = FakerForgeMod.MODID + ".module." + this.getName() + ".description";
-            this.updateKeyBinding(moduleInfo.defaultKeycode());
-            if (moduleInfo.category() != ModuleCategory.None) {
-                MinecraftForge.EVENT_BUS.register(this);
-                ClientRegistry.registerKeyBinding(this.getKeyBinding());
-            }
+            this.defaultKeyBinding = moduleInfo.defaultKeycode();
+            this.keyBinding = this.getDefaultKeyBinding();
             moduleInfo.category().addModule(this);
-        }
-    }
-
-    public void updateKeyBinding(int defaultKeyCode) {
-        this.keyBinding = new KeyBinding(this.getDisplayName(), defaultKeyCode, FakerForgeMod.NAME);
-    }
-
-    public KeyBinding getKeyBinding() {
-        return this.keyBinding;
+        } else this.defaultKeyBinding = 0;
     }
 
     public String getNameTranslateKey() {
@@ -64,19 +46,30 @@ public class Module implements IModule {
     }
 
     public String getDisplayName() {
-        return I18n.format(this.getNameTranslateKey());
+        return I18nUtil.format(this.getNameTranslateKey());
     }
 
     public String getDisplayDescription() {
-        return I18n.format(this.getDescriptionTranslateKey());
+        return I18nUtil.format(this.getDescriptionTranslateKey());
+    }
+
+    public int getDefaultKeyBinding() {
+        return this.defaultKeyBinding;
+    }
+
+    public int getKeyBinding() {
+        return this.keyBinding;
+    }
+
+    public void setKeyBinding(int key) {
+        this.keyBinding = key;
     }
 
     public void setEnable(boolean enable, boolean update) {
         this.enable = enable;
         if (update) {
-            if (this.getCanKeepEnable()) MinecraftForge.EVENT_BUS.post(new ModuleChangeStatEvent());
+            if (this.getCanKeepEnable()) EventHandler.post(new ModuleChangeStatEvent());
             if (enable) {
-                this.enableTime = System.currentTimeMillis();
                 this.onEnable();
             } else {
                 this.onDisable();
@@ -94,11 +87,7 @@ public class Module implements IModule {
     }
 
     public boolean getEnable() {
-        return this.enable && ModuleUtil.gEP() != null;
-    }
-
-    public Float getEnableTicks() {
-        return (this.getEnable() ? (System.currentTimeMillis() - this.enableTime) : 0) / Timer.currentTimerSpeed;
+        return this.enable;
     }
 
     public void toggleModule() {
@@ -131,7 +120,11 @@ public class Module implements IModule {
 
     }
 
-    public void onEnabling() {
+    public void onUpdate() {
+
+    }
+
+    public void onUpdate(PlayerUpdateEvent event) {
 
     }
 

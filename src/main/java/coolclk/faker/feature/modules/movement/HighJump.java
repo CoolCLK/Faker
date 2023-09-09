@@ -1,26 +1,20 @@
 package coolclk.faker.feature.modules.movement;
 
+import coolclk.faker.event.api.SubscribeEvent;
+import coolclk.faker.event.events.PlayerJumpEvent;
 import coolclk.faker.feature.api.Module;
 import coolclk.faker.feature.api.ModuleInfo;
 import coolclk.faker.feature.api.SettingsDouble;
 import coolclk.faker.feature.modules.ModuleCategory;
-import coolclk.faker.util.ModuleUtil;
-import net.minecraftforge.event.entity.living.LivingEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 @ModuleInfo(name = "HighJump", category = ModuleCategory.Movement)
 public class HighJump extends Module {
     public SettingsDouble jumpHeight = new SettingsDouble(this, "jumpHeight", 0.42, 0.42, 3D);
 
-    @SideOnly(value = Side.CLIENT)
     @SubscribeEvent
-    public void onLivingJump(LivingEvent.LivingJumpEvent event) {
+    public void onPlayerJump(PlayerJumpEvent event) {
         if (this.getEnable()) {
-            if (event.entityLiving == ModuleUtil.gEP() && ModuleUtil.gEP().onGround) {
-                event.entityLiving.motionY = jumpHeight.getValue();
-            }
+            event.setUpwardsMotion(jumpHeight.getValue());
         }
     }
 }

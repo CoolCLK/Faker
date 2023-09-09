@@ -36,13 +36,15 @@ faker.settings.mode.box.name=箱子
 faker.settings.mode.outline.name=描边
 faker.settings.outlineWidth.name=描边宽度
 faker.settings.outlineAlpha.name=描边透明度
-faker.settings.bowSpeed.name=拉弓速度
+faker.settings.bowDuration.name=拉弓时长
 faker.settings.maxPacketCounts.name=最大发包量
 faker.settings.walkSpeed.name=行走速度
 faker.settings.flySpeed.name=飞行速度
 faker.settings.pingRange.name=延迟范围
 faker.settings.maxOpenTime.name=最大打开时间
 faker.settings.mode.cancelPacket.name=取消包
+faker.settings.moduleList.name=模块列表
+faker.settings.notification.name=通知
 
 faker.category.Combat.name=战斗
 faker.category.Movement.name=移动

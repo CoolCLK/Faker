@@ -1,24 +1,26 @@
 package coolclk.faker.feature.api;
 
+import coolclk.faker.event.EventHandler;
 import coolclk.faker.event.events.ModuleChangeStatEvent;
-import net.minecraft.client.resources.I18n;
-import net.minecraftforge.common.MinecraftForge;
+import coolclk.faker.util.I18nUtil;
 
 public class Settings<T> {
     private final String name;
     private T value;
+    private final T defaultValue;
     private boolean displayVisible = true;
 
     public Settings(Module parent, String name, T value) {
         this.name = name;
-        this.value = value;
+        this.defaultValue = value;
+        this.value = this.getDefaultValue();
         parent.addSettings(this);
     }
 
     public void setValue(T value, boolean update) {
         this.value = value;
         if (update) {
-            MinecraftForge.EVENT_BUS.post(new ModuleChangeStatEvent());
+            EventHandler.post(new ModuleChangeStatEvent());
         }
     }
 
@@ -26,12 +28,16 @@ public class Settings<T> {
         this.setValue(value, true);
     }
 
+    public T getDefaultValue() {
+        return this.defaultValue;
+    }
+
     public T getValue() {
         return this.value;
     }
 
     public String getName() {
-        return I18n.format(this.getTranslateKey());
+        return I18nUtil.format(this.getTranslateKey());
     }
 
     protected String getTranslateKey() {
@@ -53,12 +59,8 @@ public class Settings<T> {
 
     // For ClickGui
 
-    public String getDisplayType() {
-        return "";
-    }
-
     public String getDisplayName() {
-        return I18n.format(this.getTranslateKey());
+        return I18nUtil.format(this.getTranslateKey());
     }
 
     public String getDisplayValue() {
@@ -71,10 +73,6 @@ public class Settings<T> {
 
     public void setDisplayVisible(boolean b) {
         this.displayVisible = b;
-    }
-
-    public void toggleDisplayVisible() {
-        this.setDisplayVisible(!this.getDisplayVisible());
     }
 
     public int getDisplayLines() {

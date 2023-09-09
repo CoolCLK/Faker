@@ -1,6 +1,6 @@
 package coolclk.faker.feature.api;
 
-import net.minecraft.client.resources.I18n;
+import coolclk.faker.util.I18nUtil;
 
 import java.util.Arrays;
 import java.util.List;
@@ -48,14 +48,14 @@ public class SettingsMode<T> extends Settings<T> {
 
     public String getModeDisplayName(T mode) {
         if (this.getValues().contains(mode)) {
-            return I18n.format("faker.settings.mode." + this.getValues().get(this.getValues().indexOf(mode)).toString() + ".name");
+            return I18nUtil.format("faker.settings.mode." + this.getValues().get(this.getValues().indexOf(mode)).toString() + ".name");
         }
         return "";
     }
 
     public String getModeDisplayName(int index) {
         if (index >= 0 && index < this.getValues().size()) {
-            return I18n.format("faker.settings.mode." + this.getValues().get(index).toString() + ".name");
+            return I18nUtil.format("faker.settings.mode." + this.getValues().get(index).toString() + ".name");
         }
         return "";
     }

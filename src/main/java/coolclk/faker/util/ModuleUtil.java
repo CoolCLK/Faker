@@ -36,10 +36,6 @@ public class ModuleUtil {
         return Minecraft.getMinecraft();
     }
 
-    public static EntityPlayerSP getEntityPlayer() {
-        return getMinecraft().thePlayer;
-    }
-
     public static PlayerControllerMP getPlayerController() {
         return getMinecraft().playerController;
     }
@@ -126,9 +122,9 @@ public class ModuleUtil {
 
     public static Vector2f positionToPositionYawAndPitch(double fromX, double fromY, double fromZ, double toX, double toY, double toZ) {
         float pitch = (float) -ModuleUtil.getPositionToPositionAngle(0, fromY, ModuleUtil.positionToPositionDistance2d(fromX, fromZ, toX, toZ), toY), yaw = (float) -ModuleUtil.getPositionToPositionAngle(fromX, fromZ, toX, toZ);
-        if (toZ < ModuleUtil.gEP().posZ) {
-            if (toX > ModuleUtil.gEP().posX) yaw -= 180;
-            if (toX <= ModuleUtil.gEP().posX) yaw += 180;
+        if (toZ < fromZ) {
+            if (toX > fromX) yaw -= 180;
+            if (toX <= fromX) yaw += 180;
             yaw %= 180;
         }
         pitch /= 2;
@@ -179,10 +175,6 @@ public class ModuleUtil {
 
     public static Minecraft gM() {
         return getMinecraft();
-    }
-
-    public static EntityPlayerSP gEP() {
-        return getEntityPlayer();
     }
 
     public static PlayerControllerMP gPC() {

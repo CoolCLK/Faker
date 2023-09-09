@@ -9,5 +9,4 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(value = RUNTIME)
 @Target(value = METHOD)
 public @interface SubscribeEvent {
-    boolean canceled() default false;
 }

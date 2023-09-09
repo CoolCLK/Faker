@@ -1,5 +1,6 @@
 package coolclk.faker.injection.mixins;
 
+import coolclk.faker.event.EventHandler;
 import coolclk.faker.event.events.PacketEvent;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -32,9 +33,9 @@ public abstract class MixinNetworkManager {
      */
     @Overwrite
     public void sendPacket(Packet<?> packetIn) {
-        PacketEvent event = new PacketEvent.Send(packetIn);
-        if (MinecraftForge.EVENT_BUS.post(event)) return;
-        packetIn = event.packet;
+        PacketEvent event = new PacketEvent(PacketEvent.Type.SEND, packetIn);
+        if (EventHandler.postCanceled(event)) return;
+        packetIn = event.getPacket();
         if (this.isChannelOpen()) {
             this.flushOutboundQueue();
             this.dispatchPacket(packetIn, null);
@@ -49,9 +50,9 @@ public abstract class MixinNetworkManager {
     protected void channelRead0(ChannelHandlerContext channelHandlerContextIn, Packet packetIn) {
         if (this.channel.isOpen()) {
             try {
-                PacketEvent event = new PacketEvent.Receive(packetIn);
-                if (MinecraftForge.EVENT_BUS.post(event)) return;
-                packetIn = event.packet;
+                PacketEvent event = new PacketEvent(PacketEvent.Type.RECEIVE, packetIn);
+                if (EventHandler.postCanceled(event)) return;
+                packetIn = event.getPacket();
                 packetIn.processPacket(this.packetListener);
             }
             catch (ThreadQuickExitException ignored)  {  }

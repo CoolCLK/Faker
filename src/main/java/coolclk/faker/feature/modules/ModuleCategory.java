@@ -2,7 +2,7 @@ package coolclk.faker.feature.modules;
 
 import coolclk.faker.feature.api.Module;
 import coolclk.faker.launch.forge.FakerForgeMod;
-import net.minecraft.client.resources.I18n;
+import coolclk.faker.util.I18nUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +40,7 @@ public enum ModuleCategory {
     }
 
     public String getDisplayName() {
-        return I18n.format(this.translateKey);
+        return I18nUtil.format(this.translateKey);
     }
 
     public int getPositionX() {

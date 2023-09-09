@@ -1,15 +1,23 @@
 package coolclk.faker.event.events;
 
+import coolclk.faker.event.api.CancelableEvent;
 import net.minecraft.network.Packet;
-import net.minecraftforge.fml.common.eventhandler.Cancelable;
-import net.minecraftforge.fml.common.eventhandler.Event;
 
-@Cancelable
-public class PacketEvent extends Event {
-    public Packet<?> packet;
+public class PacketEvent extends CancelableEvent {
+    public enum Type {
+        SEND,
+        RECEIVE
+    }
+    protected Packet<?> packet;
+    protected final Type type;
 
-    public PacketEvent(Packet<?> packet) {
+    public PacketEvent(Type type, Packet<?> packet) {
+        this.type = type;
         this.packet = packet;
+    }
+
+    public Type getType() {
+        return this.type;
     }
 
     public Packet<?> getPacket() {
@@ -32,19 +40,5 @@ public class PacketEvent extends Event {
             }
         }
         return typeOf;
-    }
-
-    @Cancelable
-    public static class Send extends PacketEvent {
-        public Send(Packet<?> packet) {
-            super(packet);
-        }
-    }
-
-    @Cancelable
-    public static class Receive extends PacketEvent {
-        public Receive(Packet<?> packet) {
-            super(packet);
-        }
     }
 }

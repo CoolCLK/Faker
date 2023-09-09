@@ -2,37 +2,51 @@ package coolclk.faker.feature;
 
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
+import coolclk.faker.event.events.PlayerUpdateEvent;
 import coolclk.faker.feature.api.*;
 import coolclk.faker.feature.modules.ModuleCategory;
 import org.reflections.Reflections;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-import static coolclk.faker.launch.forge.FakerForgeMod.LOGGER;
+import static coolclk.faker.Main.logger;
 
 public class ModuleHandler {
+    public static File dataFolder;
     public static File configFolder;
 
-    public static void registerConfig(File file) {
-        configFolder = new File(file.getParent() + "/Faker/");
-        configFolder.mkdirs();
+    public static String usingConfig = "default";
+
+    public static void register() {
+        registerFolder();
+        registerModules();
     }
 
-    public static void registerModules() {
-        LOGGER.debug("Register modules");
+    public static void setDataFolder(File folder) {
+        dataFolder = folder;
+    }
+
+    protected static void registerFolder() {
+        if (dataFolder.exists() || dataFolder.mkdirs()) {
+            configFolder = new File(dataFolder.getPath() + "/configs/");
+            if (!configFolder.exists() && !configFolder.mkdirs()) logger.warn("Cannot create the config folder");
+        } else logger.warn("Cannot create the data folder");
+    }
+
+    protected static void registerModules() {
+        logger.debug("Register modules");
         for (Class<? extends Module> clazz : new Reflections().getSubTypesOf(Module.class)) {
             try {
-                LOGGER.debug("Register module " + clazz.getName());
+                logger.debug("Register module " + clazz.getName());
                 if (clazz.isAnnotationPresent(ModuleInfo.class) && !moduleIsRegister(clazz)) {
                     Module module = clazz.newInstance();
                     module.onRegister();
                 }
             } catch (Exception e) {
-                LOGGER.error("Cannot register module class " + clazz.getName() + "! Try to ask the dev to solved it");
+                logger.error("Cannot register module class " + clazz.getName() + "! Try to ask the dev to solved it");
                 throw new RuntimeException(e);
             }
         }
@@ -69,7 +83,7 @@ public class ModuleHandler {
         return false;
     }
 
-    public static void disableUnlikeableModules() {
+    public static void disableUnableModules() {
         for (Module module : ModuleCategory.getAllModules()) {
             if (!module.getCanKeepEnable()) {
                 module.setEnable(false, false);
@@ -77,15 +91,16 @@ public class ModuleHandler {
         }
     }
 
-    public static void tickEvent() {
+    public static void tickEvent(PlayerUpdateEvent event) {
         for (ModuleCategory category : ModuleCategory.values()) {
             for (Module module : category.getModules()) {
                 if (module.getEnable()) {
                     try {
-                        module.onEnabling();
+                        module.onUpdate();
+                        module.onUpdate(event);
                     } catch (Exception e) {
-                        LOGGER.warn("When enable module " + module.getDisplayName() + ", throws an exception: ");
-                        e.printStackTrace();
+                        logger.warn("When enable module " + module.getDisplayName() + ", throws an exception: ");
+                        e.printStackTrace(System.out);
                     } finally {
                         module.afterEnabling();
                     }
@@ -95,81 +110,114 @@ public class ModuleHandler {
     }
 
     public static void loadConfigs() {
+        File configFile = new File(dataFolder.getPath() + "/config.json");
+        if (configFile.exists()) {
+            try {
+                Map<String, Object> configuration = new Gson().fromJson(new FileReader(configFile), new TypeToken<Map<String, Object>>() {  }.getType());
+                if (configuration.containsKey("config")) {
+                    usingConfig = (String) configuration.get("config");
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        loadConfig(usingConfig);
+    }
+
+    public static void loadConfig(String name) {
+        File configFile = new File(configFolder.getPath() + "/" + name + ".json");
         try {
-            File configFile = new File(configFolder.getPath() + "/defaultConfig.json");
             if (configFile.exists()) {
-                FileReader reader = new FileReader(configFile);
+                Reader reader = new FileReader(configFile);
                 List<ModuleConfiguration> configurations = new Gson().fromJson(reader, new TypeToken<List<ModuleConfiguration>>() {  }.getType());
-                for (ModuleConfiguration configuration : configurations) {
-                    Module module = ModuleHandler.findModule(configuration.name);
-                    if (module != null) {
-                        if (module.getCanKeepEnable()) {
-                            LOGGER.debug("Load settings \"enable\" for module " + module.getDisplayName() + " from config");
-                            module.setEnable(configuration.enable, false);
-                        }
-                        for (Settings<?> settings : configuration.settings) {
-                            Settings<?> targetSettings = null;
-                            for (Settings<?> activeSettings : module.getSettings()) {
-                                if (activeSettings.getName().equals(settings.getName())) {
-                                    targetSettings = activeSettings;
+                if (configurations != null) {
+                    for (ModuleConfiguration configuration : configurations) {
+                        if (configuration.name != null) {
+                            Module module = ModuleHandler.findModule(configuration.name);
+                            if (module != null) {
+                                if (configuration.enable != null && module.getCanKeepEnable()) {
+                                    logger.debug("Load settings \"enable\" for module " + module.getDisplayName() + " from config");
+                                    module.setEnable(configuration.enable, false);
                                 }
-                            }
-                            if (targetSettings != null) {
-                                boolean failed = false;
-                                try {
-                                    if (targetSettings.rootOf(SettingsBoolean.class)) {
-                                        ((SettingsBoolean) targetSettings).setValue(Boolean.valueOf(settings.getValue().toString()), false);
-                                    } else if (targetSettings.rootOf(SettingsMode.class)) {
-                                        if (targetSettings.rootOf(SettingsModeString.class)) {
-                                            ((SettingsModeString) targetSettings).setValue(settings.getValue().toString(), false);
-                                        } else {
-                                            failed = true;
+                                if (configuration.settings != null) {
+                                    for (Settings<?> settings : configuration.settings) {
+                                        Settings<?> targetSettings = null;
+                                        for (Settings<?> activeSettings : module.getSettings()) {
+                                            if (activeSettings.getName().equals(settings.getName())) {
+                                                targetSettings = activeSettings;
+                                            }
                                         }
-                                    } else if (targetSettings.rootOf(SettingsNumber.class)) {
-                                        if (targetSettings.rootOf(SettingsDouble.class)) {
-                                            ((SettingsDouble) targetSettings).setValue(Double.valueOf(settings.getValue().toString()), false);
-                                        } else if (targetSettings.rootOf(SettingsFloat.class)) {
-                                            ((SettingsFloat) targetSettings).setValue(Float.valueOf(settings.getValue().toString()), false);
-                                        } else if (targetSettings.rootOf(SettingsInteger.class)) {
-                                            ((SettingsInteger) targetSettings).setValue(Integer.valueOf(settings.getValue().toString()), false);
-                                        } else if (targetSettings.rootOf(SettingsLong.class)) {
-                                            ((SettingsLong) targetSettings).setValue(Long.valueOf(settings.getValue().toString()), false);
+                                        if (targetSettings != null) {
+                                            boolean failed = false;
+                                            try {
+                                                if (targetSettings.rootOf(SettingsBoolean.class)) {
+                                                    ((SettingsBoolean) targetSettings).setValue(Boolean.valueOf(settings.getValue().toString()), false);
+                                                } else if (targetSettings.rootOf(SettingsMode.class)) {
+                                                    if (targetSettings.rootOf(SettingsModeString.class)) {
+                                                        ((SettingsModeString) targetSettings).setValue(settings.getValue().toString(), false);
+                                                    } else {
+                                                        failed = true;
+                                                    }
+                                                } else if (targetSettings.rootOf(SettingsNumber.class)) {
+                                                    if (targetSettings.rootOf(SettingsDouble.class)) {
+                                                        ((SettingsDouble) targetSettings).setValue(Double.valueOf(settings.getValue().toString()), false);
+                                                    } else if (targetSettings.rootOf(SettingsFloat.class)) {
+                                                        ((SettingsFloat) targetSettings).setValue(Float.valueOf(settings.getValue().toString()), false);
+                                                    } else if (targetSettings.rootOf(SettingsInteger.class)) {
+                                                        ((SettingsInteger) targetSettings).setValue(Integer.valueOf(settings.getValue().toString()), false);
+                                                    } else if (targetSettings.rootOf(SettingsLong.class)) {
+                                                        ((SettingsLong) targetSettings).setValue(Long.valueOf(settings.getValue().toString()), false);
+                                                    } else {
+                                                        failed = true;
+                                                    }
+                                                } else {
+                                                    failed = true;
+                                                }
+                                            } catch (Exception e) {
+                                                failed = true;
+                                            }
+                                            if (!failed) {
+                                                logger.debug("Load settings " + settings.getDisplayName() + " for module " + module.getDisplayName() + " from config");
+                                            } else {
+                                                logger.warn("Load settings " + settings.getDisplayName() + " for module " + module.getDisplayName() + " failed");
+                                            }
                                         } else {
-                                            failed = true;
+                                            logger.warn("Cannot found settings \"" + settings.getName() + "\" of module " + module.getDisplayName() + "! Mod will ignore it");
                                         }
-                                    } else {
-                                        failed = true;
                                     }
-                                } catch (Exception e) {
-                                    failed = true;
                                 }
-                                if (!failed) {
-                                    LOGGER.debug("Load settings " + settings.getDisplayName() + " for module " + module.getDisplayName() + " from config");
-                                } else {
-                                    LOGGER.warn("Load settings " + settings.getDisplayName() + " for module " + module.getDisplayName() + " failed");
-                                }
+                                if (configuration.keyBinding != null) module.setKeyBinding(configuration.keyBinding);
                             } else {
-                                LOGGER.warn("Cannot found settings \"" + settings.getName() + "\" of module " + module.getDisplayName() + "! Mod will ignore it");
+                                logger.warn("Cannot found module \"" + configuration.name + "\"! System will ignore it");
                             }
                         }
-                    } else {
-                        LOGGER.warn("Cannot found module \"" + configuration.name + "\"! Mod will ignore it");
                     }
                 }
                 reader.close();
-            } else {
-                configFile.createNewFile();
-            }
+            } else if (!configFile.createNewFile()) logger.warn("Cannot create the config file");
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            System.err.print("Cannot load the config file " + configFile.getPath() + ": ");
+            e.printStackTrace(System.out);
         }
     }
 
     public static void saveConfigs() {
+        File configFile = new File(dataFolder.getPath() + "/config.json");
         try {
-            File configFile = new File(configFolder.getPath() + "/defaultConfig.json");
+            if (!configFile.exists() && !configFile.createNewFile()) logger.warn("Cannot create the config file");
+            Map<String, Object> configuration = new Gson().fromJson(new FileReader(configFile), new TypeToken<Map<String, Object>>() {  }.getType());
+            configuration.put("config", usingConfig);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        saveConfig(ModuleHandler.usingConfig);
+    }
+
+    public static void saveConfig(String name) {
+        try {
+            File configFile = new File(configFolder.getPath() + "/" + name + ".json");
             if (!configFile.exists()) {
-                configFile.createNewFile();
+                if (!configFile.createNewFile()) logger.warn("Cannot create the config file");
             }
             FileWriter writer = new FileWriter(configFile);
             List<ModuleConfiguration> configurations = new ArrayList<ModuleConfiguration>();
@@ -187,15 +235,29 @@ public class ModuleHandler {
     public static class ModuleConfiguration {
         String name;
         Boolean enable;
-        List<Settings<?>> settings;
+        Integer keyBinding;
+        List<Settings<?>> settings = new ArrayList<Settings<?>>();
 
         public ModuleConfiguration(Module module) {
-            this.name = module.getName();
-            this.enable = false;
-            if (module.getCanKeepEnable()) {
-                this.enable = module.getEnable();
+            boolean save = false;
+            if (module.getEnable() && module.getCanKeepEnable()) {
+                this.enable = true;
+                save = true;
             }
-            this.settings = module.getSettings();
+            if (module.getKeyBinding() != module.getDefaultKeyBinding()) {
+                this.keyBinding = module.getKeyBinding();
+                save = true;
+            }
+            this.keyBinding = module.getKeyBinding();
+            for (Settings<?> settings : module.getSettings()) {
+                if (settings.getValue() != settings.getDefaultValue()) {
+                    this.settings.add(settings);
+                    save = true;
+                }
+            }
+            if (save) {
+                this.name = module.getName();
+            }
         }
     }
 }

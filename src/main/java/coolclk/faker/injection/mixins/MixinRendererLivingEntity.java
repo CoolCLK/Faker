@@ -4,6 +4,7 @@ import coolclk.faker.feature.ModuleHandler;
 import coolclk.faker.feature.modules.combat.AntiBot;
 import coolclk.faker.feature.modules.render.ESP;
 import coolclk.faker.util.ModuleUtil;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -25,7 +26,7 @@ public abstract class MixinRendererLivingEntity<T extends EntityLivingBase> {
     public void renderModel(T entitylivingbaseIn, float p_77036_2_, float p_77036_3_, float p_77036_4_, float p_77036_5_, float p_77036_6_, float scaleFactor, CallbackInfo ci) {
         if (entitylivingbaseIn instanceof EntityPlayer && ModuleHandler.findModule(ESP.class).getEnable()) {
             EntityPlayer player = (EntityPlayer) entitylivingbaseIn;
-            if (player != ModuleUtil.gEP() && !ModuleHandler.findModule(AntiBot.class).isBot(player)) {
+            if (player != Minecraft.getMinecraft().thePlayer && !ModuleHandler.findModule(AntiBot.class).isBot(player)) {
                 if (ModuleHandler.findModule(ESP.class).getEnable()) {
                     if (ModuleHandler.findModule(ESP.class).modes.getValue().equals("outline")) {
                         GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);

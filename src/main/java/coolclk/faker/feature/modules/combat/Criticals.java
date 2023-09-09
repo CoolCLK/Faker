@@ -1,13 +1,14 @@
 package coolclk.faker.feature.modules.combat;
 
-import coolclk.faker.feature.api.*;
+import coolclk.faker.event.api.SubscribeEvent;
+import coolclk.faker.event.events.PlayerAttackEntityEvent;
+import coolclk.faker.feature.api.Module;
+import coolclk.faker.feature.api.ModuleInfo;
+import coolclk.faker.feature.api.SettingsDouble;
+import coolclk.faker.feature.api.SettingsModeString;
 import coolclk.faker.feature.modules.ModuleCategory;
 import coolclk.faker.util.ModuleUtil;
 import net.minecraft.network.play.client.C03PacketPlayer;
-import net.minecraftforge.event.entity.player.AttackEntityEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 @ModuleInfo(name = "Criticals", category = ModuleCategory.Combat)
 public class Criticals extends Module {
@@ -19,20 +20,18 @@ public class Criticals extends Module {
         jumpHeight.setDisplayVisible(mode.getValue().equals("custom"));
     }
 
-    @SideOnly(value = Side.CLIENT)
     @SubscribeEvent
-    public void onAttackEntity(AttackEntityEvent event) {
+    public void onAttackEntity(PlayerAttackEntityEvent event) {
         if (this.getEnable()) {
-            if (event.entityPlayer == ModuleUtil.gEP()) {
-                if (event.entityPlayer.onGround) {
-                    event.entityPlayer.onGround = false;
-                    if (mode.getValue().equals("jump")) {
-                        event.entityPlayer.jump();
-                    } else if (mode.getValue().equals("custom")) {
-                        event.entityPlayer.motionY = jumpHeight.getValue();
-                    } else if (mode.getValue().equals("packet")) {
-                        event.entityPlayer.posY += 0.01D;
-                        ModuleUtil.gNM().sendPacket(new C03PacketPlayer.C04PacketPlayerPosition(event.entityPlayer.posX, event.entityPlayer.posY + 0.1, event.entityPlayer.posZ, false));
+            if (event.getEntityPlayer().onGround) {
+                event.getEntityPlayer().onGround = false;
+                if (mode.getValue().equals("jump")) {
+                    event.getEntityPlayer().jump();
+                } else if (mode.getValue().equals("custom")) {
+                    event.getEntityPlayer().motionY = jumpHeight.getValue();
+                } else if (mode.getValue().equals("packet")) {
+                    for (double height : new double[] { 0.01, 0.0625, 0.0375, 0 }) {
+                        ModuleUtil.gNM().sendPacket(new C03PacketPlayer.C04PacketPlayerPosition(event.getEntityPlayer().posX, event.getEntityPlayer().posY + height, event.getEntityPlayer().posZ, false));
                     }
                 }
             }

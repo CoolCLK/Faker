@@ -24,7 +24,7 @@ public class NoWeather extends Module {
     }
 
     @Override
-    public void onEnabling() {
+    public void onUpdate() {
         if (ModuleUtil.gW().provider.getWeatherRenderer() != clearWeatherRender) {
             ModuleUtil.gW().provider.setWeatherRenderer(clearWeatherRender);
         }

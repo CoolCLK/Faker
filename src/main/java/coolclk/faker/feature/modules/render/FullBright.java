@@ -16,7 +16,7 @@ public class FullBright extends Module {
     }
 
     @Override
-    public void onEnabling() {
+    public void onUpdate() {
         if (Minecraft.getMinecraft().gameSettings.gammaSetting < 100) {
             oldGamma = Minecraft.getMinecraft().gameSettings.gammaSetting;
             this.toggleModule();

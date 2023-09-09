@@ -34,13 +34,15 @@ faker.settings.healHealth.name=Heal Health
 faker.settings.shakePercent.name=Shake Percent
 faker.settings.mode.box.name=Box
 faker.settings.mode.outline.name=Outline
-faker.settings.bowSpeed.name=Bow Speed
+faker.settings.bowDuration.name=Bow Duration
 faker.settings.maxPacketCounts.name=Max Packet Counts
 faker.settings.walkSpeed.name=Walk Speed
 faker.settings.flySpeed.name=Fly Speed
 faker.settings.pingRange.name=Ping Range
 faker.settings.maxOpenTime.name=Max Open Time
 faker.settings.mode.cancelPacket.name=Cancel Packet
+faker.settings.moduleList.name=Module List
+faker.settings.notification.name=Notification
 
 faker.category.Combat.name=Combat
 faker.category.Movement.name=Movement

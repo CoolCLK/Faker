@@ -4,19 +4,27 @@
   "package": "coolclk.faker.injection.mixins",
   "refmap": "mixins.faker.refmap.json",
   "mixins": [
-    "MixinBlockChest",
-    "MixinBlockLiquid",
+    "MixinBlock",
     "MixinEntity",
+    "MixinEntityPlayer",
     "MixinFoodStats",
+    "MixinItemBow",
     "MixinItemFood",
+    "MixinMaterialLiquid",
+    "MixinModList",
     "MixinNetworkManager",
-    "MixinWorld",
-    "MixinWorldSettingsGameType"
+    "MixinWorld"
   ],
   "client": [
+    "MixinEntityPlayerSP",
     "MixinEntityRenderer",
+    "MixinGuiConnecting",
+    "MixinGuiIngameForge",
+    "MixinMinecraft",
+    "MixinPlayerControllerMP",
     "MixinRendererLivingEntity",
     "MixinRenderManager",
+    "MixinSimpleReloadableResourceManager",
     "MixinTimer"
   ]
 }

@@ -1,5 +1,6 @@
 package coolclk.faker.feature.modules.combat;
 
+import coolclk.faker.event.events.PlayerUpdateEvent;
 import coolclk.faker.feature.ModuleHandler;
 import coolclk.faker.feature.api.Module;
 import coolclk.faker.feature.api.ModuleInfo;
@@ -22,7 +23,7 @@ public class AntiBot extends Module {
     }
 
     @Override
-    public void onEnabling() {
+    public void onUpdate() {
         List<Entity> possibleBots = new ArrayList<Entity>();
         for (EntityPlayer player : ModuleUtil.gW().playerEntities) {
             for (int i = 0; i < player.getName().length(); i++) {

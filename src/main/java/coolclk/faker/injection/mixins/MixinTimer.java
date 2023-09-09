@@ -1,5 +1,6 @@
 package coolclk.faker.injection.mixins;
 
+import coolclk.faker.event.EventHandler;
 import coolclk.faker.event.events.UpdateTimerEvent;
 import coolclk.faker.feature.ModuleHandler;
 import net.minecraft.util.Timer;
@@ -17,9 +18,8 @@ public class MixinTimer {
     @Inject(method = "updateTimer", at = @At(value = "HEAD"))
     public void updateTimer(CallbackInfo ci) {
         UpdateTimerEvent event = new UpdateTimerEvent();
-        MinecraftForge.EVENT_BUS.post(event);
-        float multiplier = event.getMultiplier();
-        this.timerSpeed = (ModuleHandler.findModule(coolclk.faker.feature.modules.player.Timer.class).getEnable() ? ModuleHandler.findModule(coolclk.faker.feature.modules.player.Timer.class).speed.getValue() : 1) * multiplier;
+        EventHandler.post(event);
+        this.timerSpeed = (ModuleHandler.findModule(coolclk.faker.feature.modules.player.Timer.class).getEnable() ? ModuleHandler.findModule(coolclk.faker.feature.modules.player.Timer.class).speed.getValue() : 1) * event.getMultiplier();
         coolclk.faker.feature.modules.player.Timer.currentTimerSpeed = this.timerSpeed;
     }
 }

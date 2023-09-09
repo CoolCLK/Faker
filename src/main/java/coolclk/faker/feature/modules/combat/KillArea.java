@@ -1,5 +1,6 @@
 package coolclk.faker.feature.modules.combat;
 
+import coolclk.faker.event.events.PlayerUpdateEvent;
 import coolclk.faker.feature.ModuleHandler;
 import coolclk.faker.feature.api.*;
 import coolclk.faker.feature.modules.ModuleCategory;
@@ -33,11 +34,11 @@ public class KillArea extends Module {
     }
 
     @Override
-    public void onEnabling() {
+    public void onUpdate(PlayerUpdateEvent event) {
         if (System.currentTimeMillis() >= nextAttackTime){
             targets.clear();
-            if (ModuleUtil.gEP() != null) {
-                List<? extends Entity> entities = ModuleUtil.findEntitiesWithDistance(ModuleUtil.gEP(), range.getValue());
+            if (event.getEntityPlayer() != null) {
+                List<? extends Entity> entities = ModuleUtil.findEntitiesWithDistance(event.getEntityPlayer(), range.getValue());
                 if (!entities.isEmpty()) {
                     for (Entity entity : entities) {
                         boolean targeting = false;
@@ -52,7 +53,7 @@ public class KillArea extends Module {
                         }
                         if (targeting) {
                             targets.add(entity);
-                            if (closestTarget == null || ModuleUtil.eTED(ModuleUtil.gEP(), entity) < ModuleUtil.entityToEntityDistance(ModuleUtil.gEP(), closestTarget)) {
+                            if (closestTarget == null || ModuleUtil.eTED(event.getEntityPlayer(), entity) < ModuleUtil.entityToEntityDistance(event.getEntityPlayer(), closestTarget)) {
                                 closestTarget = entity;
                             }
                         }
@@ -67,8 +68,8 @@ public class KillArea extends Module {
             if (ModuleUtil.gPC() != null) {
                 for (Entity target : targets) {
                     if (target != null && (!onlyAiming.getValue() || (ModuleUtil.gM().objectMouseOver != null && ModuleUtil.gM().objectMouseOver.entityHit == target))) {
-                        ModuleUtil.gEP().swingItem();
-                        ModuleUtil.gPC().attackEntity(ModuleUtil.gEP(), target);
+                        event.getEntityPlayer().swingItem();
+                        ModuleUtil.gPC().attackEntity(event.getEntityPlayer(), target);
                     }
                 }
             }

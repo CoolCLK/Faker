@@ -1,5 +1,6 @@
 package coolclk.faker.feature.modules.movement;
 
+import coolclk.faker.event.api.SubscribeEvent;
 import coolclk.faker.event.events.PacketEvent;
 import coolclk.faker.feature.api.Module;
 import coolclk.faker.feature.api.ModuleInfo;
@@ -8,9 +9,6 @@ import coolclk.faker.feature.modules.ModuleCategory;
 import coolclk.faker.util.ModuleUtil;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.C03PacketPlayer;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
 import java.util.ArrayList;
@@ -45,10 +43,9 @@ public class Blink extends Module {
         }
     }
 
-    @SideOnly(value = Side.CLIENT)
     @SubscribeEvent
-    public void onPacketSend(PacketEvent.Send event) {
-        if (this.getEnable()) {
+    public void onPacketSend(PacketEvent event) {
+        if (this.getEnable() && event.getType() == PacketEvent.Type.SEND) {
             if (event.isTypeOf(C03PacketPlayer.class)) {
                 packets.add(event.getPacket());
                 event.setCanceled(true);

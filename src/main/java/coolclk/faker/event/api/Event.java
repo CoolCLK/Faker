@@ -1,30 +1,63 @@
 package coolclk.faker.event.api;
 
+import coolclk.faker.Main;
+import coolclk.faker.event.events.KeyInputEvent;
 import org.reflections.Reflections;
 
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Event {
-    protected boolean canceled = false;
+    protected static List<Method> processMethods = new ArrayList<Method>();
+    protected static boolean scanned = false, emtpy = false;
 
-    public boolean isCanceled() {
-        return this.canceled;
+    protected void updateProcessMethods() {
+        processMethods.clear();
+        for (Method method : new Reflections().getMethodsAnnotatedWith(SubscribeEvent.class)) {
+            if (method.getParameterTypes().length == 1 && method.getParameterTypes()[0] == this.getClass()) {
+                processMethods.add(method);
+            }
+        }
     }
 
-    public void setCanceled(boolean cancel) {
-        this.canceled = cancel;
+    protected void checkProcessMethods() {
+        if (processMethods.isEmpty()) updateProcessMethods();
+        if (processMethods.isEmpty()) emtpy = true;
     }
 
     public void call() {
-        for (Method method : new Reflections().getMethodsAnnotatedWith(SubscribeEvent.class)) {
-            if (method.getParameterTypes().length == 1 && method.getParameterTypes()[0] == this.getClass()) {
-                try {
-                    method.invoke(null, this);
-                } catch (Exception e) {
-                    System.err.print("Cannot call event " + this.getClass().getName() + ": ");
-                    e.printStackTrace(System.err);
+        if (!scanned) {
+            checkProcessMethods();
+            scanned = true;
+        }
+        if (!emtpy) {
+            if (!processMethods.isEmpty()) {
+                for (Method method : processMethods) {
+                    try {
+                        method.invoke(Modifier.isStatic(method.getModifiers()) ? null : method.getDeclaringClass().newInstance(), this);
+                    } catch (Exception e) {
+                        Main.logger.error("Cannot call event " + this.getClass().getName() + ": ");
+                        e.printStackTrace(new PrintStream(new OutputStream() {
+                            @Override
+                            public void write(int b) {
+                                Main.logger.error(new String(new byte[]{(byte) b}));
+                            }
+                        }));
+                    }
                 }
             }
         }
+    }
+
+    public boolean isCancelable() {
+        return false;
+    }
+
+    public boolean isCanceled() {
+        return false;
     }
 }

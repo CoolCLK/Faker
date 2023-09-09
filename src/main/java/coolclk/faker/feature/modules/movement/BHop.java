@@ -1,5 +1,6 @@
 package coolclk.faker.feature.modules.movement;
 
+import coolclk.faker.event.events.PlayerUpdateEvent;
 import coolclk.faker.feature.api.Module;
 import coolclk.faker.feature.api.ModuleInfo;
 import coolclk.faker.feature.api.SettingsDouble;
@@ -12,16 +13,16 @@ public class BHop extends Module {
     private float movedStep = 0;
 
     @Override
-    public void onEnabling() {
-        float movement = Math.abs(ModuleUtil.gEP().movementInput.moveForward) + Math.abs(ModuleUtil.gEP().movementInput.moveStrafe);
+    public void onUpdate(PlayerUpdateEvent event) {
+        float movement = Math.abs(event.getEntityPlayer().movementInput.moveForward) + Math.abs(event.getEntityPlayer().movementInput.moveStrafe);
         if (movement > 0) {
             movedStep += Math.abs(movement) / 20;
         } else {
             movedStep = 0;
         }
 
-        if (movedStep >= hopInterval.getValue() && !ModuleUtil.gEP().isSneaking() && ((ModuleUtil.gEP().onGround && ModuleUtil.gEP().fallDistance <= 0 && ModuleUtil.gEP().motionY <= 0) && !ModuleUtil.gEP().isInWater() && !ModuleUtil.gEP().isInLava())) {
-            ModuleUtil.gEP().jump();
+        if (movedStep >= hopInterval.getValue() && !event.getEntityPlayer().isSneaking() && ((event.getEntityPlayer().onGround && event.getEntityPlayer().fallDistance <= 0 && event.getEntityPlayer().motionY <= 0) && !event.getEntityPlayer().isInWater() && !event.getEntityPlayer().isInLava())) {
+            event.getEntityPlayer().jump();
             movedStep = 0;
         }
     }

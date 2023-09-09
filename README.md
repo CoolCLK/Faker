@@ -25,9 +25,3 @@ If you unfold them, there will be many buttons, you can Left-Click to toggle the
 ### Source
 
 You can submit the changes or issues to the repository. If you want to fork this repository, you need to obey [MIT License](LICENSE) then you can start your project now.
-
-### Community
-
-Discord: https://discord.gg/HKZafnxQ
-
-QQ Group: <a target="_blank" href="https://qm.qq.com/cgi-bin/qm/qr?k=lWO0yWOcJOBjsrFVzzB6c1qZ4A17OZGC&jump_from=webapi&authKey=pKj7R75LrppMheOIATQZVzEDwfT1SS0nHEQ6vCkCdaQU4aqU5qTcwfCwohfEu6sL"><img border="0" src="//pub.idqqimg.com/wpa/images/group.png" alt="Faker 交流群" title="Faker 交流群"></a>

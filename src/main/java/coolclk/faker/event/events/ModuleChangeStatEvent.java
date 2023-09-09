@@ -1,8 +1,6 @@
 package coolclk.faker.event.events;
 
-import net.minecraftforge.fml.common.eventhandler.Cancelable;
-import net.minecraftforge.fml.common.eventhandler.Event;
+import coolclk.faker.event.api.CancelableEvent;
 
-@Cancelable
-public class ModuleChangeStatEvent extends Event {
+public class ModuleChangeStatEvent extends CancelableEvent {
 }

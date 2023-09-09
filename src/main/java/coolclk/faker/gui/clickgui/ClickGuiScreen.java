@@ -14,8 +14,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static coolclk.faker.launch.forge.FakerForgeMod.LOGGER;
-
 public class ClickGuiScreen extends GuiScreen {
     public static ClickGuiScreen INSTANCE = new ClickGuiScreen();
     public static String MESSAGE = "";
@@ -31,7 +29,6 @@ public class ClickGuiScreen extends GuiScreen {
     }
 
     public void registerButtons() {
-        LOGGER.debug("Register ClickGui buttons");
         for (ModuleCategory category : ModuleCategory.values()) {
             if (category == ModuleCategory.None) {
                 continue;
@@ -41,11 +38,9 @@ public class ClickGuiScreen extends GuiScreen {
             for (Module module : category.getModules()) {
                 yPosition += GuiHandler.Theme.BUTTON_HEIGHT;
                 submodules.add(new ClickGuiModuleButton(category.getPositionX(), yPosition, module));
-                LOGGER.debug("Register ClickGui module button " + module.getDisplayName());
             }
             this.clickGuiButtonList.addAll(submodules);
             this.clickGuiButtonList.add(new ClickGuiCategoryButton(category.getPositionX(), category.getPositionY(), category, submodules));
-            LOGGER.debug("Register ClickGui category button " + category.name());
         }
     }
 
@@ -107,10 +102,14 @@ public class ClickGuiScreen extends GuiScreen {
     @Override
     protected void keyTyped(char text, int keycode) {
         if (keycode == Keyboard.KEY_ESCAPE) {
-            ModuleHandler.findModule(ClickGui.class).toggleModule();
-            this.menuOpen = false;
-            dragging = false;
+            this.hideGui();
         }
+    }
+
+    public void hideGui() {
+        ModuleHandler.findModule(ClickGui.class).setEnable(false);
+        this.menuOpen = false;
+        dragging = false;
     }
 
     public void updateDisplayName() {

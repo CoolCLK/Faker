@@ -1,12 +1,18 @@
 package coolclk.faker.feature.modules.player;
 
+import coolclk.faker.event.events.PlayerUpdateEvent;
 import coolclk.faker.feature.api.Module;
 import coolclk.faker.feature.api.ModuleInfo;
 import coolclk.faker.feature.api.SettingsInteger;
 import coolclk.faker.feature.modules.ModuleCategory;
 import coolclk.faker.util.ModuleUtil;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.multiplayer.PlayerControllerMP;
+import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.client.C07PacketPlayerDigging;
 import net.minecraft.util.BlockPos;
 
@@ -20,30 +26,37 @@ public class BedNuker extends Module {
         BlockPos blockPos;
         IBlockState blockState;
         float blockDamage = 0;
+        EntityPlayerSP entityPlayer;
+        WorldClient worldClient;
+        NetworkManager networkManager;
 
-        BedTask(BlockPos blockPos, IBlockState blockState) {
+        BedTask(EntityPlayerSP entityPlayer, WorldClient worldClient, NetworkManager networkManager, BlockPos blockPos, IBlockState blockState) {
+            this.entityPlayer = entityPlayer;
+            this.worldClient = worldClient;
+            this.networkManager = networkManager;
             this.blockPos = blockPos;
             this.blockState = blockState;
         }
 
         void start() {
-            ModuleUtil.gNM().sendPacket(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.START_DESTROY_BLOCK, blockPos, null));
+            this.networkManager.sendPacket(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.START_DESTROY_BLOCK, blockPos, null));
         }
 
         boolean action() {
-            this.blockDamage += blockState.getBlock().getPlayerRelativeBlockHardness(ModuleUtil.gEP(), ModuleUtil.gEP().getEntityWorld(), blockPos);
-            ModuleUtil.gW().sendBlockBreakProgress(ModuleUtil.gEP().getEntityId(), blockPos, (int) (blockDamage * 10.0F) - 1);
+            this.entityPlayer.swingItem();
+            this.blockDamage += blockState.getBlock().getPlayerRelativeBlockHardness(this.entityPlayer, this.entityPlayer.getEntityWorld(), blockPos);
+            this.worldClient.sendBlockBreakProgress(this.entityPlayer.getEntityId(), blockPos, (int) (blockDamage * 10.0F) - 1);
             return this.blockDamage >= 9;
         }
 
         void end() {
-            ModuleUtil.gW().sendBlockBreakProgress(ModuleUtil.gEP().getEntityId(), blockPos, 0);
-            ModuleUtil.gNM().sendPacket(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.STOP_DESTROY_BLOCK, blockPos, null));
+            this.worldClient.sendBlockBreakProgress(this.entityPlayer.getEntityId(), blockPos, 0);
+            this.networkManager.sendPacket(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.STOP_DESTROY_BLOCK, blockPos, null));
         }
 
         void abort() {
-            ModuleUtil.gW().sendBlockBreakProgress(ModuleUtil.gEP().getEntityId(), blockPos, 0);
-            ModuleUtil.gNM().sendPacket(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.ABORT_DESTROY_BLOCK, blockPos, null));
+            this.worldClient.sendBlockBreakProgress(this.entityPlayer.getEntityId(), blockPos, 0);
+            this.networkManager.sendPacket(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.ABORT_DESTROY_BLOCK, blockPos, null));
         }
     }
 
@@ -53,8 +66,8 @@ public class BedNuker extends Module {
     private final List<BedTask> tasks = new ArrayList<BedTask>();
 
     @Override
-    public void onEnabling() {
-        List<BlockPos> newTasks = ModuleUtil.findBlockPosWithDistance(ModuleUtil.gEP().getEntityWorld(), ModuleUtil.gEP().getPosition(), Blocks.bed, range.getValue());
+    public void onUpdate(PlayerUpdateEvent event) {
+        List<BlockPos> newTasks = ModuleUtil.findBlockPosWithDistance(event.getEntityPlayer().getEntityWorld(), event.getEntityPlayer().getPosition(), Blocks.bed, range.getValue());
         for (BedTask task : Arrays.copyOf(tasks.toArray(new BedTask[0]), tasks.size())) {
             int index = newTasks.indexOf(task.blockPos);
             if (index < 0) {
@@ -73,7 +86,7 @@ public class BedNuker extends Module {
             if (nowCounts > count.getValue()) {
                 break;
             }
-            BedTask task = new BedTask(blockPos, ModuleUtil.gEP().getEntityWorld().getBlockState(blockPos));
+            BedTask task = new BedTask(event.getEntityPlayer(), event.getWorldClient(), event.getNetworkManager(), blockPos, event.getEntityPlayer().getEntityWorld().getBlockState(blockPos));
             task.start();
             tasks.add(task);
             nowCounts++;
